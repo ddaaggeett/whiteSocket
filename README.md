@@ -12,6 +12,19 @@ Licence:	GPLv3
 Have fun, please consider getting involved.  I look forward to working with you!!!
 ____________________________________________________________________________
 
+GOALS:
+
+to accelerate the advent of sustainable currency through commoditizing handwriting
+
+to set the standard of intellectual collaboration methods 
+
+to force open source collaboration across all industry – not just computer software collaboration
+
+to lower the cost of a western education to that of a whiteboard marker (+room and board :-) lol) 
+
+to employ 1,000,000,000 people -> lofty ;)  it can be done...
+____________________________________________________________________________
+
 BIG PICTURE:
 
 Blooprint.xyz is a new input system.  It collects image data of handwriting/drawing, and not only does it save the written data -> it makes it EDITABLE.  This editable functionality is the foundation to what we can turn into a handwriting documentation system.  Significance: intellectual property profile maintenance.  Imagine the applications ... :)  I'd like to ultimately use this data for AI applications in handwritten documentation, but we'll cross that bridge...
@@ -34,19 +47,6 @@ NOTE:
 This document is for direction purposes only.  It will be continuously altered.  Some components of Blooprint.xyz may not completed/running yet.  Please look through all the source and familiarize yourself with the code.  This is my first software ever written, so I'm looking forward to working with real-deal developers.
 
 Program start -> see BLOOPRINT.java
-____________________________________________________________________________
-
-GOAL:
-
-to accelerate the advent of sustainable currency through commoditizing handwriting
-
-to set the standard of intellectual collaboration methods 
-
-to force open source collaboration across all industry – not just computer software collaboration
-
-to lower the cost of a western education to that of a whiteboard marker (+room and board :-) lol) 
-
-to employ 1,000,000,000 people -> lofty ;)  it can be done...
 ____________________________________________________________________________
 
 BLOOPRINT USER MODEL: 
