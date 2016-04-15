@@ -31,7 +31,7 @@ ____________________________________________________________________________
 
 NOTE:
 
-This document is for direction purposes only.  It will be continuously altered.  Some components of Blooprint.xyz may not completed/running yet, so please copy whatever component description in this document and paste to that particular component's source code when in development.
+This document is for direction purposes only.  It will be continuously altered.  Some components of Blooprint.xyz may not completed/running yet.  Please look through all the source and familiarize yourself with the code.  This is my first software ever written, so I'm looking forward to working with real-deal developers.
 
 Program start -> see BLOOPRINT.java
 ____________________________________________________________________________
