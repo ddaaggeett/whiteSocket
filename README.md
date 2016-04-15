@@ -13,6 +13,7 @@ Have fun, please consider getting involved.  I look forward to working with you!
 ____________________________________________________________________________
 
 BIG PICTURE:
+
 Handwriting/sketching/doodling are all crucial in the development of any intellectual project.  The unfortunate thing about handwriting is that it's analog.  There are technology projects currently out there that collect handwriting on a whiteboard to save its image state, which is awesome to share what someone writes down.  This, however, only produces static/non-editable data. (there’s also Smartboard technologies, which, I believe they’re using what they have in the worst way possible...just an extension of the desktop...C’MON!  Plus,  their base model product is around $5000, so if competition comes down to price in the marketplace, well, goodbye Smartboard)
 
 Blooprint.xyz is a new input system.  It collects image data of handwriting/drawing, and not only does it save the written data -> it makes it EDITABLE.  This editable functionality is the foundation to what we can turn into a handwriting documentation system.  Significance: intellectual property profile maintenance.  Imagine the applications ... :)
@@ -29,34 +30,43 @@ Think about it this way: if a picture is placed in front of an audience, and the
 ____________________________________________________________________________
 
 NOTE:
+
 This document is for direction purposes only.  It will be continuously altered.  Some components of Blooprint.xyz may not completed/running yet, so please copy whatever component description in this document and paste to that particular component's source code when in development.
 
 Program start -> see BLOOPRINT.java
 ____________________________________________________________________________
 
 GOAL:
+
 to accelerate the advent of sustainable currency through commoditizing handwriting
+
 to set the standard of intellectual collaboration methods 
+
 to force open source collaboration across all industry – not just computer software collaboration
+
 to lower the cost of a western education to that of a whiteboard marker (+room and board :-) lol) 
+
 to employ 1,000,000,000 people -> lofty ;)  it can be done...
 ____________________________________________________________________________
 
 BLOOPRINT USER MODEL: 
+
 There are 2 types of users: (1) DIRECT USER operating Blooprint.xyz software at data collection point. (2) INDIRECT USER operating website
 
 DIRECT USER -> designer position 
-Blooprint.xyz whiteboard station component.  Hand-drawn work on any project is proof of involvement, and acts as a means of valuation of that individual designer.  These users own the work they design and are at all times verified and scrutinized by other designers they're collaborating with on other Blooprint.xyz devices AS WELL AS indirect users who have access to designers text for commenting on the website. This website will work as a (Wikipedia/Stack Overflow-type) democratic solution verification system. 
+-Blooprint.xyz whiteboard station component.  Hand-drawn work on any project is proof of involvement, and acts as a means of valuation of that individual designer.  These users own the work they design and are at all times verified and scrutinized by other designers they're collaborating with on other Blooprint.xyz devices AS WELL AS indirect users who have access to designers text for commenting on the website. This website will work as a (Wikipedia/Stack Overflow-type) democratic solution verification system. 
 
 INDIRECT USER -> intern position 
-Blooprint.xyz web browser component.  Accounts direct user straight to working blooprint of designer(s) where social-type commenting is kept per designer text input.  Indirect users play a very crucial role in the development of any shared design.  It's a type of open-sourcing details for everyone to tinker with.  It's even better if you're a direct user (plus I’m assuming all developers of Blooprint.xyz will be direct users considering they need the whiteboard/projector station to really develop this).
+-Blooprint.xyz web browser component.  Accounts direct user straight to working blooprint of designer(s) where social-type commenting is kept per designer text input.  Indirect users play a very crucial role in the development of any shared design.  It's a type of open-sourcing details for everyone to tinker with.  It's even better if you're a direct user (plus I’m assuming all developers of Blooprint.xyz will be direct users considering they need the whiteboard/projector station to really develop this).
 ____________________________________________________________________________
 
 WEBSITE: www.blooprint.xyz account
+
 Free account giving indirect users accessibility to shared designer blooprints.  Platform gives this website user freedom to read designer details, whether it be in the Blooped image or in the Blipped text and cultivate argument among a participating community of users.  These users are the interns – they are not owners of the work they're involved with, although they are covered under Creative Commons licensing with whatever website posts they submit.  This substantiates the open-sourced atmosphere Blooprint is pursuing at its core.  All parties discussing further development of blooprint designs through the website are kept under the CC license.  Blooprint is aiming for true authoritarian parties of whatever new design topics/projects to be driven to obtain the hardware required to have their own Designer account with Blooprint.xyz software so they can directly contribute to blooprint designs (and its software development) that would have been restricted by only using the website.
 ____________________________________________________________________________
 
 MONETIZATION:
+
 First, let me say, I’m open sorcing Blooprint.xyz as a way for the world to freely adapt this new phenomena to their current work operation.  Monetization can happen in any number of ways.
 
 End-users have intellectual property security options as part of the Blooprint.xyz documentation account settings.  Blooprint.xyz software will be free of charge for users who are openly designing new Blooprint documentation.  Blooprint.xyz software users for private Blooprint account documentation will pay a fee rate according to the amount of Blooprint documents created and maintained.
@@ -83,8 +93,11 @@ android debug bridge - ADB with camera capture
 Camera capture to match aspect ratio of projector
 
 PROJECTOR LIGHT SHUTTER (reverse flash for minimal glare):
-current : cardboard light-blocking flap – string pull
+
+current: cardboard light-blocking flap – string pull
+
 short-term goal: Raspberry Pi for stepper motor flap automation.
+
 Consider for future development: substitute R-Pi component with internal electrical control of lamp ballast in the projector.  lamp should be LED.  Purpose: instantaneous lamp toggle/reverse flash on whiteboard for camera capture to avoid whiteboard reflection 
 
 WHITEBOARD: 
