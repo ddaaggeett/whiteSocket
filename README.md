@@ -5,6 +5,8 @@ Project: 	BLOOPRINT.XYZ
 
 Creator/Owner:	DAVE DAGGETT, EIT - BLOOPRINT, LLC
 
+Main contact email: davedaggett@blooprint.xyz
+
 Licence:	GPLv3
 
 Have fun, please consider getting involved.  I look forward to working with you!!!
