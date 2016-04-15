@@ -3,9 +3,7 @@ commoditizing hand-written design
 
 Project: 	BLOOPRINT.XYZ 
 
-Creator:	DAVE DAGGETT, EIT
-
-Owner:		BLOOPRINT, LLC
+Creator/Owner:	DAVE DAGGETT, EIT - BLOOPRINT, LLC
 
 Licence:	GPLv3
 
