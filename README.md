@@ -3,7 +3,7 @@ commoditizing hand-written design
 
 Project: 	BLOOPRINT.XYZ 
 
-Creator/Owner:	DAVE DAGGETT, EIT - BLOOPRINT, LLC
+Creator:	DAVE DAGGETT, EIT - BLOOPRINT, LLC
 
 Main contact email: davedaggett@blooprint.xyz
 
@@ -14,13 +14,11 @@ ____________________________________________________________________________
 
 GOALS:
 
-to accelerate the advent of sustainable currency through commoditizing handwriting
-
 to set the standard of intellectual collaboration methods 
 
 to force open source collaboration across all industry – not just computer software collaboration
 
-to lower the cost of a western education to that of a whiteboard marker (+room and board :-) lol) 
+to lower the cost of a western education to that of a whiteboard marker (+room and board :-) )
 
 to employ 1,000,000,000 people -> lofty ;)  it can be done...
 ____________________________________________________________________________
