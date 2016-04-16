@@ -117,18 +117,16 @@ public class BLOOPRINT extends JFrame {
 					
 					/*
 					 * BLOOPRINT.XYZ: program start
-					 * 
 					 * */
 					
 					/**	
+					 * TODO:
+					 * 'blooprint.xyz'.'_calibration' table needs to be created upon program installation
 					 * last calibration used for this station
-					 * 
-					 * TODO: 'blooprint.xyz'.'_calibration' table needs to be created upon program installation
-					 * 
 					 * */
 					Calibration.loadCalibration();
 					
-					blooprint = new BLOOPRINT();
+					blooprint = new BLOOPRINT();	//	whiteboard display object
 					
 					blooprint.setExtendedState(JFrame.MAXIMIZED_BOTH);
 					
@@ -185,7 +183,7 @@ public class BLOOPRINT extends JFrame {
 		this.setContentPane(outPanel);//panel that contains the blooprint.image
 		this.loadAvailable= new JComboBox<String>();//list of blooprints ready to load
 		this.loadAvailable.addItem(DEFAULT_OPEN);//prompt user to select something to open
-		this.blips = new ArrayList<BLIP>();//empty list of BLIP obejcts
+		this.blips = new ArrayList<BLIP>();//empty list of BLIP objects
 		getContentPane().setLayout(null);
 		loadAvailable.setBounds(12, 12, 150, 24);
 		getContentPane().add(loadAvailable);
@@ -918,7 +916,7 @@ public class BLOOPRINT extends JFrame {
 	        throw new RuntimeException( "No Screens Found" );
 	    }
 	    
-//	    blooprint.setUndecorated(true);
+	    blooprint.setUndecorated(true);
 //	    blooprint.setAlwaysOnTop(true);
 //		blooprint.setSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
 //		blooprint.setResizable(false);
