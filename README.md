@@ -1,8 +1,6 @@
 # blooprint.xyz
 commoditizing hand-written design
 
-Project: 	BLOOPRINT.XYZ 
-
 Creator:	DAVE DAGGETT, EIT - BLOOPRINT, LLC
 
 Main contact email: davedaggett@blooprint.xyz
