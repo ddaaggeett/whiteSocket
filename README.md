@@ -1,4 +1,4 @@
-# blooprint.xyz
+# BLOOPRINT.XYZ
 commoditizing hand-written design
 
 Creator:	DAVE DAGGETT, EIT - BLOOPRINT, LLC
