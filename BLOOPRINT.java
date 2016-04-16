@@ -120,7 +120,12 @@ public class BLOOPRINT extends JFrame {
 					 * 
 					 * */
 					
-					//	last calibration used for this station
+					/**	
+					 * last calibration used for this station
+					 * 
+					 * TODO: 'blooprint.xyz'.'_calibration' table needs to be created upon program installation
+					 * 
+					 * */
 					Calibration.loadCalibration();
 					
 					blooprint = new BLOOPRINT();
