@@ -202,9 +202,6 @@ public class BLOOP extends BLOOPRINT{
 			for(int row = 0; row < sketch.getHeight(); row++){
 				for(int col = 0; col < sketch.getWidth(); col++){
 
-//			for(int row = 0; row < Calibration.bottomBorder; row++){
-//				for(int col = 0; col < Calibration.rightBorder; col++){
-					
 					/*
 					 * dealing with pixels input Calibration.by user - sketch
 					 * */
