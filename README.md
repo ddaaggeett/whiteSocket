@@ -16,7 +16,7 @@ to set the standard of intellectual collaboration methods
 
 to force open source collaboration across all industry – not just computer software collaboration
 
-to lower the cost of a western education to the of a whiteboard marker + internet access
+to lower the cost of a western education to the cost of a whiteboard marker + internet access
 
 to employ 1,000,000,000 people.  of course this wouldn't be through Blooprint, LLC, but through whatever organizations that end up using Blooprint as a tool for new employees to be relied upon to use and maintain their current operations -> lofty ;)  it can be done...
 
