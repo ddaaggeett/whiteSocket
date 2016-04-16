@@ -25,13 +25,13 @@ ____________________________________________________________________________
 
 BIG PICTURE:
 
-Blooprint.xyz is a new input system.  It collects image data of handwriting/drawing, and not only does it save the written data -> it makes it EDITABLE.  This editable functionality is the foundation to what we can turn into a handwriting documentation system.  Significance: intellectual property profile maintenance.  Imagine the applications ... :)  I'd like to ultimately use this data for AI applications in handwritten documentation, but we'll cross that bridge...
+Blooprint.xyz is a new input system generating a database of image data of handwriting/drawing.  Not only does it save the written data -> it makes it EDITABLE.  This editable functionality is the foundation to what we can turn into a handwriting documentation system.  Significance: intellectual property profile maintenance.  Imagine the applications ... :)  I'd like to ultimately use this data for AI applications in handwritten documentation, but we'll cross that bridge...
 
 Handwriting/sketching/doodling are all crucial in the development of any intellectual project.  The unfortunate thing about handwriting is that it's analog.  There are technology projects currently out there that collect handwriting on a whiteboard to save its image state, which is awesome to share what someone writes down.  This, however, only produces static/non-editable data. (there’s also Smartboard technologies, which, I believe they’re using what they have in the worst way possible...just an extension of the desktop...C’MON!  Plus,  their base model product is around $5000, so if competition comes down to price in the marketplace, well, goodbye Smartboard)
 
-Pixel manipulation is used to precisely align input image to output orientation.  Projected image and camera capture are not perfectly in line, so the output image needs to account for the transformation from the input image.  See mathematics demonstrating algebraic functionality of input to output transformation (see Calibration.java).  This transformation is what allows intended handwriting/drawing by the designer (user) to be maintained.
+Pixel manipulation is used to precisely align input image to output orientation.  Projected image and camera capture are not perfectly in line, so the output image needs to account for the transformation from the input image.  See mathematics demonstrating algebraic functionality of input to output transformation (see Calibration.java).  This transformation is what allows intended handwriting/drawing by the designer (user) to be maintained (It will eventually be more clear to follow: in the process of commenting the source code).
 
-Text by typing on keyboard is an added convenience.  User is able to dictate position of new text location and edit text however necessary to supplement hand designs 
+Text by typing on keyboard is an added convenience.  User is able to dictate position of new text location and edit text however necessary to supplement hand designs .
 
 With every Blooprint.xyz account comes options to share work publicly, or keep work private. There are levels of privacy.  Shared work (open-sourced) is displayed to individuals with access to Blooprint.xyz accounts on the internet.  Designer works with Blooprint.xyz software with the data collecting hardware.  This data collected is then stored for redisplay on either another blooprint station, or on a basic internet browser with user's ability to comment endlessly on blooprints shared publicly. this is the part of the project that is free for the user who is not technically using the Blooprint.xyz software project.  They're indirectly contributing to the user base.
 
@@ -58,7 +58,7 @@ INDIRECT USER -> intern position
 -Blooprint.xyz web browser component.  Accounts direct user straight to working blooprint of designer(s) where social-type commenting is kept per designer text input.  Indirect users play a very crucial role in the development of any shared design.  It's a type of open-sourcing details for everyone to tinker with.  It's even better if you're a direct user (plus I’m assuming all developers of Blooprint.xyz will be direct users considering they need the whiteboard/projector station to really develop this).
 ____________________________________________________________________________
 
-WEBSITE: www.blooprint.xyz account
+WEBSITE: www.blooprint.xyz
 
 Free account giving indirect users accessibility to shared designer blooprints.  Platform gives this website user freedom to read designer details, whether it be in the Blooped image or in the Blipped text and cultivate argument among a participating community of users.  These users are the interns – they are not owners of the work they're involved with, although they are covered under Creative Commons licensing with whatever website posts they submit.  This substantiates the open-sourced atmosphere Blooprint is pursuing at its core.  All parties discussing further development of blooprint designs through the website are kept under the CC license.  Blooprint is aiming for true authoritarian parties of whatever new design topics/projects to be driven to obtain the hardware required to have their own Designer account with Blooprint.xyz software so they can directly contribute to blooprint designs (and its software development) that would have been restricted by only using the website.
 ____________________________________________________________________________
@@ -81,7 +81,7 @@ COMPUTER:
 64 BIT AMD 
 8 GB RAM 
 JDK 7
-PYTHON3
+PYTHON 3
 
 PROJECTOR: 
 4:3 - 740? (PREFERRABLY 16:9-1080p) 
