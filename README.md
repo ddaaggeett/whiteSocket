@@ -18,7 +18,7 @@ to set the standard of intellectual collaboration methods
 
 to force open source collaboration across all industry – not just computer software collaboration
 
-to lower the cost of a western education to the of a whiteboard marker + internnet access
+to lower the cost of a western education to the of a whiteboard marker + internet access
 
 to employ 1,000,000,000 people -> lofty ;)  it can be done...
 ____________________________________________________________________________
