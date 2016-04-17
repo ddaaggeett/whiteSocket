@@ -42,6 +42,10 @@ import javax.swing.border.Border;
 
 /**
  * BLIP object: all methods and objects that have anything to do with user text input
+ * 
+ * BLIP objects contain all text added by designer to supplement handwriting collected by BLOOP objects
+ * BLIP objects are used in website where designers and interns are able to discuss and further comment
+ * website commenting eventually should be tied into designer consideration to update blooprint accordingly 
  * */
 public class BLIP extends BLOOPRINT{
 
@@ -54,6 +58,13 @@ public class BLIP extends BLOOPRINT{
 	
 	public BLIP(int id, Rectangle box, String text) throws Exception{
 		
+		/**
+		 * TODO:
+		 * for each BLIP displayed on BLOOPRINT, would like to have no border, but when BLIP gains focus 
+		 * when traversing through for editing, BLIP with focus should display single pixel border for user 
+		 * clarification as to which BLIP they're editing
+		 * */
+		
 		this.id = id;
 //		this.border = BorderFactory.createEmptyBorder();
 		this.border = BorderFactory.createLineBorder(Color.BLACK);
@@ -61,6 +72,9 @@ public class BLIP extends BLOOPRINT{
 		
     	if(box == null){
     		
+    		/**
+    		 * box drawn by user on whiteboard dictating exactly where they want new BLIP text to be located on BLOOPRINT
+    		 * */
     		int[] scanBox = new int[4];
     		scanBox = zoomToBox();
     		int[] corners = Calibration.getScanBoxCorners(scanBox[0], scanBox[1], scanBox[2], scanBox[3]);
@@ -120,6 +134,9 @@ public class BLIP extends BLOOPRINT{
 	
 	private static int[] zoomToBox() {
 	
+		/**
+		 * these value's starting points are backwards in order for the boolean comparisons below to initiate properly
+		 * */
 		int[] some = new int[4];
 		int xmax = 0;
 		int xmin = BLOOP.sketch.getWidth();
@@ -127,9 +144,6 @@ public class BLIP extends BLOOPRINT{
 		int ymin = BLOOP.sketch.getHeight();
 		
 		here:
-			
-//			for(int row = 0; row < image.getHeight(); row++){
-//				for(int col = 0; col < image.getWidth(); col++){
 
 			for(int row = 0; row < BLOOP.sketch.getHeight(); row++){
 				for(int col = 0; col < BLOOP.sketch.getWidth(); col++){
@@ -145,8 +159,8 @@ public class BLIP extends BLOOPRINT{
 		            
 		            if(BLOOP.isMarker(pixel)){
 
-		            	System.out.println("xIN = "+BLOOP.xIN);
-		            	System.out.println("yIN = "+BLOOP.yIN);
+		            	System.out.println("xIN = " + BLOOP.xIN);
+		            	System.out.println("yIN = " + BLOOP.yIN);
 						
 						System.out.println("\nfound eraser border!!!\n");
 						

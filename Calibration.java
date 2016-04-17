@@ -174,7 +174,7 @@ public class Calibration extends BorderSelect{
 		System.out.println("through calibration.......");
 		
 	}//END Calibration() constructor
-
+	
 	/**
 	 * dealing with lit projector area on whiteboard
 	 * sets binary border for future use in BLOOP.floodBorder() method
@@ -242,9 +242,7 @@ public class Calibration extends BorderSelect{
 		
 		return some;
 	}
-
 	
-
 	/**
 	 * finds user defined projector corners (xy-coordinates) on whiteboard
 	 * */
@@ -390,8 +388,6 @@ public class Calibration extends BorderSelect{
 
 	}//END getScanBoxCorners()
 	
-	
-	
 	/**
 	 * load Calibration object variables from DB on program start
 	 * */
@@ -478,7 +474,6 @@ public class Calibration extends BorderSelect{
 		connx.close();
 		
 	}//END saveCalibration()
-
 	
 	/**
 	 * Find center of the input image.
@@ -639,8 +634,7 @@ public class Calibration extends BorderSelect{
         return some;
         
 	}//END getScanBoxCorners()
-
-			
+	
 	/**
 	 * translational pixel manipulation mechanism
 	 * */

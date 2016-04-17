@@ -94,7 +94,7 @@ public class BLOOPRINT extends JFrame {
 	public static List<BLIP> blips;//loaded, edited, saved
 	public BufferedImage image;//loaded, edited, saved
 	public BufferedImage blank;
-	public DisplayImage outPanel;//for displaying ^image
+	public displayImagePanel displayImagePanel;//for displaying ^image
 	
 	public static Connection connx;
 	
@@ -123,6 +123,8 @@ public class BLOOPRINT extends JFrame {
 					 * TODO:
 					 * 'blooprint.xyz'.'_calibration' table needs to be created upon program installation
 					 * last calibration used for this station
+					 * 
+					 * need to have at least one calibration data set in table for now
 					 * */
 					Calibration.loadCalibration();
 					
@@ -151,7 +153,6 @@ public class BLOOPRINT extends JFrame {
 	public BLOOPRINT() throws Exception{
 		getContentPane().setBackground(Color.WHITE);
 		
-		makeBlankImage();
 		/**
 		 * BLOOPRINT object is instantaneous whiteboard display
 		 * new blooprint = new frame
@@ -159,17 +160,11 @@ public class BLOOPRINT extends JFrame {
 		this.setBounds(getProjectorBounds());
 		this.setTitle("Whiteboard Output");
 		
-		/**------------------------------------------------------
+		/**
 		 * TODO:	set frame to be truly full screen (cover menu bar at top) -> linux causing difficulties
 		 * */
-		
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		
-//		this.setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
 
-//		GraphicsDevice.setFullScreenWindow(this);
-		/*------------------------------------------------------*/
-		
 		
 		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -177,10 +172,10 @@ public class BLOOPRINT extends JFrame {
 		 * undecided:
 		 * should blank image come from a file or create each time
 		 * */
-//		this.outPanel = new DisplayImage(ImageIO.read(new File(blankImageFileName)));
-		this.outPanel = new DisplayImage(makeBlankImage());
+//		this.displayImagePanel = new displayImagePanel(ImageIO.read(new File(blankImageFileName)));
+		this.displayImagePanel = new displayImagePanel(makeBlankImage());
 		
-		this.setContentPane(outPanel);//panel that contains the blooprint.image
+		this.setContentPane(displayImagePanel);//panel that contains the blooprint.image
 		this.loadAvailable= new JComboBox<String>();//list of blooprints ready to load
 		this.loadAvailable.addItem(DEFAULT_OPEN);//prompt user to select something to open
 		this.blips = new ArrayList<BLIP>();//empty list of BLIP objects
@@ -263,6 +258,9 @@ public class BLOOPRINT extends JFrame {
 		
 	}//END BLooprint() constructor
 	
+	/**
+	 * returns blank image for display
+	 * */
 	private static BufferedImage makeBlankImage() throws Exception {
 		
 		Double width = getProjectorBounds().getWidth();
@@ -276,9 +274,10 @@ public class BLOOPRINT extends JFrame {
 		return some;
 		
 	}//END makeBlankImage()
-
 	
-
+	/**
+	 * loads BLOOPRINT object for display
+	 * */
 	private void loadBlooprint(String workingBlooprint) throws Exception {
 		/**
 		 * new blooprint created each time: -user opens -user creates new
@@ -291,7 +290,7 @@ public class BLOOPRINT extends JFrame {
 		blooprint.setVisible(true);
 		blooprint.title = workingBlooprint;
 		blooprint.image = blooprint.loadImage();
-		displayImage(blooprint.image);
+		displayImagePanel(blooprint.image);
 		
 		//	load saved BLIPS
 		blooprint.blips = loadTextAreas();
@@ -308,17 +307,17 @@ public class BLOOPRINT extends JFrame {
 	}//END loadBlooprint()
 	
 	/**
-	 * DisplayImage contains panel of which blooprint.image is displayed on
+	 * displayImagePanel contains panel of which blooprint.image is displayed on
 	 * */
-	public class DisplayImage extends JPanel{
+	public class displayImagePanel extends JPanel{
 		
 		public BufferedImage imageOUT;
 
-	    public DisplayImage(BufferedImage img) {
+	    public displayImagePanel(BufferedImage img) {
 	    	
 	    	this.imageOUT = img;
 	    	
-	    }//END DisplayImage() constructor
+	    }//END displayImagePanel() constructor
 
 	    @Override
 	    public void paintComponent(Graphics g) {
@@ -338,12 +337,11 @@ public class BLOOPRINT extends JFrame {
 	    }
 	    
 
-	}//END DisplayImage class
+	}//END displayImagePanel class
 	
 	/**
 	 * loads the OPEN combobox -> ctrl + O 
 	 * */
-	
 	private void setLoadables() throws Exception {
 		loadAvailable.removeAll();
 		Connection connx = null;
@@ -373,8 +371,6 @@ public class BLOOPRINT extends JFrame {
 		}
 		
 	}//END setLoadables()
-	
-	
 	
 	/**
 	 * ctrl + S -> saves text state of all BLIPS currently displayed 
@@ -427,8 +423,6 @@ public class BLOOPRINT extends JFrame {
 		connx.close();
 		
 	}//END saveTextAreas()
-	
-	
 	
 	/**
 	 * loads BLIPS from DB into blooprint.blips object
@@ -486,21 +480,19 @@ public class BLOOPRINT extends JFrame {
 		
 	}//END loadTextAreas()
 	
-	
 	/**
-	 * blooprint.image is updated for display on blooprint.outPanel
+	 * blooprint.image is updated for display on blooprint.displayImagePanel
 	 * */
-	public static void displayImage(BufferedImage img) {
+	public static void displayImagePanel(BufferedImage img) {
 		try{
-			blooprint.outPanel.imageOUT = img;
-			blooprint.outPanel.revalidate();
-			blooprint.outPanel.repaint();
+			blooprint.displayImagePanel.imageOUT = img;
+			blooprint.displayImagePanel.revalidate();
+			blooprint.displayImagePanel.repaint();
 		}catch(Exception e){
-			System.err.println("ERROR:\nBLOOPRINT.displayImage()");
+			System.err.println("ERROR:\nBLOOPRINT.displayImagePanel()");
 			e.printStackTrace();
 		}
-	}//END displayImage()
-	
+	}//END displayImagePanel()
 	
 	/**
 	 * ctrl + ENTER -> bloop action
@@ -529,7 +521,6 @@ public class BLOOPRINT extends JFrame {
 		
 		
 	}//END saveImage()
-	
 	
 	/**
 	 * load blooprint.image from DB table
@@ -565,8 +556,6 @@ public class BLOOPRINT extends JFrame {
 		
 		return image;
 	}//END loadImage()
-	
-	
 	
 	/**
 	 * new DB tables must be added to DB every time a new blooprint is created
@@ -656,8 +645,6 @@ public class BLOOPRINT extends JFrame {
 		
 	}//END addNewBPTables()
 	
-	
-	
 	/**
 	 * connect to MySQL DB
 	 * TODO: setup text file for script to load DB access info
@@ -683,7 +670,6 @@ public class BLOOPRINT extends JFrame {
 		}
 		return null; //if connection not made
 	}//END getDataBaseConnection()
-	
 	
 	/**
 	 * enables user to interact with program by keyboard controls
@@ -889,7 +875,6 @@ public class BLOOPRINT extends JFrame {
 		
 		
 	}//END setKeyControls()
-
 	
 	/**
 	 * display entire program video output through projector 
@@ -924,10 +909,11 @@ public class BLOOPRINT extends JFrame {
 	    
 	    
 	}//END projectorDisplay()
-
 	
 	/**
 	 * for maximizing output display to limits of projector
+	 * 
+	 *  see this.setExtendedState(JFrame.MAXIMIZED_BOTH); in main method
 	 * */
 	public static Rectangle getProjectorBounds() {
 		
@@ -944,7 +930,6 @@ public class BLOOPRINT extends JFrame {
 		
 		return some;
 	}
-
 	
 	/**
 	 * thread for running timed text display prompting user to open, create new, ask for help
@@ -986,12 +971,11 @@ public class BLOOPRINT extends JFrame {
 		
 		
 	}//END OfferHelpThread class
-
 	
 	/**
 	 * progress of every bloop action
 	 * start:	bloop action -> ctrl + ENTER
-	 * end:		BLOOPRINT.outPanel.imageOUT display
+	 * end:		BLOOPRINT.displayImagePanel.imageOUT display
 	 * */
 	public static class bloopProgress implements Runnable {
 

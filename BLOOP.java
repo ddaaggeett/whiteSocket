@@ -114,7 +114,7 @@ public class BLOOP extends BLOOPRINT{
     		
     		manipulatePixels(mode);
     		
-    		displayImage(blooprint.image);
+    		displayImagePanel(blooprint.image);
     		
     		saveImage();
     		
