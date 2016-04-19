@@ -22,7 +22,8 @@ to create a seamless way to incorporate different type of businesses together.  
 ____________________________________________________________________________
 
 BLOOPRINT.XYZ MODEL 1 DEVELOPED WITH: 
-COST: MAX $ 2000.00 - hardware cost 
+
+HARDWARE COST: ROUGH MAX ~ $2000
 
 COMPUTER: 
 64 BIT AMD 
