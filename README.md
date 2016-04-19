@@ -32,7 +32,7 @@ JDK 7
 PYTHON 3
 
 PROJECTOR: 
-4:3 - 740? (PREFERRABLY 16:9-1080p) 
+ASPECT RATIO = 4:3 (PREFERRABLY 16:9-1080p) 
 
 CAMERA: 
 android debug bridge - ADB with camera capture
