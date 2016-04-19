@@ -10,6 +10,8 @@ ____________________________________________________________________________
 
 GOALS:
 
+to rid the internet and economy of a 'like-based' value system -> see Douglas Rushkoff
+
 to set the standard of intellectual collaboration methods 
 
 to force open source collaboration across all industry – not just computer software collaboration
@@ -40,17 +42,11 @@ Camera capture to match aspect ratio of projector
 
 PROJECTOR LIGHT SHUTTER (reverse flash for minimal glare):
 
-current: cardboard light-blocking flap – string pull
+CURRENT: cardboard light-blocking flap – string pull || SHORT TERM GOAL: Raspberry Pi for stepper motor flap automation || LONG-TERM GOAL: substitute R-Pi component with internal electrical control of lamp ballast in the projector.  lamp should be LED.  Purpose: instantaneous lamp toggle/reverse flash on whiteboard for camera capture to eliminate whiteboard reflection 
 
-short-term goal: Raspberry Pi for stepper motor flap automation.
+WHITEBOARD: 2x3ft anti-glare surface 
 
-Consider for future development: substitute R-Pi component with internal electrical control of lamp ballast in the projector.  lamp should be LED.  Purpose: instantaneous lamp toggle/reverse flash on whiteboard for camera capture to avoid whiteboard reflection 
-
-WHITEBOARD: 
-2x3ft anti-glare surface 
-
-ASSEMBLY: 
-Whiteboard on tabletop face upward. Project image on whiteboard from above estimated 2.5-3ft from whiteboard surface. recommend surround/back-lighting for whiteboard visibility for capture.  Of course, assembly orientation is preferential.  This project started with literal blueprinting in mind, so the face-up orientation is to cater to traditional engineering teams.
+ASSEMBLY: Whiteboard on tabletop face upward. Project image on whiteboard from above estimated 2.5-3ft from whiteboard surface. recommend surround/back-lighting for whiteboard visibility for capture.  Of course, assembly orientation is preferential.  This project started with literal blueprinting in mind, so the face-up orientation is to cater to traditional engineering teams.
 ____________________________________________________________________________
 
 BIG PICTURE:
