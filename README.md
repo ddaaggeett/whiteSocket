@@ -46,7 +46,7 @@ CURRENT: cardboard light-blocking flap – string pull || SHORT TERM GOAL: Raspb
 
 WHITEBOARD: 2x3ft anti-glare surface 
 
-ASSEMBLY: Whiteboard on tabletop face upward. Project image on whiteboard from above estimated 2.5-3ft from whiteboard surface. recommend surround/back-lighting for whiteboard visibility for capture.  Of course, assembly orientation is preferential.  This project started with literal blueprinting in mind, so the face-up orientation is to cater to traditional engineering teams.
+ASSEMBLY: Whiteboard on tabletop face upward. Project image on whiteboard from above estimated 3ft from whiteboard surface. Recommend surround/back-lighting for whiteboard visibility for capture.  Of course, assembly orientation is preferential.  This project started with literal blueprinting in mind, so the face-up orientation is to cater to traditional engineering teams.
 ____________________________________________________________________________
 
 BIG PICTURE:
