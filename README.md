@@ -10,7 +10,7 @@ ____________________________________________________________________________
 
 GOALS:
 
-to rid the internet and economy of a 'like-based' value system -> see Douglas Rushkoff
+to rid the internet and economy of a 'like-based' value system -> see Douglas Rushkoff -> https://www.youtube.com/watch?v=6_n1Dro0Uec
 
 to set the standard of intellectual collaboration methods 
 
