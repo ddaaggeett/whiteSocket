@@ -93,7 +93,7 @@ ____________________________________________________________________________
 
 MONETIZATION:
 
-First, let me say, I’m open sorcing Blooprint.xyz as a way for the world to freely adapt this new phenomena to its current work operations/methods.  Monetization can happen in any number of ways.
+First, let me say, I’m open sourcing Blooprint.xyz as a way for the world to freely adapt this new phenomena to its current work operations/methods.  Monetization can happen in any number of ways.
 
 End-users have intellectual property security options as part of the Blooprint.xyz documentation account settings.  Blooprint.xyz software will be free of charge for users who are openly designing new Blooprint documentation.  Blooprint.xyz software users for private Blooprint account documentation will pay a fee rate according to the amount of Blooprint documents created and maintained.
 
