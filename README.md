@@ -21,6 +21,37 @@ to employ 1,000,000,000 people.  of course this wouldn't be through Blooprint, L
 to create a seamless way to incorporate different type of businesses together.  we want global interation -> it's not like there's different types of handwriting.
 ____________________________________________________________________________
 
+BLOOPRINT.XYZ MODEL 1 DEVELOPED WITH: 
+COST: MAX $ 2000.00 - hardware cost 
+
+COMPUTER: 
+64 BIT AMD 
+8 GB RAM 
+JDK 7
+PYTHON 3
+
+PROJECTOR: 
+4:3 - 740? (PREFERRABLY 16:9-1080p) 
+
+CAMERA: 
+android debug bridge - ADB with camera capture
+Camera capture to match aspect ratio of projector
+
+PROJECTOR LIGHT SHUTTER (reverse flash for minimal glare):
+
+current: cardboard light-blocking flap – string pull
+
+short-term goal: Raspberry Pi for stepper motor flap automation.
+
+Consider for future development: substitute R-Pi component with internal electrical control of lamp ballast in the projector.  lamp should be LED.  Purpose: instantaneous lamp toggle/reverse flash on whiteboard for camera capture to avoid whiteboard reflection 
+
+WHITEBOARD: 
+2x3ft anti-glare surface 
+
+ASSEMBLY: 
+Whiteboard on tabletop face upward. Project image on whiteboard from above estimated 2.5-3ft from whiteboard surface. recommend surround/back-lighting for whiteboard visibility for capture.  Of course, assembly orientation is preferential.  This project started with literal blueprinting in mind, so the face-up orientation is to cater to traditional engineering teams.
+____________________________________________________________________________
+
 BIG PICTURE:
 
 Blooprint.xyz is a new input system generating a database of image data of handwriting/drawing.  Not only does it save the written data -> it makes it EDITABLE.  This editable functionality is the foundation to what we can turn into a handwriting documentation system.  Significance: intellectual property profile maintenance.  Imagine the applications ... :)  I'd like to ultimately use this data for AI applications in handwritten documentation, but we'll cross that bridge...
@@ -71,36 +102,6 @@ Note: the goal of Blooprint, LLC is to set the standard of open source documenta
 
 I’d rather the world flourish with this new technology and profit from it how it best serves itself.  Want to be happy?  Make the world around you better.
 ____________________________________________________________________________
-
-BLOOPRINT.XYZ MODEL 1 DEVELOPED WITH: 
-COST: MAX $ 2000.00 - hardware cost 
-
-COMPUTER: 
-64 BIT AMD 
-8 GB RAM 
-JDK 7
-PYTHON 3
-
-PROJECTOR: 
-4:3 - 740? (PREFERRABLY 16:9-1080p) 
-
-CAMERA: 
-android debug bridge - ADB with camera capture
-Camera capture to match aspect ratio of projector
-
-PROJECTOR LIGHT SHUTTER (reverse flash for minimal glare):
-
-current: cardboard light-blocking flap – string pull
-
-short-term goal: Raspberry Pi for stepper motor flap automation.
-
-Consider for future development: substitute R-Pi component with internal electrical control of lamp ballast in the projector.  lamp should be LED.  Purpose: instantaneous lamp toggle/reverse flash on whiteboard for camera capture to avoid whiteboard reflection 
-
-WHITEBOARD: 
-2x3ft anti-glare surface 
-
-ASSEMBLY: 
-Whiteboard on tabletop face upward. Project image on whiteboard from above estimated 2.5-3ft from whiteboard surface. recommend surround/back-lighting for whiteboard visibility for capture.  Of course, assembly orientation is preferential.  This project started with literal blueprinting in mind, so the face-up orientation is to cater to traditional engineering teams.
 
 Note:  I welcome parties (like a DELL) to come along and package a new harware system together that works with BLOOPRINT.XYZ software.  New hardware companies, start your engines!
 
