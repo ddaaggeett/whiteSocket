@@ -88,7 +88,7 @@ ____________________________________________________________________________
 
 WEBSITE: www.blooprint.xyz
 
-Free account giving indirect users accessibility to shared designer blooprints.  Platform gives this website user freedom to read designer details, whether it be in the Blooped image or in the Blipped text and cultivate argument among a participating community of users.  These users are the interns – they are not owners of the work they're involved with, although they are covered under Creative Commons licensing with whatever website posts they submit.  This substantiates the open-sourced atmosphere Blooprint is pursuing at its core.  All parties discussing further development of blooprint designs through the website are kept under the CC license.  Blooprint is aiming for true authoritarian parties of whatever new design topics/projects to be driven to obtain the hardware required to have their own Designer account with Blooprint.xyz software so they can directly contribute to blooprint designs (and its software development) that would have been restricted by only using the website.
+Free account giving indirect users accessibility to shared designer blooprints.  Platform gives this website user freedom to read designer details, whether it be in the Blooped image or in the Blipped text and cultivate argument among a participating community of users.  These indeirect users are the 'interns' – they are not owners of the work they're involved with, although they are covered under Creative Commons licensing with whatever website posts they submit.  This substantiates the open-sourced atmosphere Blooprint is pursuing at its core.  All parties discussing further development of blooprint designs through the website are kept under the CC license.  Blooprint is aiming for true authoritarian parties of whatever new design topics/projects to be persuaded to obtain the hardware required to have their own Designer workspace with Blooprint.xyz software so they can directly contribute to blooprint designs (and its software development) that would have been restricted by only using the website.  Basically, indirect users can only debug, while direct users are able to debug as well as create [new] content.
 ____________________________________________________________________________
 
 MONETIZATION:
@@ -99,7 +99,9 @@ End-users have intellectual property security options as part of the Blooprint.x
 
 Note: the goal of Blooprint, LLC is to set the standard of open source documentation, so product licensing fees will only apply to accounts utilizing Blooprint as a method for maintaining PROPRIETARY designs/documentation – as in, Blooprint is globally taxing efforts to keep proprietary designs and methods close-sourced, these are Blooprint's paying customers.  We do agree that open-source is a good thing, right?
 
-I’d rather the world flourish with this new technology and profit from it how it best serves itself.  Want to be happy?  Make the world around you better.
+I’d rather the world flourish with this new technology and have it profit from how it best serves itself, than aim to siphon off likes to sell to advertisers, and leave the world in an even bigger hole.
+
+Want to be happy?  Make the world around you better.
 ____________________________________________________________________________
 
 Note:  I welcome parties (like a DELL) to come along and package a new harware system together that works with BLOOPRINT.XYZ software.  New hardware teams, start your engines!
