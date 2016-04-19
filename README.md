@@ -102,6 +102,4 @@ Note: the goal of Blooprint, LLC is to set the standard of open source documenta
 I’d rather the world flourish with this new technology and profit from it how it best serves itself.  Want to be happy?  Make the world around you better.
 ____________________________________________________________________________
 
-Note:  I welcome parties (like a DELL) to come along and package a new harware system together that works with BLOOPRINT.XYZ software.  New hardware teamss, start your engines!
-
-
+Note:  I welcome parties (like a DELL) to come along and package a new harware system together that works with BLOOPRINT.XYZ software.  New hardware teams, start your engines!
