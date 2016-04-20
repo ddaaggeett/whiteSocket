@@ -69,6 +69,9 @@ import javax.swing.border.Border;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
+/**
+ * 
+ * */
 public class BLOOPRINT extends JFrame {
 
 	/**
@@ -84,9 +87,6 @@ public class BLOOPRINT extends JFrame {
 	public static String newTextImageFileName = 	sketchDir+"newText.jpg";
 	public static String sketchImageFileName = 		sketchDir+"sketch.jpg";
 
-	/*
-	 * BLOOPRINT object is the visual compilation of all user input
-	 * */
 	
 	public static BLOOPRINT blooprint;//the current BLOOPRINT object on whiteboard
 	
@@ -107,9 +107,9 @@ public class BLOOPRINT extends JFrame {
 	public static JProgressBar progressBar;
 
 	
-/**
- * user interacts with single blooprint instance
- * */
+	/**
+	 * user interacts with single blooprint instance
+	 * */
 	public static void main(String[] args) throws IOException {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -150,6 +150,9 @@ public class BLOOPRINT extends JFrame {
 		});
 	}
 	
+	/*
+	 * BLOOPRINT object is the visual compilation of all user input
+	 * */
 	public BLOOPRINT() throws Exception{
 		getContentPane().setBackground(Color.WHITE);
 		
