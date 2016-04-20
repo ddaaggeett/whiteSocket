@@ -64,7 +64,6 @@ public class BLOOP extends BLOOPRINT{
     	 * TODO:
     	 * this needs to be used upon projector frame/ALL hardware setup
     	 * */
-//    	captureSketch();
     	sketch = getSketch();
     	
     	/**
@@ -524,7 +523,14 @@ public class BLOOP extends BLOOPRINT{
 	private File gatherNewestFile(String dir) throws Exception {
 		File lastSketchFile = getLastFile(dir);
 		File newFile = null;
-		captureSketch();
+		
+		if(system_os.contains("windows")){
+			captureSketch_WIN();
+		}
+		else{
+			captureSketch_LINUX();
+		}
+		
 		boolean flag = true;
 		while(flag){
 			newFile = getLastFile(dir);
@@ -558,7 +564,7 @@ public class BLOOP extends BLOOPRINT{
 	/**
 	 * run python script to ADB android camera capture and return JPEG image to Blooprint.sketchDir
 	 * */
-	private void captureSketch() throws Exception {
+	private void captureSketch_LINUX() throws Exception {
 		String[] cmds = { "/bin/bash", "-c", "python3 "+sourceDir+"capture.py " };
 		ProcessBuilder pb = new ProcessBuilder(cmds);
 		Process p = pb.start();
@@ -570,7 +576,37 @@ public class BLOOP extends BLOOPRINT{
 		p.waitFor(); // causes the current thread to wait, if necessary, until the process represented Calibration.by this Process object has terminated
 		Timestamp time = new Timestamp(Calendar.getInstance().getTime().getTime());
 //		System.out.println("back into java\t-> " + time);//proof java code waits for script to end
-	}//END captureSketch()
+	}//END captureSketch_LINUX()
+	
+	/**
+	 * run python script to ADB android camera capture and return JPEG image to Blooprint.sketchDir
+	 * */
+	private void captureSketch_WIN() throws Exception {
+		
+		Process p = Runtime.getRuntime().exec("cmd.exe /c python "+win_sourceDir+"capture_win.py");
+		
+		
+		
+		
+//		String[] cmds = { "/bin/bash", "-c", "python3 "+sourceDir+"capture.py " };
+//		ProcessBuilder pb = new ProcessBuilder(cmds);
+//		Process p = pb.start();
+//		BufferedReader reader = new BufferedReader (new InputStreamReader(p.getInputStream()));
+//		String line;
+//		while ((line = reader.readLine ()) != null) {
+//		    System.out.println (line);
+//		}
+//		p.waitFor(); // causes the current thread to wait, if necessary, until the process represented Calibration.by this Process object has terminated
+		
+		
+		
+		
+		
+		
+	}//END captureSketch_WIN()
+	
+	
+	
 }
 
 

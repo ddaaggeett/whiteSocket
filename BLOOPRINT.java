@@ -76,9 +76,10 @@ public class BLOOPRINT extends JFrame {
 
 	/**
 	 * TODO:
-	 * script to run at blooprint.xyz program start to load info
-	 * adjust accordingly
+	 * system information
 	 * */
+	
+	//	LINUX SYSTEM
 	public static String homeDirectory = 			"/home/dave/Blooprint/";
 	public static String sourceDir = 				"/home/dave/Blooprint/Blooprint.xyz/src/xyz/blooprint/";
 	public static String sketchDir = 				homeDirectory+"in/";
@@ -86,7 +87,18 @@ public class BLOOPRINT extends JFrame {
 	public static String rawCornersImageFileName = 	sketchDir+"rawCorners.jpg";
 	public static String newTextImageFileName = 	sketchDir+"newText.jpg";
 	public static String sketchImageFileName = 		sketchDir+"sketch.jpg";
+	
+	//	WINDOWS SYSTEM
+	public static String win_homeDirectory = 			"C:/Users/david_000/coding/Blooprint.xyz/";
+	public static String win_sourceDir = 				"C:/Users/david_000/coding/Blooprint.xyz/src/xyz/blooprint/";
+	public static String win_sketchDir = 				win_homeDirectory+"in/";
+	public static String win_blankImageFileName = 		win_homeDirectory+"blank.jpg";
+	public static String win_rawCornersImageFileName = 	win_sketchDir+"rawCorners.jpg";
+	public static String win_newTextImageFileName = 	win_sketchDir+"newText.jpg";
+	public static String win_sketchImageFileName = 		win_sketchDir+"sketch.jpg";
 
+	public static String system_os = "";
+	
 	
 	public static BLOOPRINT blooprint;//the current BLOOPRINT object on whiteboard
 	
@@ -114,6 +126,12 @@ public class BLOOPRINT extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					
+					
+					
+					system_os = System.getProperty("os.name").toLowerCase();
+					//	TODO: check what unix system would be as a string description
+						
 					
 					/*
 					 * BLOOPRINT.XYZ: program start
@@ -904,7 +922,14 @@ public class BLOOPRINT extends JFrame {
 	        throw new RuntimeException( "No Screens Found" );
 	    }
 	    
-	    blooprint.setUndecorated(true);
+	    try{
+	    	
+	    	blooprint.setUndecorated(true);
+	    }
+	    catch(Exception e){
+	    	e.getMessage();
+	    	e.printStackTrace();
+	    }
 //	    blooprint.setAlwaysOnTop(true);
 //		blooprint.setSize(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
 //		blooprint.setResizable(false);
