@@ -57,7 +57,7 @@ Handwriting/sketching/doodling are all crucial in the development of any intelle
 
 By the way: VOTE IN YOUR SPECIAL DISTRICTS -> and as for one of them, get rid of useless spending in your public school districts!
 
-Pixel manipulation is used to precisely align input image to output orientation.  Projected image and camera capture are not perfectly in line, so the output image needs to account for the transformation from the input image.  See mathematics demonstrating algebraic functionality of input to output transformation (see Calibration.java).  This transformation is what allows intended handwriting/drawing by the designer (user) to be maintained (It will eventually be more clear to follow: in the process of commenting the source code).
+Pixel manipulation is used to precisely align input image to output orientation.  Projected image and camera capture are not perfectly in line, so the output image needs to account for the transformation from the input image.  See mathematics demonstrating algebraic functionality of input to output transformation (see Calibration.java -> Calibration.stretch() ).  This transformation is what allows intended handwriting/drawing by the designer (user) to be maintained (It will eventually be more clear to follow: in the process of commenting the source code).
 
 Text by typing on keyboard is an added convenience.  User is able to dictate position of new text location and edit text however necessary to supplement hand designs .
 
