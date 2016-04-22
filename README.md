@@ -93,15 +93,13 @@ ____________________________________________________________________________
 
 MONETIZATION:
 
-First, let me say, I’m open sourcing Blooprint.xyz as a way for the world to freely adapt this new phenomena to its current work operations/methods.  Monetization can happen in any number of ways.
+I’m open sourcing Blooprint.xyz as a way for the world to freely adapt this new phenomena to its current work operations/methods.  Monetization can happen in any number of ways.
 
-End-users have intellectual property security options as part of the Blooprint.xyz documentation account settings.  Blooprint.xyz software will be free of charge for users who are openly designing new Blooprint documentation.  Blooprint.xyz software users for private Blooprint account documentation will pay a fee rate according to the amount of Blooprint documents created and maintained.
-
-Note: the goal of Blooprint, LLC is to set the standard of open source documentation, so product licensing fees will only apply to accounts utilizing Blooprint as a method for maintaining PROPRIETARY designs/documentation – as in, Blooprint is globally taxing efforts to keep proprietary designs and methods close-sourced, these are Blooprint's paying customers.  We do agree that open-source is a good thing, right?
+End-users have intellectual property security options as part of the Blooprint.xyz documentation account settings.  Blooprint.xyz software will be free of charge for users who are openly designing new Blooprint documentation.  One way to make money -> Blooprint.xyz software users for private Blooprint account documentation will pay a fee rate according to the amount of Blooprint documents created and maintained.
 
 I’d rather the world flourish with this new technology and have it profit from how it best serves itself, than aim to siphon off likes to sell to advertisers, and leave the world in an even bigger hole.
 
 Want to be happy?  Make the world around you better.
 ____________________________________________________________________________
 
-Note:  I welcome parties (like a DELL) to come along and package a new harware system together that works with BLOOPRINT.XYZ software.  New hardware teams, start your engines!
+Note:  I welcome parties (like a DELL) to come along and package a new harware system together that works with BLOOPRINT.XYZ software.  New hardware teams, start your engines!  University is the perfect test market for the entire Blooprint.xyz  project...from development to testing its functionality in society.
