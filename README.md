@@ -104,4 +104,4 @@ I’d rather the world flourish with this new technology and have it profit from
 Want to be happy?  Make the world around you better.
 ____________________________________________________________________________
 
-Note:  I welcome parties (like a DELL) to come along and package a new harware system together that works with BLOOPRINT.XYZ software.  New hardware teams, start your engines!  University is the perfect test market for the entire Blooprint.xyz  project...from development to testing its functionality in society.
+New development deams, start your engines!  University is the perfect test market for the entire Blooprint.xyz  project...from development to testing its functionality in society.
