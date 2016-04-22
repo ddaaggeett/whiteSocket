@@ -55,6 +55,8 @@ Blooprint.xyz is a new input system generating a database of image data of handw
 
 Handwriting/sketching/doodling are all crucial in the development of any intellectual project.  The unfortunate thing about handwriting is that it's analog.  There are technology projects currently out there that collect handwriting on a whiteboard to save its image state, which is awesome to share what someone writes down.  This, however, only produces static/non-editable data. (there’s also Smartboard technologies, which, I believe they’re using what they have in the worst way possible...just an extension of the desktop...C’MON!  Plus,  their base model product is around $5000, so if competition comes down to price in the marketplace, well, goodbye Smartboard.  Imagine saving school budgets $3000 minimum per machine...)
 
+...Remember, Blooprint.xyz works with user preferred hardware, so it's the choice of the user who is the preferred hardware manufacturer.
+
 By the way: VOTE IN YOUR SPECIAL DISTRICTS -> and as for one of them, get rid of useless spending in your public school districts!
 
 Pixel manipulation is used to precisely align input image to output orientation.  Projected image and camera capture are not perfectly in line, so the output image needs to account for the transformation from the input image.  See mathematics demonstrating algebraic functionality of input to output transformation (see Calibration.java -> Calibration.stretch() ).  This transformation is what allows intended handwriting/drawing by the designer (user) to be maintained (It will eventually be more clear to follow: in the process of commenting the source code).
