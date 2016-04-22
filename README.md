@@ -55,7 +55,7 @@ Blooprint.xyz is a new input system generating a database of image data of handw
 
 Handwriting/sketching/doodling are all crucial in the development of any intellectual project.  The unfortunate thing about handwriting is that it's analog.  There are technology projects currently out there that collect handwriting on a whiteboard to save its image state, which is awesome to share what someone writes down.  This, however, only produces static/non-editable data. (there’s also Smartboard technologies, which, I believe they’re using what they have in the worst way possible...just an extension of the desktop...C’MON!  Plus,  their base model product is around $5000, so if competition comes down to price in the marketplace, well, goodbye Smartboard.  Imagine saving school budgets $3000 minimum per machine...)
 
-...Remember, Blooprint.xyz works with user preferred hardware, so it's the choice of the user who is the preferred hardware manufacturer.
+...Remember, Blooprint.xyz works with user-preferred hardware, so it's the choice of the user who is the preferred hardware manufacturer.
 
 By the way: VOTE IN YOUR SPECIAL DISTRICTS -> and as for one of them, get rid of useless spending in your public school districts!
 
