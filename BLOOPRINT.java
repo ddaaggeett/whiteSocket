@@ -97,7 +97,6 @@ public class BLOOPRINT extends JFrame {
 	public static String win_newTextImageFileName = 	win_sketchDir+"newText.jpg";
 	public static String win_sketchImageFileName = 		win_sketchDir+"sketch.jpg";
 
-	public static String system_os = "";
 	
 	
 	public static BLOOPRINT blooprint;//the current BLOOPRINT object on whiteboard
@@ -125,45 +124,52 @@ public class BLOOPRINT extends JFrame {
 	public static void main(String[] args) throws IOException {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
+				
+				
 				try {
-					
-					
-					
-					system_os = System.getProperty("os.name").toLowerCase();
-					//	TODO: check what unix system would be as a string description
-						
-					
-					/*
-					 * BLOOPRINT.XYZ: program start
-					 * */
-					
-					/**	
-					 * TODO:
-					 * 'blooprint.xyz'.'_calibration' table needs to be created upon program installation
-					 * last calibration used for this station
-					 * 
-					 * need to have at least one calibration data set in table for now
-					 * */
-					Calibration.loadCalibration();
-					
-					blooprint = new BLOOPRINT();	//	whiteboard display object
-					
-					blooprint.setExtendedState(JFrame.MAXIMIZED_BOTH);
-					
-					blooprint.setKeyControls();
-					projectorDisplay(blooprint);
-					blooprint.setVisible(true);
-					
-					//	Thread: prompt user to request help
-					new OfferHelpThread();
-					
-					//	blooprint always needs focus for key listening
-					blooprint.requestFocus();
-					
+					System.out.println("hello fuckers");
+					BLOOP.captureSketch_WIN();
+					System.out.println("hello fuckers");
 					
 				} catch (Exception e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
+				
+//				try {
+//					
+//					/*
+//					 * BLOOPRINT.XYZ: program start
+//					 * */
+//					
+//					/**	
+//					 * TODO:
+//					 * 'blooprint.xyz'.'_calibration' table needs to be created upon program installation
+//					 * last calibration used for this station
+//					 * 
+//					 * need to have at least one calibration data set in table for now
+//					 * */
+//					Calibration.loadCalibration();
+//					
+//					blooprint = new BLOOPRINT();	//	whiteboard display object
+//					
+//					blooprint.setExtendedState(JFrame.MAXIMIZED_BOTH);
+//					
+//					blooprint.setKeyControls();
+//					projectorDisplay(blooprint);
+//					blooprint.setVisible(true);
+//					
+//					//	Thread: prompt user to request help
+//					new OfferHelpThread();
+//					
+//					//	blooprint always needs focus for key listening
+//					blooprint.requestFocus();
+//					
+//					
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
 			}
 		});
 	}

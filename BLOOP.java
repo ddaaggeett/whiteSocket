@@ -20,14 +20,13 @@
 package xyz.blooprint;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.Timestamp;
-import java.util.Calendar;
+import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -504,7 +503,6 @@ public class BLOOP extends BLOOPRINT{
 		}
 		return false;
 	}//END isMarker()
-
 	
 	/**
 	 * pulls sketch from BLOOPRINT.sketchDir
@@ -514,7 +512,6 @@ public class BLOOP extends BLOOPRINT{
 		BufferedImage img = ImageIO.read(newSketchFile);
 		return img;
 	}//END getSketch()
-
 	
 	/**
 	 * checks file name and loops until differs from last file name
@@ -524,6 +521,9 @@ public class BLOOP extends BLOOPRINT{
 		File lastSketchFile = getLastFile(dir);
 		File newFile = null;
 		
+		
+		//	TODO: check what unix system would be as a string description
+		String system_os = System.getProperty("os.name").toLowerCase();
 		if(system_os.contains("windows")){
 			captureSketch_WIN();
 		}
@@ -565,6 +565,7 @@ public class BLOOP extends BLOOPRINT{
 	 * run python script to ADB android camera capture and return JPEG image to Blooprint.sketchDir
 	 * */
 	private void captureSketch_LINUX() throws Exception {
+		
 		String[] cmds = { "/bin/bash", "-c", "python3 "+sourceDir+"capture.py " };
 		ProcessBuilder pb = new ProcessBuilder(cmds);
 		Process p = pb.start();
@@ -574,21 +575,47 @@ public class BLOOP extends BLOOPRINT{
 		    System.out.println (line);
 		}
 		p.waitFor(); // causes the current thread to wait, if necessary, until the process represented Calibration.by this Process object has terminated
-		Timestamp time = new Timestamp(Calendar.getInstance().getTime().getTime());
-//		System.out.println("back into java\t-> " + time);//proof java code waits for script to end
+		
 	}//END captureSketch_LINUX()
 	
 	/**
 	 * run python script to ADB android camera capture and return JPEG image to Blooprint.sketchDir
 	 * */
-	private void captureSketch_WIN() throws Exception {
-		
-		Process p = Runtime.getRuntime().exec("cmd.exe /c python "+win_sourceDir+"capture_win.py");
+	public static void captureSketch_WIN() throws Exception {
 		
 		
+		 ProcessBuilder builder = new ProcessBuilder(
+		            "cmd.exe", "/c", "python "+win_sourceDir+"capture_win.py");
+		        builder.redirectErrorStream(true);
+		        Process p = builder.start();
+		        BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		        String line;
+		        while ((line = reader.readLine ()) != null) {
+				    System.out.println (line);
+				}
+				p.waitFor(); // causes the current thread to wait, if necessary, until the process represented Calibration.by this Process object has terminated
 		
 		
-//		String[] cmds = { "/bin/bash", "-c", "python3 "+sourceDir+"capture.py " };
+//		try {
+//		    // Execute command
+//		    String command = "cmd /c start cmd.exe python";
+//		    Process child = Runtime.getRuntime().exec(command);
+//
+//		    // Get output stream to write from it
+//		    OutputStream out = child.getOutputStream();
+//
+//		    out.write("cd C:/ /r/n".getBytes());
+//		    out.flush();
+//		    out.write("dir /r/n".getBytes());
+//		    out.close();
+//		} catch (IOException e) {
+//		}
+//		
+//		
+//		
+////		Runtime.getRuntime().exec("cmd.exe /C python "+win_sourceDir+"capture_win.py");
+//		
+//		String[] cmds = { "cmd.exe", "/c", "python "+win_sourceDir+"capture_win.py " };
 //		ProcessBuilder pb = new ProcessBuilder(cmds);
 //		Process p = pb.start();
 //		BufferedReader reader = new BufferedReader (new InputStreamReader(p.getInputStream()));
@@ -597,8 +624,6 @@ public class BLOOP extends BLOOPRINT{
 //		    System.out.println (line);
 //		}
 //		p.waitFor(); // causes the current thread to wait, if necessary, until the process represented Calibration.by this Process object has terminated
-		
-		
 		
 		
 		
