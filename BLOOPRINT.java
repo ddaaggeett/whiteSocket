@@ -55,6 +55,7 @@ import java.util.Queue;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.security.auth.Subject;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.InputMap;
@@ -90,7 +91,7 @@ public class BLOOPRINT extends JFrame {
 	
 	//	WINDOWS SYSTEM
 	public static String win_homeDirectory = 			"C:/Users/david_000/coding/Blooprint.xyz/";
-	public static String win_sourceDir = 				"C:/Users/david_000/coding/Blooprint.xyz/src/xyz/blooprint/";
+	public static String win_sourceDir =				"C:/Users/david_000/coding/Blooprint.xyz/src/xyz/blooprint/";
 	public static String win_sketchDir = 				win_homeDirectory+"in/";
 	public static String win_blankImageFileName = 		win_homeDirectory+"blank.jpg";
 	public static String win_rawCornersImageFileName = 	win_sketchDir+"rawCorners.jpg";
@@ -127,15 +128,16 @@ public class BLOOPRINT extends JFrame {
 				
 				
 				try {
-					System.out.println("hello fuckers");
-					BLOOP.captureSketch_WIN();
-					System.out.println("hello fuckers");
 					
-				} catch (Exception e) {
+					subscript();
+					
+//					String cmds = "cd "+win_sourceDir+" && python capture_win.py";
+//					command(cmds);
+				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+						
 				
 //				try {
 //					
@@ -1023,42 +1025,123 @@ public class BLOOPRINT extends JFrame {
 		
 		
 	}
+
+	/**
+	 * run CPU capture to ADB android camera capture and return JPEG image to Blooprint.sketchDir
+	 * */
+	public static void capture() throws Exception {
+		
+		
+		String system_os = System.getProperty("os.name").toLowerCase();
+		
+		if(system_os.contains("windows")){
+			
+			
+//			subscript();
+			
+			
+//			String cmds = "python "+win_sourceDir+"capture_win.py";
+			String cmds = "cd "+win_sourceDir+" && python capture_win.py";
+			command(cmds);
+			
+		}
+		else{
+			
+			String cmds = "python3 "+sourceDir+"capture.py";
+			command(cmds);
+		}
+			
+	}//END capture()
+
+	/**
+	 * procedure to capture and return photo over ADB
+	 * */
+	private static void subscript() throws IOException {
+
+		command("adb shell rm /sdcard/DCIM/Camera/*");
+
+		System.out.println("dir contains what?................");
+		String before = command("adb shell ls /sdcard/dcim/camera/");
+		System.out.println("shooting camera..................");
+		command("adb shell input keyevent 66");
+		System.out.println("adb pull...................");
+		
+		
+		boolean flag = true;
+		while(flag){
+			
+			String after = command("adb shell ls /sdcard/DCIM/Camera/");
+			if(after != before){
+				command("adb pull /sdcard/DCIM/Camera C:/Users/david_000/coding/Blooprint.xyz/in/"+System.currentTimeMillis());
+				flag = false;
+			}
+			
+		}
+
+	}//END subscript()
+
+	/**
+	 * sets the shell commands according to the operating system used
+	 * */
+	public static String[] prepCmds(String cmd){
+		
+		String system_os = System.getProperty("os.name").toLowerCase();
+		
+		if(system_os.contains("windows")){
+			
+			String[] some = {"cmd.exe","/c", cmd};
+			return some;
+			
+		}
+		
+		else{
+			String[] some = {"/bin/bash","-c", cmd};
+			return some;
+		}
+			
+	}//END prepCmds()
+	
+	/**
+	 * method for running custom command
+	 * */
+	public static String command(String cmd) throws IOException{
+		
+		Runtime rt = Runtime.getRuntime();
+		String[] commands = prepCmds(cmd);
+		Process proc = rt.exec(commands);
+
+		BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+		BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+		
+		// read the output from the command
+		String s = null;
+		String some = null;
+		
+		int count = 0;
+		
+		while ((s = stdInput.readLine()) != null) {
+		    System.out.println(s);
+		    if(count == 0){
+		    	some = s;
+		    }
+		    count++;
+		}
+		
+		// read any errors from the attempted command
+		System.out.println("Here is the standard error of the command (if any):\n");
+		while ((s = stdError.readLine()) != null) {
+		    System.out.println(s);
+		}
+		
+		
+
+		return some;
+		
+	}//END command()
+
+
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

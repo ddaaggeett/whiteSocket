@@ -521,15 +521,7 @@ public class BLOOP extends BLOOPRINT{
 		File lastSketchFile = getLastFile(dir);
 		File newFile = null;
 		
-		
-		//	TODO: check what unix system would be as a string description
-		String system_os = System.getProperty("os.name").toLowerCase();
-		if(system_os.contains("windows")){
-			captureSketch_WIN();
-		}
-		else{
-			captureSketch_LINUX();
-		}
+		capture();
 		
 		boolean flag = true;
 		while(flag){
@@ -539,6 +531,7 @@ public class BLOOP extends BLOOPRINT{
 			}
 		}
 		return newFile;
+		
 	}//END gatherNewestFile()
 
 	/**
@@ -559,76 +552,9 @@ public class BLOOP extends BLOOPRINT{
 	       }
 	    }
 	    return lastModifiedFile;
-	}//END getLastFile()
-
-	/**
-	 * run python script to ADB android camera capture and return JPEG image to Blooprint.sketchDir
-	 * */
-	private void captureSketch_LINUX() throws Exception {
-		
-		String[] cmds = { "/bin/bash", "-c", "python3 "+sourceDir+"capture.py " };
-		ProcessBuilder pb = new ProcessBuilder(cmds);
-		Process p = pb.start();
-		BufferedReader reader = new BufferedReader (new InputStreamReader(p.getInputStream()));
-		String line;
-		while ((line = reader.readLine ()) != null) {
-		    System.out.println (line);
-		}
-		p.waitFor(); // causes the current thread to wait, if necessary, until the process represented Calibration.by this Process object has terminated
-		
-	}//END captureSketch_LINUX()
+	    
+	}//END getLastFile()	
 	
-	/**
-	 * run python script to ADB android camera capture and return JPEG image to Blooprint.sketchDir
-	 * */
-	public static void captureSketch_WIN() throws Exception {
-		
-		
-		 ProcessBuilder builder = new ProcessBuilder(
-		            "cmd.exe", "/c", "python "+win_sourceDir+"capture_win.py");
-		        builder.redirectErrorStream(true);
-		        Process p = builder.start();
-		        BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
-		        String line;
-		        while ((line = reader.readLine ()) != null) {
-				    System.out.println (line);
-				}
-				p.waitFor(); // causes the current thread to wait, if necessary, until the process represented Calibration.by this Process object has terminated
-		
-		
-//		try {
-//		    // Execute command
-//		    String command = "cmd /c start cmd.exe python";
-//		    Process child = Runtime.getRuntime().exec(command);
-//
-//		    // Get output stream to write from it
-//		    OutputStream out = child.getOutputStream();
-//
-//		    out.write("cd C:/ /r/n".getBytes());
-//		    out.flush();
-//		    out.write("dir /r/n".getBytes());
-//		    out.close();
-//		} catch (IOException e) {
-//		}
-//		
-//		
-//		
-////		Runtime.getRuntime().exec("cmd.exe /C python "+win_sourceDir+"capture_win.py");
-//		
-//		String[] cmds = { "cmd.exe", "/c", "python "+win_sourceDir+"capture_win.py " };
-//		ProcessBuilder pb = new ProcessBuilder(cmds);
-//		Process p = pb.start();
-//		BufferedReader reader = new BufferedReader (new InputStreamReader(p.getInputStream()));
-//		String line;
-//		while ((line = reader.readLine ()) != null) {
-//		    System.out.println (line);
-//		}
-//		p.waitFor(); // causes the current thread to wait, if necessary, until the process represented Calibration.by this Process object has terminated
-		
-		
-		
-		
-	}//END captureSketch_WIN()
 	
 	
 	
