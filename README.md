@@ -104,7 +104,7 @@ I’d rather the world flourish with this new technology and have it profit from
 Want to be happy?  Make the world around you better.
 ____________________________________________________________________________
 
-New development deams, start your engines!  University is the perfect test market for the entire Blooprint.xyz  project...from development to testing its functionality in society.
+New development teams, start your engines!  University is the perfect test market for the entire Blooprint.xyz  project...from development to testing its functionality in society.
 ____________________________________________________________________________
 
 Foreseeable applications:
