@@ -105,6 +105,8 @@ Want to be happy?  Make the world around you better.
 ____________________________________________________________________________
 
 New development deams, start your engines!  University is the perfect test market for the entire Blooprint.xyz  project...from development to testing its functionality in society.
+____________________________________________________________________________
 
 Foreseeable applications:
-education\neducation
+
+EDUCATION - either public settings or private/more individual (autodidact) approach - Public education can place 4 students per machine's hardware setup at one time.  That's MAX $500/student for however long a projector lasts, of which it's usually the lamp that goes anyways -> cheap replacement.  Marker will be greatest cost to user.
