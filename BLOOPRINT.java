@@ -1057,26 +1057,59 @@ public class BLOOPRINT extends JFrame {
 	 * procedure to capture and return photo over ADB
 	 * */
 	private static void subscript() throws IOException {
-
-		command("adb shell rm /sdcard/DCIM/Camera/*");
-
-		System.out.println("dir contains what?................");
-		String before = command("adb shell ls /sdcard/dcim/camera/");
-		System.out.println("shooting camera..................");
-		command("adb shell input keyevent 66");
-		System.out.println("adb pull...................");
+		
+		/**
+		 * TODO: need way to check directory for changes made
+		 * 
+		 * figured it out.
+		 * need to use this
+		 * https://docs.oracle.com/javase/tutorial/essential/io/notification.html
+		 * */
+		
+		Long time = System.currentTimeMillis();
+		String timeString = time.toString();
+		
+//		String before = command("adb shell ls");
+		command("adb shell keyevent 66");
 		
 		
-		boolean flag = true;
-		while(flag){
-			
-			String after = command("adb shell ls /sdcard/DCIM/Camera/");
-			if(after != before){
-				command("adb pull /sdcard/DCIM/Camera C:/Users/david_000/coding/Blooprint.xyz/in/"+System.currentTimeMillis());
-				flag = false;
-			}
-			
-		}
+		//	then in windows /in/tmp/ folder copy and rename to /in/ folder
+		
+		
+		command("adb pull /sdcard/DCIM/Camera/ C:/Users/david_000/coding/Blooprint.xyz/in/tmp/");
+		
+		
+		command("copy C:/Users/david_000/coding/Blooprint.xyz/in/tmp/*.jpg C:/Users/david_000/coding/Blooprint.xyz/in/"+timeString+".jpg");
+		
+		
+		
+//		command("adb shell mkdir /sdcard/tmp");
+//		
+//
+//		/**
+//		 * 
+//		 * */
+//		command("adb shell rm /sdcard/DCIM/Camera/*");
+//
+//		
+//
+//		System.out.println("dir contains what?................");
+//		String before = command("adb shell ls /sdcard/dcim/camera/");
+//		
+//		System.out.println("shooting camera..................");
+//		command("adb shell input keyevent 66");
+//		
+//		System.out.println("adb pull...................");
+//		boolean flag = true;
+//		while(flag){
+//			
+//			String after = command("adb shell ls /sdcard/DCIM/Camera/");
+//			if(after != before){
+//				command("adb pull /sdcard/DCIM/Camera C:/Users/david_000/coding/Blooprint.xyz/in/tmp/");
+//				flag = false;
+//			}
+//			
+//		}
 
 	}//END subscript()
 
@@ -1089,11 +1122,16 @@ public class BLOOPRINT extends JFrame {
 		
 		if(system_os.contains("windows")){
 			
-			String[] some = {"cmd.exe","/c", cmd};
+//			String[] some = {"cmd.exe","/c", cmd};
+			String[] some = {"powershell.exe","/c", cmd};// using PowerShell here
 			return some;
 			
 		}
 		
+		/**
+		 * we're taking advantage of the PowerShell offered in windows so that we don't have to alter any from linux
+		 * Linux > Windows* > MacOSX ;)
+		 * */
 		else{
 			String[] some = {"/bin/bash","-c", cmd};
 			return some;
@@ -1127,11 +1165,11 @@ public class BLOOPRINT extends JFrame {
 		    count++;
 		}
 		
-		// read any errors from the attempted command
-		System.out.println("Here is the standard error of the command (if any):\n");
-		while ((s = stdError.readLine()) != null) {
-		    System.out.println(s);
-		}
+//		// read any errors from the attempted command
+//		System.out.println("Here is the standard error of the command (if any):\n");
+//		while ((s = stdError.readLine()) != null) {
+//		    System.out.println(s);
+//		}
 		
 		
 
