@@ -1,5 +1,5 @@
 # BLOOPRINT.XYZ
-commoditizing hand-written design
+commoditizing hand-written design - world's most reliable think tank
 
 Creator:	DAVE DAGGETT, EIT - BLOOPRINT, LLC
 
