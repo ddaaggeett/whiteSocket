@@ -105,3 +105,6 @@ Want to be happy?  Make the world around you better.
 ____________________________________________________________________________
 
 New development deams, start your engines!  University is the perfect test market for the entire Blooprint.xyz  project...from development to testing its functionality in society.
+
+Foreseeable applications:
+education\neducation
