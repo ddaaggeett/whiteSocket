@@ -562,59 +562,142 @@ public class BLOOP extends BLOOPRINT{
 	 * */
 //	public static List<String> cmd_ReturnLines = new ArrayList<String>();
 	
-	public static void capture() throws Exception {
+	public static class Capture implements Runnable{
 		
-		/**
-		 * TODO:
-		 * 
-		 * */
-		Long time = System.currentTimeMillis();
-		String fileString = time.toString();
-		System.out.println("fileString = "+fileString);
+		Thread captureThread;
+
+		@Override
+		public void run() {
+			try {
+				captureAction();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
-		List<String> some = command("adb shell ls /sdcard/dcim/camera/");
-		int before = some.size();
+		public void emptyCamera() throws IOException{
+			System.out.println("emptying the camera folder on android device..........");
+			command("adb shell rm /sdcard/dcim/camera/");
+		}
 		
-		boolean flag = true;
-		while(flag){
-			some = new ArrayList<String>();
-			some = command("adb shell ls /sdcard/dcim/camera/");
+		private void captureAction() throws IOException {
 			
-			if(some.size() != before){
+			/**
+			 * TODO:
+			 * 
+			 * */
+			Long time = System.currentTimeMillis();
+			String fileString = time.toString();
+			System.out.println("fileString = "+fileString);
+			
+			List<String> some = command("adb shell ls /sdcard/dcim/camera/");
+			int before = some.size();
+			System.out.println("before\t=\t"+before);
+			
+			command("adb shell input keyevent 66");
+			
+			boolean flag = true;
+			while(flag){
+				some = new ArrayList<String>();
+				some = command("adb shell ls /sdcard/dcim/camera/");
 				
-				File oldName = new File(win_sketchDir+"tmp/*.jpg");
-				File newName = new File(win_sketchDir+fileString+".jpg");
+				int after = some.size();
 				
-				if(oldName.renameTo(newName)) {
-					System.out.println("RENAMED AND TRANSFERRED");
-				}
-				else{
-					System.out.println("Error");
+				if(some.size() != before){
+					
+					System.out.println("after\t=\t"+after);
+					command("adb pull /sdcard/dcim/camera/ "+win_tmpDir);
+					
+//					this.notifyAll();
+					
+					flag = false;
+//					File oldName = new File(win_sketchDir+"tmp/*.jpg");
+//					File newName = new File(win_sketchDir+fileString+".jpg");
+//					
+//					if(oldName.renameTo(newName)) {
+//						System.out.println("RENAMED AND TRANSFERRED");
+//					}
+//					else{
+//						System.out.println("Error");
+//					}
+					
 				}
 				
 			}
 			
 		}
-		
-		
-		String system_os = System.getProperty("os.name").toUpperCase();
-		
-		if(system_os.contains("WIN")){
-			
-			
-//			subscript();
-			
-			
-//			String cmds = "python "+win_sourceDir+"capture_win.py";
-			String cmds = "cd "+win_sourceDir+" && python capture_win.py";
-			command(cmds);
-			
+
+		public Capture(){
+			captureThread = new Thread(this);
+			captureThread.start();
 		}
-		else{
-			
-			String cmds = "python3 "+sourceDir+"capture.py";
-			command(cmds);
-		}
+		
+		
+		
+	}
+	
+	public static void capture() throws Exception {
+		
+//		/**
+//		 * TODO:
+//		 * 
+//		 * */
+//		Long time = System.currentTimeMillis();
+//		String fileString = time.toString();
+//		System.out.println("fileString = "+fileString);
+//		
+//		List<String> some = command("adb shell ls /sdcard/dcim/camera/");
+//		int before = some.size();
+//		System.out.println("before\t=\t"+before);
+//		
+//		command("adb shell input keyevent 66");
+//		
+//		boolean flag = true;
+//		while(flag){
+//			some = new ArrayList<String>();
+//			some = command("adb shell ls /sdcard/dcim/camera/");
+//			
+//			int after = some.size();
+//			
+//			if(some.size() != before){
+//				
+//				System.out.println("after\t=\t"+after);
+//				command("adb pull /sdcard/dcim/camera/ "+win_tmpDir);
+//				flag = false;
+////				File oldName = new File(win_sketchDir+"tmp/*.jpg");
+////				File newName = new File(win_sketchDir+fileString+".jpg");
+////				
+////				if(oldName.renameTo(newName)) {
+////					System.out.println("RENAMED AND TRANSFERRED");
+////				}
+////				else{
+////					System.out.println("Error");
+////				}
+//				
+//			}
+//			
+//		}
+//		
+		
+//		String system_os = System.getProperty("os.name").toUpperCase();
+//		
+//		if(system_os.contains("WIN")){
+//			
+//			
+////			subscript();
+//			
+//			
+////			String cmds = "python "+win_sourceDir+"capture_win.py";
+//			String cmds = "cd "+win_sourceDir+" && python capture_win.py";
+//			command(cmds);
+//			
+//		}
+//		else{
+//			
+//			String cmds = "python3 "+sourceDir+"capture.py";
+//			command(cmds);
+//		}
 			
 	}//END capture()
 

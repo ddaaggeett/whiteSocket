@@ -66,6 +66,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
+import xyz.blooprint.BLOOP.Capture;
+
 /**
  * 
  * */
@@ -89,6 +91,7 @@ public class BLOOPRINT extends JFrame {
 	public static String win_homeDirectory = 			"C:/Users/david_000/coding/Blooprint.xyz/";
 	public static String win_sourceDir =				win_homeDirectory+"src/xyz/blooprint/";
 	public static String win_sketchDir = 				win_sourceDir+"in/";
+	public static String win_tmpDir = 					win_sketchDir+"tmp/";
 	public static String win_blankImageFileName = 		win_homeDirectory+"blank.jpg";
 	public static String win_rawCornersImageFileName = 	win_sketchDir+"rawCorners.jpg";
 	public static String win_newTextImageFileName = 	win_sketchDir+"newText.jpg";
@@ -125,7 +128,15 @@ public class BLOOPRINT extends JFrame {
 				
 				try {
 
-					BLOOP.capture();
+					Capture capture = new Capture();
+					capture.captureThread.join();
+					/**
+					 * as you can see, I'm just learning how to use threads
+					 * */
+
+					System.out.println("got here back to the main thread");
+					
+					capture.emptyCamera();
 					
 //					command("adb shell keyevent 66");
 //					
@@ -135,9 +146,6 @@ public class BLOOPRINT extends JFrame {
 				
 				
 				
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -1015,7 +1023,6 @@ public class BLOOPRINT extends JFrame {
 			
 	}//END prepCmds()
 	
-	
 	/**
 	 * method for running custom command
 	 * */
@@ -1036,7 +1043,7 @@ public class BLOOPRINT extends JFrame {
 		while ((line = stdInput.readLine()) != null) {
 		    
 			some.add(line);
-			System.out.println(line);
+//			System.out.println(line);
 		    
 		}
 		
@@ -1057,7 +1064,7 @@ public class BLOOPRINT extends JFrame {
 	public static class FileTrigger implements Runnable{
 		
 		Thread watchThread;
-		Path directory = Paths.get(win_sketchDir+"tmp");
+		Path directory = Paths.get(win_tmpDir);
 		
 		@Override
 		public void run() {
