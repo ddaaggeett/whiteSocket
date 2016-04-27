@@ -27,7 +27,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import javax.imageio.ImageIO;
@@ -555,6 +557,67 @@ public class BLOOP extends BLOOPRINT{
 	    
 	}//END getLastFile()	
 	
+	/**
+	 * run CPU capture to ADB android camera capture and return JPEG image to Blooprint.sketchDir
+	 * */
+//	public static List<String> cmd_ReturnLines = new ArrayList<String>();
+	
+	public static void capture() throws Exception {
+		
+		/**
+		 * TODO:
+		 * 
+		 * */
+		Long time = System.currentTimeMillis();
+		String fileString = time.toString();
+		System.out.println("fileString = "+fileString);
+		
+		List<String> some = command("adb shell ls /sdcard/dcim/camera/");
+		int before = some.size();
+		
+		boolean flag = true;
+		while(flag){
+			some = new ArrayList<String>();
+			some = command("adb shell ls /sdcard/dcim/camera/");
+			
+			if(some.size() != before){
+				
+				File oldName = new File(win_sketchDir+"tmp/*.jpg");
+				File newName = new File(win_sketchDir+fileString+".jpg");
+				
+				if(oldName.renameTo(newName)) {
+					System.out.println("RENAMED AND TRANSFERRED");
+				}
+				else{
+					System.out.println("Error");
+				}
+				
+			}
+			
+		}
+		
+		
+		String system_os = System.getProperty("os.name").toUpperCase();
+		
+		if(system_os.contains("WIN")){
+			
+			
+//			subscript();
+			
+			
+//			String cmds = "python "+win_sourceDir+"capture_win.py";
+			String cmds = "cd "+win_sourceDir+" && python capture_win.py";
+			command(cmds);
+			
+		}
+		else{
+			
+			String cmds = "python3 "+sourceDir+"capture.py";
+			command(cmds);
+		}
+			
+	}//END capture()
+
 	
 	
 	

@@ -21,14 +21,11 @@ package xyz.blooprint;
 
 import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -41,21 +38,22 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.security.auth.Subject;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.InputMap;
@@ -63,12 +61,10 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.SwingWorker;
-import javax.swing.border.Border;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 
 /**
  * 
@@ -91,8 +87,8 @@ public class BLOOPRINT extends JFrame {
 	
 	//	WINDOWS SYSTEM
 	public static String win_homeDirectory = 			"C:/Users/david_000/coding/Blooprint.xyz/";
-	public static String win_sourceDir =				"C:/Users/david_000/coding/Blooprint.xyz/src/xyz/blooprint/";
-	public static String win_sketchDir = 				win_homeDirectory+"in/";
+	public static String win_sourceDir =				win_homeDirectory+"src/xyz/blooprint/";
+	public static String win_sketchDir = 				win_sourceDir+"in/";
 	public static String win_blankImageFileName = 		win_homeDirectory+"blank.jpg";
 	public static String win_rawCornersImageFileName = 	win_sketchDir+"rawCorners.jpg";
 	public static String win_newTextImageFileName = 	win_sketchDir+"newText.jpg";
@@ -128,16 +124,24 @@ public class BLOOPRINT extends JFrame {
 				
 				
 				try {
+
+					BLOOP.capture();
 					
-					subscript();
-					
-//					String cmds = "cd "+win_sourceDir+" && python capture_win.py";
-//					command(cmds);
+//					command("adb shell keyevent 66");
+//					
+//					FileTrigger some = new FileTrigger();
+//					some.watchThread.join();
+//					System.out.println("join worked!");
+				
+				
+				
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-						
 				
 //				try {
 //					
@@ -968,6 +972,138 @@ public class BLOOPRINT extends JFrame {
 	}
 	
 	/**
+	 * progress of every bloop action
+	 * start:	bloop action -> ctrl + ENTER
+	 * end:		BLOOPRINT.displayImagePanel.imageOUT display
+	 * */
+	public static class bloopProgress implements Runnable {
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		
+		
+		
+	}
+
+	/**
+	 * sets the shell commands according to the operating system used
+	 * */
+	public static String[] prepCmds(String cmd){
+		
+		String system_os = System.getProperty("os.name").toLowerCase();
+		
+		if(system_os.contains("windows")){
+			
+//			String[] some = {"cmd.exe","/c", cmd};
+			String[] some = {"powershell.exe","/c", cmd};// using PowerShell here
+			return some;
+			
+		}
+		
+		/**
+		 * we're taking advantage of the PowerShell offered in windows so that we don't have to alter any from linux
+		 * Linux > Windows* > MacOSX ;)
+		 * */
+		else{
+			String[] some = {"/bin/bash","-c", cmd};
+			return some;
+		}
+			
+	}//END prepCmds()
+	
+	
+	/**
+	 * method for running custom command
+	 * */
+	public static List<String> command(String cmd) throws IOException{
+		
+		List<String> some = new ArrayList<String>();
+		
+		Runtime rt = Runtime.getRuntime();
+		String[] commands = prepCmds(cmd);
+		Process proc = rt.exec(commands);
+
+		BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+		BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+		
+		// read the output from the command
+		String line = null;
+		
+		while ((line = stdInput.readLine()) != null) {
+		    
+			some.add(line);
+			System.out.println(line);
+		    
+		}
+		
+//		// read any errors from the attempted command
+//		System.out.println("Here is the standard error of the command (if any):\n");
+//		while ((s = stdError.readLine()) != null) {
+//		    System.out.println(s);
+//		}
+		
+		return some;
+
+	}//END command()
+
+	/**
+	 * FileTrigger class is used for checking when a file is transferred to specific file
+	 * used to  
+	 * */
+	public static class FileTrigger implements Runnable{
+		
+		Thread watchThread;
+		Path directory = Paths.get(win_sketchDir+"tmp");
+		
+		@Override
+		public void run() {
+			
+			System.out.println("checking for file change..........");
+			
+			// TODO Auto-generated method stub
+			try {
+				checkChange();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		public FileTrigger(){
+			watchThread = new Thread(this);
+			watchThread.start();
+		}
+		
+		private void checkChange() throws IOException{
+			
+			WatchService watchService = FileSystems.getDefault().newWatchService();
+			WatchKey watchKey = directory.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
+			
+			boolean flag = true;
+			while(flag){
+				for(WatchEvent<?> event : watchKey.pollEvents()){
+					System.out.println(event.kind());
+					
+					String some = event.kind().toString();
+					if(some.toUpperCase() == "ENTRY_CREATE"){
+						
+						
+						flag = false;
+					}
+				}
+			}
+			
+			
+			
+		}//END checkChange() method
+		
+	}//END FileTrigger class
+	
+	/**
 	 * thread for running timed text display prompting user to open, create new, ask for help
 	 * */
 	public static class OfferHelpThread implements Runnable{
@@ -1008,176 +1144,7 @@ public class BLOOPRINT extends JFrame {
 		
 	}//END OfferHelpThread class
 	
-	/**
-	 * progress of every bloop action
-	 * start:	bloop action -> ctrl + ENTER
-	 * end:		BLOOPRINT.displayImagePanel.imageOUT display
-	 * */
-	public static class bloopProgress implements Runnable {
-
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		
-		
-		
-	}
-
-	/**
-	 * run CPU capture to ADB android camera capture and return JPEG image to Blooprint.sketchDir
-	 * */
-	public static void capture() throws Exception {
-		
-		
-		String system_os = System.getProperty("os.name").toLowerCase();
-		
-		if(system_os.contains("windows")){
-			
-			
-//			subscript();
-			
-			
-//			String cmds = "python "+win_sourceDir+"capture_win.py";
-			String cmds = "cd "+win_sourceDir+" && python capture_win.py";
-			command(cmds);
-			
-		}
-		else{
-			
-			String cmds = "python3 "+sourceDir+"capture.py";
-			command(cmds);
-		}
-			
-	}//END capture()
-
-	/**
-	 * procedure to capture and return photo over ADB
-	 * */
-	private static void subscript() throws IOException {
-		
-		/**
-		 * TODO: need way to check directory for changes made
-		 * 
-		 * figured it out.
-		 * need to use this
-		 * https://docs.oracle.com/javase/tutorial/essential/io/notification.html
-		 * */
-		
-		Long time = System.currentTimeMillis();
-		String timeString = time.toString();
-		
-//		String before = command("adb shell ls");
-		command("adb shell keyevent 66");
-		
-		
-		//	then in windows /in/tmp/ folder copy and rename to /in/ folder
-		
-		
-		command("adb pull /sdcard/DCIM/Camera/ C:/Users/david_000/coding/Blooprint.xyz/in/tmp/");
-		
-		
-		command("copy C:/Users/david_000/coding/Blooprint.xyz/in/tmp/*.jpg C:/Users/david_000/coding/Blooprint.xyz/in/"+timeString+".jpg");
-		
-		
-		
-//		command("adb shell mkdir /sdcard/tmp");
-//		
-//
-//		/**
-//		 * 
-//		 * */
-//		command("adb shell rm /sdcard/DCIM/Camera/*");
-//
-//		
-//
-//		System.out.println("dir contains what?................");
-//		String before = command("adb shell ls /sdcard/dcim/camera/");
-//		
-//		System.out.println("shooting camera..................");
-//		command("adb shell input keyevent 66");
-//		
-//		System.out.println("adb pull...................");
-//		boolean flag = true;
-//		while(flag){
-//			
-//			String after = command("adb shell ls /sdcard/DCIM/Camera/");
-//			if(after != before){
-//				command("adb pull /sdcard/DCIM/Camera C:/Users/david_000/coding/Blooprint.xyz/in/tmp/");
-//				flag = false;
-//			}
-//			
-//		}
-
-	}//END subscript()
-
-	/**
-	 * sets the shell commands according to the operating system used
-	 * */
-	public static String[] prepCmds(String cmd){
-		
-		String system_os = System.getProperty("os.name").toLowerCase();
-		
-		if(system_os.contains("windows")){
-			
-//			String[] some = {"cmd.exe","/c", cmd};
-			String[] some = {"powershell.exe","/c", cmd};// using PowerShell here
-			return some;
-			
-		}
-		
-		/**
-		 * we're taking advantage of the PowerShell offered in windows so that we don't have to alter any from linux
-		 * Linux > Windows* > MacOSX ;)
-		 * */
-		else{
-			String[] some = {"/bin/bash","-c", cmd};
-			return some;
-		}
-			
-	}//END prepCmds()
 	
-	/**
-	 * method for running custom command
-	 * */
-	public static String command(String cmd) throws IOException{
-		
-		Runtime rt = Runtime.getRuntime();
-		String[] commands = prepCmds(cmd);
-		Process proc = rt.exec(commands);
-
-		BufferedReader stdInput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-		BufferedReader stdError = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-		
-		// read the output from the command
-		String s = null;
-		String some = null;
-		
-		int count = 0;
-		
-		while ((s = stdInput.readLine()) != null) {
-		    System.out.println(s);
-		    if(count == 0){
-		    	some = s;
-		    }
-		    count++;
-		}
-		
-//		// read any errors from the attempted command
-//		System.out.println("Here is the standard error of the command (if any):\n");
-//		while ((s = stdError.readLine()) != null) {
-//		    System.out.println(s);
-//		}
-		
-		
-
-		return some;
-		
-	}//END command()
-
-
 
 }
 
