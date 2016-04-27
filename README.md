@@ -109,4 +109,4 @@ ____________________________________________________________________________
 
 Foreseeable applications:
 
-EDUCATION - either public settings or private/more individual (autodidact) approach - Public education can place 4 students per machine's hardware setup at one time.  That's MAX $500/student for however long a projector lasts, of which it's usually the lamp that goes anyways -> cheap replacement.  Marker will be greatest cost to user.
+EDUCATION - either public settings or private/more individual (autodidact) approach - Public education can place 4 students per machine's hardware setup at one time.  That's MAX $500/student for however long a projector lasts, of which it's usually the lamp that goes anyways -> cheap replacement.
