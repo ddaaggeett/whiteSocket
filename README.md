@@ -1,4 +1,4 @@
-# WWW.BLOOPRINT.XYZ
+# www.blooprint.xyz
 commoditizing hand-written design - world's most reliable think tank
 
 Creator:	DAVE DAGGETT, EIT - BLOOPRINT, LLC
