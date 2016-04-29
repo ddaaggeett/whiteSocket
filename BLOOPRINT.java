@@ -127,16 +127,13 @@ public class BLOOPRINT extends JFrame {
 				
 				
 				try {
-
+					
 					Capture capture = new Capture();
 					capture.captureThread.join();
-					/**
-					 * as you can see, I'm just learning how to use threads
-					 * */
-
+					capture.emptyCamera();
+					
 					System.out.println("got here back to the main thread");
 					
-					capture.emptyCamera();
 					
 //					command("adb shell keyevent 66");
 //					

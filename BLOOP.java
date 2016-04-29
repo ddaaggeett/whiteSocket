@@ -609,9 +609,9 @@ public class BLOOP extends BLOOPRINT{
 					System.out.println("after\t=\t"+after);
 					command("adb pull /sdcard/dcim/camera/ "+win_tmpDir);
 					
-//					this.notifyAll();
-					
 					flag = false;
+
+					
 //					File oldName = new File(win_sketchDir+"tmp/*.jpg");
 //					File newName = new File(win_sketchDir+fileString+".jpg");
 //					
@@ -621,6 +621,8 @@ public class BLOOP extends BLOOPRINT{
 //					else{
 //						System.out.println("Error");
 //					}
+					
+					
 					
 				}
 				
@@ -639,46 +641,50 @@ public class BLOOP extends BLOOPRINT{
 	
 	public static void capture() throws Exception {
 		
-//		/**
-//		 * TODO:
-//		 * 
-//		 * */
-//		Long time = System.currentTimeMillis();
-//		String fileString = time.toString();
-//		System.out.println("fileString = "+fileString);
-//		
-//		List<String> some = command("adb shell ls /sdcard/dcim/camera/");
-//		int before = some.size();
-//		System.out.println("before\t=\t"+before);
-//		
-//		command("adb shell input keyevent 66");
-//		
-//		boolean flag = true;
-//		while(flag){
-//			some = new ArrayList<String>();
-//			some = command("adb shell ls /sdcard/dcim/camera/");
-//			
-//			int after = some.size();
-//			
-//			if(some.size() != before){
+		/**
+		 * TODO:
+		 * 
+		 * */
+		Long time = System.currentTimeMillis();
+		String fileString = time.toString();
+		System.out.println("fileString = "+fileString);
+		
+		List<String> some = command("adb shell ls /sdcard/dcim/camera/");
+		int before = some.size();
+		System.out.println("before\t=\t"+before);
+		
+		command("adb shell input keyevent 66");
+		
+		boolean flag = true;
+		while(flag){
+			some = new ArrayList<String>();
+			some = command("adb shell ls /sdcard/dcim/camera/");
+			
+			int after = some.size();
+			
+			if(some.size() != before){
+				
+				System.out.println("after\t=\t"+after);
+				command("adb pull /sdcard/dcim/camera/ "+win_tmpDir);
+				flag = false;
+
+				
+//				File oldName = new File(win_sketchDir+"tmp/*.jpg");
+//				File newName = new File(win_sketchDir+fileString+".jpg");
 //				
-//				System.out.println("after\t=\t"+after);
-//				command("adb pull /sdcard/dcim/camera/ "+win_tmpDir);
-//				flag = false;
-////				File oldName = new File(win_sketchDir+"tmp/*.jpg");
-////				File newName = new File(win_sketchDir+fileString+".jpg");
-////				
-////				if(oldName.renameTo(newName)) {
-////					System.out.println("RENAMED AND TRANSFERRED");
-////				}
-////				else{
-////					System.out.println("Error");
-////				}
-//				
-//			}
-//			
-//		}
-//		
+//				if(oldName.renameTo(newName)) {
+//					System.out.println("RENAMED AND TRANSFERRED");
+//				}
+//				else{
+//					System.out.println("Error");
+//				}
+				
+				
+				
+			}
+			
+		}
+		
 		
 //		String system_os = System.getProperty("os.name").toUpperCase();
 //		
