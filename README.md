@@ -51,7 +51,7 @@ ____________________________________________________________________________
 
 BIG PICTURE:
 
-I'm not interested in personal handheld devices.  I don't see any handheld device with a screen able to retain the full authenticity of a designer's personal work.  This tool is for the individual who generates their best content on paper and would benefit most by it retaining a value of its worth and having the power of netowrking to distribute its use, whatever the designed content may be.
+I'm not interested in personal handheld devices.  I don't see any handheld device with a screen able to retain the full authenticity of a designer's personal work.  This tool is for the individual who generates their best content on paper and would benefit most by it retaining a value of its worth and having the power of netowrking to distribute its use, whatever the designed content may be.  Bear with me, Model 1's prototype is a whole workstation, but there's plenty of room for increasing hardware beauty.
 
 Blooprint.xyz is a new input system generating a database of image data of handwriting/drawing.  Not only does it save the written data -> it makes it EDITABLE.  This editable functionality is the foundation to what we can turn into a handwriting documentation system.  Significance: intellectual property profile maintenance.  Imagine the applications ... :)  I'd like to ultimately use this data for AI applications in handwritten documentation, but we'll cross that bridge...
 
