@@ -20,7 +20,7 @@ to lower the cost of a western education to the cost of a whiteboard marker + in
 
 to employ 1,000,000,000 people.  of course this wouldn't be through Blooprint, LLC, but through whatever organizations that end up using Blooprint as a tool for team members to be relied upon to use and address new operations -> lofty ;)  it can be done...
 
-to create a seamless way to incorporate different types of businesses together.  we want global interaction -> it's not like there's different types of handwriting.
+to create a seamless way to incorporate different types of businesses together.  we want global interaction -> it's not like there's different types of hand-drawing.
 ____________________________________________________________________________
 
 BLOOPRINT.XYZ MODEL 1 DEVELOPED WITH: 
