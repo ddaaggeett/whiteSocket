@@ -109,9 +109,9 @@ EDUCATION - either public settings or private/more individual (autodidact) appro
 
 Intelligent system methods to share design work.  (artificial intelligent systems -> remember, blooprint.xyz is a data collector...and AI exists by crawling data)
 
-New student progression monitor (grading system)
+Student progression monitor (grading system)
 
-New applicant/nominee verification system (are they really worth it?)
+Applicant/nominee verification system (are they really worth it?)
 
 Also: VOTE IN YOUR SPECIAL DISTRICTS -> and as for one of them, get rid of useless spending in your public school districts!  Get rid of your SmartBoard and invest in Blooprint.  Save $3000 per machine MINIMUM!
 
