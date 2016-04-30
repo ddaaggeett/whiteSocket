@@ -10,17 +10,17 @@ ____________________________________________________________________________
 
 GOALS:
 
-to rid the internet and economy of a 'like-based' value system -> see Douglas Rushkoff -> https://www.youtube.com/watch?v=6_n1Dro0Uec
+To set public education execution standards.
 
-to set the standard of intellectual collaboration methods 
+To set the standard of intellectual collaboration methods.
 
-to force open source collaboration across all industry – not just computer software collaboration
+To force open source collaboration across all industry – not just computer software collaboration.
 
-to lower the cost of a western education to the cost of a whiteboard marker + internet access
+To employ 1,000,000,000 people.  of course this wouldn't be through Blooprint, LLC, but through whatever organizations that end up using Blooprint as a tool for team members to be relied upon to use and address new operations -> lofty ;)  it can be done...
 
-to employ 1,000,000,000 people.  of course this wouldn't be through Blooprint, LLC, but through whatever organizations that end up using Blooprint as a tool for team members to be relied upon to use and address new operations -> lofty ;)  it can be done...
+To create a seamless way to incorporate different types of businesses together.  We want global interaction -> it's not like there's different types of hand-drawing.
 
-to create a seamless way to incorporate different types of businesses together.  we want global interaction -> it's not like there's different types of hand-drawing.
+To rid the internet and economy of a 'like-based' value system -> see Douglas Rushkoff -> https://www.youtube.com/watch?v=6_n1Dro0Uec
 ____________________________________________________________________________
 
 BLOOPRINT.XYZ MODEL 1 DEVELOPED WITH: 
