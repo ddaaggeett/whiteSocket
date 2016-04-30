@@ -53,11 +53,7 @@ BIG PICTURE:
 
 I'm not interested in personal handheld devices.  I don't see any handheld device with a screen able to retain the full authenticity of a designer's personal work.  This tool is for the individual who generates their best content on paper and would benefit most by it retaining a value of its worth and having the power of netowrking to distribute its use, whatever the designed content may be.  Bear with me, Model 1's prototype is a whole workstation, but there's plenty of room for increasing hardware beauty.
 
-Blooprint.xyz is a new input system generating a database of image data of handwriting/drawing.  Not only does it save the written data -> it makes it EDITABLE.  This editable functionality is the foundation to what we can turn into a handwriting documentation system.  Significance: intellectual property profile maintenance.  Imagine the applications ... :)  I'd like to ultimately use this data for AI applications in handwritten documentation, but we'll cross that bridge...
-
-Blooprint.xyz works with user-preferred hardware, so it's the choice of the user who may be the preferred hardware manufacturer.
-
-By the way: VOTE IN YOUR SPECIAL DISTRICTS -> and as for one of them, get rid of useless spending in your public school districts!
+Blooprint.xyz is a new input system generating a database of image data of handwriting/drawing.  Not only does it save the written data -> it makes it EDITABLE.  This editable functionality is the foundation to what we can turn into a handwriting documentation system.  Significance: intellectual property profile maintenance.
 
 Pixel manipulation is used to precisely align input image to output orientation.  Projected image and camera capture are not perfectly in line, so the output image needs to account for the transformation from the input image.  See Calibration.java -> Calibration.stretch() demonstrating algebraic functionality of input to output transformation.  More documentation on its derivation to come, but for now, know it just works.  This transformation is what turns the marker on the whiteboard into an exact replicated image but from the perspecive of the projector.  The projector then turns around and simply displays a pure white space plus whatever pixels that have been triggered by the user per their design work.
 
@@ -111,8 +107,13 @@ Foreseeable applications:
 
 EDUCATION - either public settings or private/more individual (autodidact) approach - Public education can place 4 students per machine's hardware setup at one time.  That's MAX $500/student for however long a projector lasts, of which it's usually the lamp that goes anyways -> cheap replacement.
 
+Intelligent system methods to share design work.  (artificial intelligent systems -> remember, blooprint.xyz is a data collector...and AI exists by crawling data)
+
 New student progression monitor (grading system)
 
 New applicant/nominee verification system (are they really worth it?)
+
+Also: VOTE IN YOUR SPECIAL DISTRICTS -> and as for one of them, get rid of useless spending in your public school districts!  Get rid of your SmartBoard and invest in Blooprint.  Save $3000 per machine MINIMUM!
+
 
 
