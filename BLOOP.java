@@ -34,6 +34,8 @@ import java.util.Queue;
 
 import javax.imageio.ImageIO;
 
+import xyz.blooprint.BLOOP.Capture;
+
 
 
 /**
@@ -65,7 +67,14 @@ public class BLOOP extends BLOOPRINT{
     	 * TODO:
     	 * this needs to be used upon projector frame/ALL hardware setup
     	 * */
-    	sketch = getSketch();
+    	
+    	Capture capture = new Capture();
+		capture.captureThread.join();
+		capture.clearCamera();
+		
+		System.out.println("got here back to the main thread");
+		
+    	
     	
     	/**
     	 * new JFrame to allow user to manually calibrate bounds of manipulation activity
@@ -505,63 +514,15 @@ public class BLOOP extends BLOOPRINT{
 		}
 		return false;
 	}//END isMarker()
-	
-	/**
-	 * pulls sketch from BLOOPRINT.sketchDir
-	 * */
-	private BufferedImage getSketch() throws Exception {
-		File newSketchFile = gatherNewestFile(sketchDir);
-		BufferedImage img = ImageIO.read(newSketchFile);
-		return img;
-	}//END getSketch()
-	
-	/**
-	 * checks file name and loops until differs from last file name
-	 * means that new file is certainly added and can be copied
-	 * */
-	private File gatherNewestFile(String dir) throws Exception {
-		File lastSketchFile = getLastFile(dir);
-		File newFile = null;
 		
-		capture();
-		
-		boolean flag = true;
-		while(flag){
-			newFile = getLastFile(dir);
-			if(newFile != lastSketchFile){
-				flag = false;
-			}
-		}
-		return newFile;
-		
-	}//END gatherNewestFile()
-
-	/**
-	 * returns single file that was saved last time
-	 * */
-	private File getLastFile(String dirPath) {
-		//	TODO: is empty directory
-		File dir = new File(dirPath);
-	    File[] files = dir.listFiles();
-	    if (files == null || files.length == 0) {
-	        return null;
-	    }
-
-	    File lastModifiedFile = files[0];
-	    for (int i = 1; i < files.length; i++) {
-	       if (lastModifiedFile.lastModified() < files[i].lastModified()) {
-	           lastModifiedFile = files[i];
-	       }
-	    }
-	    return lastModifiedFile;
-	    
-	}//END getLastFile()	
-	
 	/**
 	 * run CPU capture to ADB android camera capture and return JPEG image to Blooprint.sketchDir
 	 * */
 //	public static List<String> cmd_ReturnLines = new ArrayList<String>();
 	
+	/**
+	 * Capture OBJECT - new thread - 
+	 * */
 	public static class Capture implements Runnable{
 		
 		Thread captureThread;
@@ -569,20 +530,35 @@ public class BLOOP extends BLOOPRINT{
 		@Override
 		public void run() {
 			try {
-				captureAction();
+				
+				
+				sketch = getSketch();
+				
+				
+				
 			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		
-		public void emptyCamera() throws IOException{
+		/**
+		 * for pulling purposes - only pull 1 file at a time
+		 * */
+		public void clearCamera() throws IOException{
 			System.out.println("emptying the camera folder on android device..........");
 			command("adb shell rm /sdcard/dcim/camera/");
 		}
 		
+		/**
+		 * runs and pulls captured image from camera to tmpDIR
+		 * */
 		private void captureAction() throws IOException {
 			
+		
 			/**
 			 * TODO:
 			 * 
@@ -612,15 +588,6 @@ public class BLOOP extends BLOOPRINT{
 					flag = false;
 
 					
-//					File oldName = new File(win_sketchDir+"tmp/*.jpg");
-//					File newName = new File(win_sketchDir+fileString+".jpg");
-//					
-//					if(oldName.renameTo(newName)) {
-//						System.out.println("RENAMED AND TRANSFERRED");
-//					}
-//					else{
-//						System.out.println("Error");
-//					}
 					
 					
 					
@@ -635,77 +602,119 @@ public class BLOOP extends BLOOPRINT{
 			captureThread.start();
 		}
 		
-		
-		
-	}
-	
-	public static void capture() throws Exception {
+		/**
+		 * pulls sketch from BLOOPRINT.sketchDir
+		 * */
+		private BufferedImage getSketch() throws Exception {
+			
+//			Long time = System.currentTimeMillis();
+//			String fileString = time.toString();
+//			System.out.println("fileString = "+fileString);
+//			
+//			File oldName = new File(win_sketchDir+"tmp/*.jpg");
+//			File newName = new File(win_sketchDir+fileString+".jpg");
+//			
+//			if(oldName.renameTo(newName)) {
+//				System.out.println("RENAMED AND TRANSFERRED");
+//			}
+//			else{
+//				System.out.println("Error");
+//			}
+
+			
+			//	TODO: auto LINUX vs WINDOWS directory
+			File newSketchFile = gatherNewestFile(win_sketchDir);
+			BufferedImage img = ImageIO.read(newSketchFile);
+			return img;
+			
+			
+			
+		}//END getSketch()
+
 		
 		/**
-		 * TODO:
-		 * 
+		 * checks file name and loops until differs from last file name
+		 * means that new file is certainly added and can be copied
 		 * */
-		Long time = System.currentTimeMillis();
-		String fileString = time.toString();
-		System.out.println("fileString = "+fileString);
-		
-		List<String> some = command("adb shell ls /sdcard/dcim/camera/");
-		int before = some.size();
-		System.out.println("before\t=\t"+before);
-		
-		command("adb shell input keyevent 66");
-		
-		boolean flag = true;
-		while(flag){
-			some = new ArrayList<String>();
-			some = command("adb shell ls /sdcard/dcim/camera/");
+		private File gatherNewestFile(String dir) throws Exception {
+			File lastSketchFile = getLastFile(dir);
+			File newFile = null;
 			
-			int after = some.size();
+			captureAction();
 			
-			if(some.size() != before){
-				
-				System.out.println("after\t=\t"+after);
-				command("adb pull /sdcard/dcim/camera/ "+win_tmpDir);
-				flag = false;
-
-				
-//				File oldName = new File(win_sketchDir+"tmp/*.jpg");
-//				File newName = new File(win_sketchDir+fileString+".jpg");
-//				
-//				if(oldName.renameTo(newName)) {
-//					System.out.println("RENAMED AND TRANSFERRED");
-//				}
-//				else{
-//					System.out.println("Error");
-//				}
-				
-				
-				
+			boolean flag = true;
+			while(flag){
+				newFile = getLastFile(dir);
+				if(newFile != lastSketchFile){
+					flag = false;
+				}
 			}
+			return newFile;
 			
-		}
+		}//END gatherNewestFile()
+
+		/**
+		 * returns single file that was saved last time
+		 * */
+		private File getLastFile(String dirPath) {
+			//	TODO: is empty directory
+			File dir = new File(dirPath);
+		    File[] files = dir.listFiles();
+		    if (files == null || files.length == 0) {
+		        return null;
+		    }
+
+		    File lastModifiedFile = files[0];
+		    for (int i = 1; i < files.length; i++) {
+		       if (lastModifiedFile.lastModified() < files[i].lastModified()) {
+		           lastModifiedFile = files[i];
+		       }
+		    }
+		    return lastModifiedFile;
+		    
+		}//END getLastFile()	
+
 		
-		
-//		String system_os = System.getProperty("os.name").toUpperCase();
+	}//END Capture CLASS
+	
+//	/**
+//	 * capture method - either this is called or a Capture object is created (above)
+//	 * */
+//	public static void capture() throws Exception {
 //		
-//		if(system_os.contains("WIN")){
+//		/**
+//		 * TODO:
+//		 * 
+//		 * */
+//		Long time = System.currentTimeMillis();
+//		String fileString = time.toString();
+//		System.out.println("fileString = "+fileString);
+//		
+//		List<String> some = command("adb shell ls /sdcard/dcim/camera/");
+//		int before = some.size();
+//		System.out.println("before\t=\t"+before);
+//		
+//		command("adb shell input keyevent 66");
+//		
+//		boolean flag = true;
+//		while(flag){
+//			some = new ArrayList<String>();
+//			some = command("adb shell ls /sdcard/dcim/camera/");
 //			
+//			int after = some.size();
 //			
-////			subscript();
-//			
-//			
-////			String cmds = "python "+win_sourceDir+"capture_win.py";
-//			String cmds = "cd "+win_sourceDir+" && python capture_win.py";
-//			command(cmds);
+//			if(some.size() != before){
+//				
+//				System.out.println("after\t=\t"+after);
+//				command("adb pull /sdcard/dcim/camera/ "+win_tmpDir);
+//				flag = false;
+//				
+//			}
 //			
 //		}
-//		else{
+//		
 //			
-//			String cmds = "python3 "+sourceDir+"capture.py";
-//			command(cmds);
-//		}
-			
-	}//END capture()
+//	}//END capture()
 
 	
 	
