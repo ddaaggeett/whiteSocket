@@ -101,7 +101,7 @@ EDUCATION - either public settings or private/more individual (autodidact) appro
 
 ENGINEERING - PDF markup intensive tasks are all the more reason to keep the entire documentation system hands on with a writing system.
 
-Intelligent system methods to share design work.  (artificial intelligent systems -> remember, blooprint.xyz is a data collector...and AI exists by crawling data)
+Intelligent system methods to distribute design work.  (artificial intelligent systems -> remember, blooprint.xyz is a data collector...and AI exists by crawling data)
 
 Student progression monitor (grading system)
 
