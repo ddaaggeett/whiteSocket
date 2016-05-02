@@ -272,8 +272,7 @@ public class BLOOP extends BLOOPRINT{
         		
         		xIN = col;
 	            yIN = row;
-	            
-	            
+	           
 	            int[] xyOUT;
         		if(Calibration.inActionArea[yIN][xIN] && area[xIN][yIN]){
         			xyOUT = Calibration.stretch(xIN, yIN);
@@ -515,51 +514,26 @@ public class BLOOP extends BLOOPRINT{
 	
 	
 	/**
-	 * capture method - either this is called or a Capture object is created (above)
-	 * */
-	public static void capture() throws Exception {
-		
-		/**
-		 * TODO:
-		 * 
-		 * */
-		Long time = System.currentTimeMillis();
-		String fileString = time.toString();
-		System.out.println("fileString = "+fileString);
-		
-		List<String> some = command("adb shell ls /sdcard/dcim/camera/");
-		int before = some.size();
-		System.out.println("before\t=\t"+before);
-		
-		command("adb shell input keyevent 66");
-		
-		boolean flag = true;
-		while(flag){
-			some = new ArrayList<String>();
-			some = command("adb shell ls /sdcard/dcim/camera/");
-			
-			int after = some.size();
-			
-			if(some.size() != before){
-				
-				System.out.println("after\t=\t"+after);
-				command("adb pull /sdcard/dcim/camera/ "+win_tmpDir);
-				flag = false;
-				
-			}
-			
-		}
-		
-			
-	}//END capture()
-
-	/**
 	 * pulls sketch from BLOOPRINT.sketchDir
 	 * */
 	private BufferedImage getSketch() throws Exception {
 		
+		Long time = System.currentTimeMillis();
+		String fileString = time.toString();
+		System.out.println("fileString = "+fileString);
+
 		//	TODO: auto LINUX vs WINDOWS directory
-		File newSketchFile = gatherNewestFile(win_sketchDir);
+		File defaultName = gatherNewestFile(win_tmpDir);
+		File newSketchFile = new File(win_sketchDir+fileString+".jpg");
+		
+		if(defaultName.renameTo(newSketchFile)) {
+			System.out.println("RENAMED AND TRANSFERRED");
+		}
+		else{
+			System.out.println("Error");
+		}
+		
+		
 		BufferedImage img = ImageIO.read(newSketchFile);
 		return img;
 		
@@ -571,15 +545,15 @@ public class BLOOP extends BLOOPRINT{
 		String fileString = time.toString();
 		System.out.println("fileString = "+fileString);
 		
-//		File oldName = new File(win_sketchDir+"tmp/*.jpg");
-//		File newName = new File(win_sketchDir+fileString+".jpg");
-//		
-//		if(oldName.renameTo(newName)) {
-//			System.out.println("RENAMED AND TRANSFERRED");
-//		}
-//		else{
-//			System.out.println("Error");
-//		}
+		File oldName = new File(win_sketchDir+"tmp/*.jpg");
+		File newName = new File(win_sketchDir+fileString+".jpg");
+		
+		if(oldName.renameTo(newName)) {
+			System.out.println("RENAMED AND TRANSFERRED");
+		}
+		else{
+			System.out.println("Error");
+		}
 
 
 		
@@ -593,7 +567,7 @@ public class BLOOP extends BLOOPRINT{
 		File lastSketchFile = getLastFile(dir);
 		File newFile = null;
 		
-		captureAction();
+		capture();
 		
 		boolean flag = true;
 		while(flag){
@@ -628,6 +602,38 @@ public class BLOOP extends BLOOPRINT{
 	    
 	}//END getLastFile()	
 
+	/**
+	 * capture method - either this is called or a Capture object is created (above)
+	 * */
+	public static void capture() throws Exception {
+		
+		List<String> some = command("adb shell ls /sdcard/dcim/camera/");
+		int before = some.size();
+		System.out.println("before\t=\t"+before);
+		
+		command("adb shell input keyevent 66");
+		
+		boolean flag = true;
+		while(flag){
+			some = new ArrayList<String>();
+			some = command("adb shell ls /sdcard/dcim/camera/");
+			
+			int after = some.size();
+			
+			if(some.size() != before){
+				
+				System.out.println("after\t=\t"+after);
+				command("adb pull /sdcard/dcim/camera/ "+win_tmpDir);
+				flag = false;
+				
+			}
+			
+		}
+		
+			
+	}//END capture()
+
+	
 	/**
 	 * for pulling purposes - only pull 1 file at a time
 	 * */
