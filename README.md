@@ -58,18 +58,11 @@ Pixel manipulation is used to precisely align input image to output orientation.
 
 Text by typing on keyboard is an added convenience.  User is able to dictate position of new text location and edit text however necessary to supplement hand designs .
 
-With every Blooprint.xyz account comes options to share work publicly, or keep work private. There are levels of privacy.  Shared work (open-sourced) is displayed to individuals with access to Blooprint.xyz accounts on the internet.  Designer works with Blooprint.xyz software with the data collecting hardware.  This data collected is then stored for redisplay on either another blooprint station, or on a basic internet browser with user's ability to comment endlessly on blooprints shared publicly. this is the part of the project that is free for the user who is not technically using the Blooprint.xyz software project.  They're indirectly contributing to the user base.
+With every Blooprint.xyz account comes options to share work publicly, or keep work private. There are levels of privacy.  Shared work (open-sourced) is displayed to individuals with access to Blooprint.xyz accounts on the internet.  Designer works with Blooprint.xyz software with the data collecting hardware.  This data collected is then stored for redisplay on either another blooprint station, or on a basic internet browser with user's ability to comment endlessly on blooprints shared publicly.
 
-A single blooprint is an editable document containing hand-drawn detail with supporting text. the ultimate blooprint documentation system is based upon supportive text which is the measurable data in parallel to the handwriting, explaining exactly what's portrayed.
+A single blooprint is an editable document containing hand-drawn detail (BLOOPS) with supportive text (BLIPS).
 
-Think about it this way: if a picture is placed in front of an audience, and the only thing that had to be done was the group of people looking at it had to argue about it, you'd eventually get to a refined explanation, perhaps even an exact transcription of what was drawn by hand.  This is the measurement system that gives credibility to hand-drawn/written work.  Imagine sorting algorithms to apply to user generated content.
-____________________________________________________________________________
-
-NOTE:
-
-This document is for direction purposes only.  It will be continuously altered.  Some components of Blooprint.xyz may not completed/running yet.  Please look through all the source and familiarize yourself with the code.  This is my first software ever written, so I'm looking forward to working with real-deal developers.
-
-Program start -> see BLOOPRINT.java
+If a picture is placed in front of an audience and the only thing that had to be done was the group of people looking at it had to argue about it, you'd eventually get to a refined explanation, perhaps even an exact transcription of what was drawn by hand.  This is the measurement system that gives credibility to hand-drawn/written work.  Imagine sorting algorithms to apply to user generated content.
 ____________________________________________________________________________
 
 BLOOPRINT USER MODEL: 
@@ -95,8 +88,6 @@ I’m open sourcing Blooprint.xyz as a way for the world to freely adapt this ne
 End-users have intellectual property security options as part of the Blooprint.xyz documentation account settings.  Blooprint.xyz software will be free of charge for users who are openly designing new Blooprint documentation.  One way to make money -> Blooprint.xyz software users for private Blooprint account documentation will pay a fee rate according to the amount of Blooprint documents created and maintained.
 
 I’d rather the world flourish with this new technology and have it profit from how it best serves itself, than aim to siphon off likes to sell to advertisers, and leave the world in an even bigger hole.
-
-Want to be happy?  Make the world around you better.
 ____________________________________________________________________________
 
 New development teams, start your engines!  University is the perfect test market for the entire Blooprint.xyz  project...from development to testing its functionality in society.
