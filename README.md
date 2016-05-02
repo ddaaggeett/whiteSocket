@@ -99,6 +99,8 @@ Foreseeable applications:
 
 EDUCATION - either public settings or private/more individual (autodidact) approach - Public education can place 4 students per machine's hardware setup at one time.  That's MAX $500/student for however long a projector lasts, of which it's usually the lamp that goes anyways -> cheap replacement.
 
+ENGINEERING - PDF markup intensive tasks are all the more reason to keep the entire documentation system hands on with a writing system.
+
 Intelligent system methods to share design work.  (artificial intelligent systems -> remember, blooprint.xyz is a data collector...and AI exists by crawling data)
 
 Student progression monitor (grading system)
