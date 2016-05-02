@@ -23,7 +23,7 @@ To create a seamless way to incorporate different types of businesses together. 
 To rid the internet and economy of a 'like-based' value system -> see Douglas Rushkoff -> https://www.youtube.com/watch?v=6_n1Dro0Uec
 ____________________________________________________________________________
 
-BLOOPRINT.XYZ MODEL 1 DEVELOPED WITH: 
+BLOOPRINT.XYZ MODEL 1 (ALPHA STAGE) DEVELOPED WITH: 
 
 HARDWARE COST: ROUGH MAX ~ $2000
 
