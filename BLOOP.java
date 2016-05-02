@@ -516,7 +516,7 @@ public class BLOOP extends BLOOPRINT{
 	/**
 	 * pulls sketch from BLOOPRINT.sketchDir
 	 * */
-	private BufferedImage getSketch() throws Exception {
+	public static BufferedImage getSketch() throws Exception {
 		
 		Long time = System.currentTimeMillis();
 		String fileString = time.toString();
@@ -539,31 +539,12 @@ public class BLOOP extends BLOOPRINT{
 		
 	}//END getSketch()
 
-	private void renameFile(String some, String other){
 		
-		Long time = System.currentTimeMillis();
-		String fileString = time.toString();
-		System.out.println("fileString = "+fileString);
-		
-		File oldName = new File(win_sketchDir+"tmp/*.jpg");
-		File newName = new File(win_sketchDir+fileString+".jpg");
-		
-		if(oldName.renameTo(newName)) {
-			System.out.println("RENAMED AND TRANSFERRED");
-		}
-		else{
-			System.out.println("Error");
-		}
-
-
-		
-	}
-	
 	/**
 	 * checks file name and loops until differs from last file name
 	 * means that new file is certainly added and can be copied
 	 * */
-	private File gatherNewestFile(String dir) throws Exception {
+	private static File gatherNewestFile(String dir) throws Exception {
 		File lastSketchFile = getLastFile(dir);
 		File newFile = null;
 		
@@ -584,7 +565,7 @@ public class BLOOP extends BLOOPRINT{
 	/**
 	 * returns single file that was saved last time
 	 * */
-	private File getLastFile(String dirPath) {
+	private static File getLastFile(String dirPath) {
 		//	TODO: is empty directory
 		File dir = new File(dirPath);
 	    File[] files = dir.listFiles();
@@ -630,6 +611,8 @@ public class BLOOP extends BLOOPRINT{
 			
 		}
 		
+		clearCamera();
+		
 			
 	}//END capture()
 
@@ -637,7 +620,7 @@ public class BLOOP extends BLOOPRINT{
 	/**
 	 * for pulling purposes - only pull 1 file at a time
 	 * */
-	public void clearCamera() throws IOException{
+	public static void clearCamera() throws IOException{
 		System.out.println("emptying the camera folder on android device..........");
 		command("adb shell rm /sdcard/dcim/camera/*");
 	}

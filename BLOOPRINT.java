@@ -124,51 +124,39 @@ public class BLOOPRINT extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				
-				/**
-				 * testing BLOOP process
-				 * */
 				try {
-					BLOOP.capture();
+					
+					/*
+					 * BLOOPRINT.XYZ: program start
+					 * */
+					
+					/**	
+					 * TODO:
+					 * 'blooprint.xyz'.'_calibration' table needs to be created upon program installation
+					 * last calibration used for this station
+					 * 
+					 * need to have at least one calibration data set in table for now
+					 * */
+					Calibration.loadCalibration();
+					
+					blooprint = new BLOOPRINT();	//	whiteboard display object
+					
+					blooprint.setExtendedState(JFrame.MAXIMIZED_BOTH);
+					
+					blooprint.setKeyControls();
+					projectorDisplay(blooprint);
+					blooprint.setVisible(true);
+					
+					//	Thread: prompt user to request help
+					new OfferHelpThread();
+					
+					//	blooprint always needs focus for key listening
+					blooprint.requestFocus();
+					
+					
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
-				
-				
-//				try {
-//					
-//					/*
-//					 * BLOOPRINT.XYZ: program start
-//					 * */
-//					
-//					/**	
-//					 * TODO:
-//					 * 'blooprint.xyz'.'_calibration' table needs to be created upon program installation
-//					 * last calibration used for this station
-//					 * 
-//					 * need to have at least one calibration data set in table for now
-//					 * */
-//					Calibration.loadCalibration();
-//					
-//					blooprint = new BLOOPRINT();	//	whiteboard display object
-//					
-//					blooprint.setExtendedState(JFrame.MAXIMIZED_BOTH);
-//					
-//					blooprint.setKeyControls();
-//					projectorDisplay(blooprint);
-//					blooprint.setVisible(true);
-//					
-//					//	Thread: prompt user to request help
-//					new OfferHelpThread();
-//					
-//					//	blooprint always needs focus for key listening
-//					blooprint.requestFocus();
-//					
-//					
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
 			}
 		});
 	}
