@@ -10,7 +10,7 @@ ____________________________________________________________________________
 
 GOALS:
 
-To set public education execution standards.
+To set execution standards of public education.
 
 To set the standard of intellectual collaboration methods.
 
