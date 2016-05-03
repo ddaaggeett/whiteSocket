@@ -1,5 +1,5 @@
 # www.blooprint.xyz
-commoditizing hand-written design - world's most reliable think tank
+commoditizing hand-written design - world's most reliable think tank - influenced by literal blueprinting
 
 Creator:	DAVE DAGGETT, EIT - BLOOPRINT, LLC
 
