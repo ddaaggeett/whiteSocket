@@ -14,7 +14,7 @@ To set execution standards of public education.
 
 To set the standard of intellectual collaboration methods.
 
-To force open source collaboration across all industry – not just computer software collaboration.
+To enable open source collaboration across all industry – not just computer software collaboration.
 
 To employ 1,000,000,000 people.  Of course this won't be through Blooprint, LLC, but through whatever organizations that end up using Blooprint as a tool for team members to be relied upon to use and address new operations
 
