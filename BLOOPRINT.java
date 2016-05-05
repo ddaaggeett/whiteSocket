@@ -153,7 +153,6 @@ public class BLOOPRINT extends JFrame {
 					//	blooprint always needs focus for key listening
 					blooprint.requestFocus();
 					
-					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
