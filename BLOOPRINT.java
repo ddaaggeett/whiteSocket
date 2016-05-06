@@ -68,7 +68,7 @@ import javax.swing.KeyStroke;
 
 
 /**
- * 
+ * BLOOPRINT OBJECT - compiled of BLOOPS (sketch images) and BLIPS (textboxes)
  * */
 public class BLOOPRINT extends JFrame {
 
@@ -94,9 +94,6 @@ public class BLOOPRINT extends JFrame {
 	public static String win_blankImageFileName = 		win_homeDirectory+"blank.jpg";
 	public static String win_rawCornersImageFileName = 	win_sketchDir+"rawCorners.jpg";
 	public static String win_newTextImageFileName = 	win_sketchDir+"newText.jpg";
-	public static String win_sketchImageFileName = 		win_sketchDir+"sketch.jpg";
-
-	
 	
 	public static BLOOPRINT blooprint;//the current BLOOPRINT object on whiteboard
 	
@@ -115,7 +112,7 @@ public class BLOOPRINT extends JFrame {
 	public String drawMode = "write";
 	public static JTextArea startMessage;
 	public static JProgressBar progressBar;
-
+	
 	
 	/**
 	 * user interacts with single blooprint instance
@@ -575,22 +572,32 @@ public class BLOOPRINT extends JFrame {
 	 * 
 	 * TODO: verify no other blooprints of new title exist, and if so, give user option to save as new name, OR ADDED PAGE
 	 * */
-	public static void addNewBPTables(String name) throws Exception {
+	public static void addNewBPTables(String blooprintName) throws Exception {
 		
-//		if(!loadable.contains(name)){
+//		if(!loadable.contains(blooprintName)){
 			
 			try{
 				Connection connx = getDataBaseConnection();
 				
 				Statement statement = connx.createStatement();
 				
-				String cmd = "create table "+name.toUpperCase()+"_BLOOPS ( "
+				
+				/**
+				 * create the BLOOP table for specified blooprint
+				 * */
+				String cmd = "create table "+blooprintName.toUpperCase()+"_BLOOPS ( "
 					      + "id int PRIMARY KEY AUTO_INCREMENT,"
 					      + "image longblob)";
 
 				statement.executeUpdate(cmd);
 				
-				cmd = "create table "+name.toUpperCase()+"_BLIPS ("
+				
+				/**
+				 * crate the BLIP table for the specified blooprint
+				 * TODO:
+				 * BLIP creator userID needs to be included
+				 * */
+				cmd = "create table "+blooprintName.toUpperCase()+"_BLIPS ("
 						+ "id int NOT NULL PRIMARY KEY AUTO_INCREMENT,"
 						+ "x float NOT NULL,"
 						+ "y float NOT NULL,"
@@ -602,13 +609,15 @@ public class BLOOPRINT extends JFrame {
 				
 			    
 				
-				System.out.println(name+"_BLOOPS + "+name+"_BLIPS created");
+				System.out.println(blooprintName+"_BLOOPS + "+blooprintName+"_BLIPS created");
 			    
 			    /*
 			     * set first image in blooprint to blank image
 			     * TODO: set correct aspect ratio
+			     * 
+			     * need blank image readily available in homeDirectory - try to use method for creating blank image when needed
 			     * */
-			    cmd = "INSERT INTO "+name.toUpperCase()+"_BLOOPS (image) VALUES (?)";
+			    cmd = "INSERT INTO "+blooprintName.toUpperCase()+"_BLOOPS (image) VALUES (?)";
 			    File theFile = new File(blankImageFileName);
 			    FileInputStream data = new FileInputStream(theFile);
 			    PreparedStatement state = (PreparedStatement) connx.prepareStatement(cmd);
@@ -632,7 +641,7 @@ public class BLOOPRINT extends JFrame {
 				
 				// create the mysql insert preparedstatement
 				PreparedStatement preparedStmt = (PreparedStatement)connx.prepareStatement(cmd);
-				preparedStmt.setString (1, name);
+				preparedStmt.setString (1, blooprintName);
 				
 				preparedStmt.execute();
 				

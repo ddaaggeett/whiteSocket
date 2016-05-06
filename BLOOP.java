@@ -43,6 +43,10 @@ public class BLOOP extends BLOOPRINT{
 	
 	public static int xIN, yIN;
 	
+	//	id of the sketch that will be called from sketchDir
+	public static String sketch_ID = "";
+
+	
 	
 	
 	/*
@@ -92,12 +96,9 @@ public class BLOOP extends BLOOPRINT{
 //    		/*-----------------*/
     		BLIP textArea = new BLIP(0,null,null);
     		
-    		
     		blooprint.blips.add(textArea);
     		
-    		
     		System.out.println("blooprint.textareas.size = " + blooprint.blips.size());
-    		
     		
     		textArea.display();
     		
@@ -178,13 +179,10 @@ public class BLOOP extends BLOOPRINT{
 		
 		boolean[][] some = getBorder();
 		
-		
-		
 		int xStart = xIN;
 		int yStart = yIN + 2;
 		
 		some = floodBorder(some, xStart,yStart);
-		
 		
 		return some;
 		
@@ -519,12 +517,12 @@ public class BLOOP extends BLOOPRINT{
 	public static BufferedImage getSketch() throws Exception {
 		
 		Long time = System.currentTimeMillis();
-		String fileString = time.toString();
-		System.out.println("fileString = "+fileString);
+		sketch_ID = time.toString();
+		System.out.println("sketch_ID = "+sketch_ID);
 
 		//	TODO: auto LINUX vs WINDOWS directory
 		File defaultName = gatherNewestFile(win_tmpDir);
-		File newSketchFile = new File(win_sketchDir+fileString+".jpg");
+		File newSketchFile = new File(win_sketchDir+sketch_ID+".jpg");
 		
 		if(defaultName.renameTo(newSketchFile)) {
 			System.out.println("RENAMED AND TRANSFERRED");

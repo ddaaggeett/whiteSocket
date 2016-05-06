@@ -224,6 +224,10 @@ public class BLIP extends BLOOPRINT{
 	
 	public void saveTextArea(String bp_name) throws Exception{
 		
+		/**
+		 * BLIP objects should also save user who created BLIP
+		 * */
+				
 		Connection connx = BLOOPRINT.getDataBaseConnection();
 		String cmd = "insert into "+bp_name+"_BLIPS (x,y,width,height,textEntry) values (?,?,?,?,?)";
 		PreparedStatement statement = (PreparedStatement) connx.prepareStatement(cmd);
