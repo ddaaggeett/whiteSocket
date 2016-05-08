@@ -10,7 +10,9 @@ ____________________________________________________________________________
 
 GOALS:
 
-To set execution standards and cost of public education.
+To set standard execution of freely accessible public education.
+
+To significantly drive down the cost of education.
 
 To set the standard of intellectual collaboration methods.
 
