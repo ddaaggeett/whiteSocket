@@ -10,6 +10,8 @@ ____________________________________________________________________________
 
 GOALS:
 
+To offer a new platform for engineering communication documentation to exist.
+
 To set standard execution of freely accessible public education.
 
 To significantly drive down the cost of education.
