@@ -92,7 +92,7 @@ MONETIZATION:
 
 I’m open sourcing Blooprint.xyz as a way for the world to freely adapt this new phenomenon to its current work operations/methods.  Monetization can happen in any number of ways.
 
-Most important - End-users have intellectual property security options as part of the Blooprint.xyz documentation account settings.
+Most important - End-users have intellectual property security as part of the Blooprint.xyz system.
 
 I’d rather the world flourish with this new technology and have it profit from how it best serves itself, than aim to siphon off 'likes' to sell to advertisers, and leave the world in an even bigger hole.
 ____________________________________________________________________________
