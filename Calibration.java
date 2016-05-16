@@ -636,6 +636,19 @@ public class Calibration extends BorderSelect{
 	}//END getScanBoxCorners()
 	
 	/**
+	 * TODO:
+	 * NEW GOAL FOR BLOOPRPINT IMAGE PROCESSING - image input will be streamed video input.
+	 * Please see better description in GitHub issues.
+	 * 
+	 * the issue we're facing is the process speed handling for every BLOOP action.
+	 * every BLOOP requires camera uptime, act time, data transfer time, image process time, image redisplay time.
+	 * 
+	 * Streamed image input will 'rewrite' over user marker in live time (some lag, of course).
+	 * Then either bloop button or erase button will be hit once user arm is out of image shot.
+	 * This eliminates processing time PER BLOOP ACTION.
+	 * _________________________________________________________________
+	 * 
+	 * STRETCH() method:
 	 * translational pixel manipulation mechanism
 	 * */
 	public static int[] stretch(int x, int y) {
