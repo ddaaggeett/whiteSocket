@@ -8,6 +8,9 @@ Licence:	GPLv3
 Have fun, please consider getting involved.  I look forward to working with you!!!
 ____________________________________________________________________________
 
+If a picture is placed in front of an audience and the only thing that had to be done was the group of people looking at it had to argue about it, you'd eventually get to a refined explanation, perhaps even an exact transcription of what was drawn by hand.  This is the measurement system that gives credibility to hand-drawn/written work.  Imagine design and education applications.
+____________________________________________________________________________
+
 GOALS:
 
 To offer a new platform for engineering communication documentation.
@@ -68,9 +71,6 @@ Text by typing on keyboard is an added convenience.  User is able to dictate pos
 With every Blooprint.xyz account comes options to share work publicly, or keep work private. There are levels of privacy.  Shared work (open-sourced) is displayed to individuals with access to Blooprint.xyz accounts on the internet.  Designer works with Blooprint.xyz software with the data collecting hardware.  This data collected is then stored for redisplay on either another blooprint station, or on a basic internet browser with user's ability to comment endlessly on blooprints shared publicly.
 
 A single blooprint is an editable document containing hand-drawn detail (BLOOPS) with supportive text (BLIPS).
-____________________________________________________________________________
-
-If a picture is placed in front of an audience and the only thing that had to be done was the group of people looking at it had to argue about it, you'd eventually get to a refined explanation, perhaps even an exact transcription of what was drawn by hand.  This is the measurement system that gives credibility to hand-drawn/written work.  Imagine sorting algorithms to apply to user generated hand-drawings.
 ____________________________________________________________________________
 
 BLOOPRINT USER MODEL: 
