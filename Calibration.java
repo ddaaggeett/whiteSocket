@@ -638,6 +638,15 @@ public class Calibration extends BorderSelect{
 	/**
 	 * STRETCH() method:
 	 * translational pixel manipulation mechanism
+	 *
+	 *	This method is the core of Blooprint.xyz its input-output mechanism should remain as-is.
+	 *	Please see derivation approach in project description.
+	 *
+	 *	Forseeable upgrade:
+	 *	Due to physical radial misalignment of camera lens to projector lens, in theory, there could be a
+	 *	dead zone of action on pixels located (thin sliver) along the image center vertical and center horizontal
+	 *	This dead zone must be accounted for somehow if my theory is correct, but the whole of the image
+	 *	manipulation should remain unchanged.
 	 * */
 	public static int[] stretch(int x, int y) {
 		
