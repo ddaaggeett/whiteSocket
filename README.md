@@ -11,6 +11,23 @@ ____________________________________________________________________________
 If a picture is placed in front of an audience and the only thing that had to be done was the group of people looking at it had to argue about it, you'd eventually get to a refined explanation, perhaps even an exact transcription of what was drawn by hand.  This is the measurement system that gives credibility to hand-drawn/written work.  Imagine design and education applications.
 ____________________________________________________________________________
 
+CONCEPT:
+
+Blooprint.xyz is a new input system generating a database of image data of handwriting/drawing.  Not only does it save the written data -> it makes it EDITABLE.  This editable functionality is the foundation to what we can turn into a handwriting documentation system.  Significance: Blooprint.xyz uses the power of big data analytics to naturally evaluate individuals' design significance in order to set in place a properly functioning value system centered around true ownership of theory/practice leading to societal/civil/economic gains.
+
+A single blooprint is an editable document containing hand-drawn detail (BLOOPS) with supportive text (BLIPS).
+
+I'm not interested in personal handheld devices.  I don't see any handheld device with a screen able to retain the full authenticity of a designer's personal work.  Blooprint.xyz is a tool for the individual who generates their best content on paper and would benefit most by it retaining a value of its worth and having the power of networking to distribute its use, whatever the designed content may be.  Bear with me, Model 1's prototype is a whole workstation, but there's plenty of room for increasing hardware beauty.
+
+We want global interaction -> it's not like there's different types of hand-drawing.  It's not like a problem in a mathematics classroom is to be solved any differently than a problem with the theory behind a particle accelerator.  The information of the problem doesn't change, only its approachability.  So, NO to smartphones and tablets attempting to make a hands-on approach.  They're a drag on the way the world really needs to extract and utilize pure intellect of human-kind.  Don't get me wrong...they're good for most everything in terms of communications, but not articulation.  Think bigger, back up and pick up a utility without autocorrect in it.  Autocorrect can be sprinkled in later, but at first you can't mold (autocorrect) what isn't broken.  Authenticity and articulation of designer work is not broken and should be valued at first draw.  It's likely you'd pick up a pencil or pen.  Good, that's as analog as you can get.  The whiteboard marker is simply a way to make the writing and erasing as fast as possible.  Measuring iterative attempts and failures along the way through any problem proves that individual's authoritarian value. -> what is open-source?
+
+Pixel manipulation is used to precisely align input image to output orientation.  Projector lens and camera lens are not perfectly in line, so the output image needs to account for the transformation from the input image.  See Calibration.java -> Calibration.stretch() demonstrating algebraic functionality of input to output transformation.  More documentation on its derivation to come, but for now, know it just works.  This transformation is what turns the marker on the whiteboard into an exact replicated image but from the perspecive of the projector.  The projector then turns around and simply displays pure white space plus whatever hand-drawn designs in their exact physical location on the whiteboard where it was drawn by the user.
+
+Text by typing on keyboard is an added convenience.  User is able to dictate position of new text location and edit text however necessary to supplement hand designs .
+
+With every Blooprint.xyz account comes options to share work publicly, or keep work private. There are levels of privacy.  Shared work (open-sourced) is displayed to individuals with access to Blooprint.xyz accounts on the internet.  Designer works with Blooprint.xyz software with the data collecting hardware.  This data collected is then stored for redisplay on either another blooprint station, or on a basic internet browser with user's ability to comment endlessly on blooprints shared publicly.
+____________________________________________________________________________
+
 GOALS:
 
 To offer a new platform for engineering communication documentation.
@@ -53,24 +70,6 @@ CURRENT: cardboard light-blocking flap – string pull || SHORT TERM GOAL: Raspb
 WHITEBOARD: 2x3ft anti-glare surface 
 
 ASSEMBLY: Whiteboard on tabletop face upward. Project image on whiteboard from above estimated 3ft from whiteboard surface. Recommend surround/back-lighting for whiteboard visibility for capture.  Of course, assembly orientation is preferential.  This project started with literal blueprinting in mind, so the face-up orientation is to cater to traditional engineering teams.  Camera and projector remain untouched by user at all times.
-____________________________________________________________________________
-
-BIG PICTURE:
-
-Blooprint.xyz is a new input system generating a database of image data of handwriting/drawing.  Not only does it save the written data -> it makes it EDITABLE.  This editable functionality is the foundation to what we can turn into a handwriting documentation system.  Significance: Blooprint.xyz uses the power of big data analytics to naturally evaluate individuals' design significance in order to set in place a properly functioning value system centered around true ownership of theory/practice leading to societal/civil/economic gains.
-
-
-I'm not interested in personal handheld devices.  I don't see any handheld device with a screen able to retain the full authenticity of a designer's personal work.  Blooprint.xyz is a tool for the individual who generates their best content on paper and would benefit most by it retaining a value of its worth and having the power of networking to distribute its use, whatever the designed content may be.  Bear with me, Model 1's prototype is a whole workstation, but there's plenty of room for increasing hardware beauty.
-
-We want global interaction -> it's not like there's different types of hand-drawing.  It's not like a problem in a mathematics classroom is to be solved any differently than a problem with the theory behind a particle accelerator.  The information of the problem doesn't change, only its approachability.  So, NO to smartphones and tablets attempting to make a hands-on approach.  They're a drag on the way the world really needs to extract and utilize pure intellect of human-kind.  Don't get me wrong...they're good for most everything in terms of communications, but not articulation.  Think bigger, back up and pick up a utility without autocorrect in it.  Autocorrect can be sprinkled in later, but at first you can't mold (autocorrect) what isn't broken.  Authenticity and articulation of designer work is not broken and should be valued at first draw.  It's likely you'd pick up a pencil or pen.  Good, that's as analog as you can get.  The whiteboard marker is simply a way to make the writing and erasing as fast as possible.  Measuring iterative attempts and failures along the way through any problem proves that individual's authoritarian value. -> what is open-source?
-
-Pixel manipulation is used to precisely align input image to output orientation.  Projector lens and camera lens are not perfectly in line, so the output image needs to account for the transformation from the input image.  See Calibration.java -> Calibration.stretch() demonstrating algebraic functionality of input to output transformation.  More documentation on its derivation to come, but for now, know it just works.  This transformation is what turns the marker on the whiteboard into an exact replicated image but from the perspecive of the projector.  The projector then turns around and simply displays pure white space plus whatever hand-drawn designs in their exact physical location on the whiteboard where it was drawn by the user.
-
-Text by typing on keyboard is an added convenience.  User is able to dictate position of new text location and edit text however necessary to supplement hand designs .
-
-With every Blooprint.xyz account comes options to share work publicly, or keep work private. There are levels of privacy.  Shared work (open-sourced) is displayed to individuals with access to Blooprint.xyz accounts on the internet.  Designer works with Blooprint.xyz software with the data collecting hardware.  This data collected is then stored for redisplay on either another blooprint station, or on a basic internet browser with user's ability to comment endlessly on blooprints shared publicly.
-
-A single blooprint is an editable document containing hand-drawn detail (BLOOPS) with supportive text (BLIPS).
 ____________________________________________________________________________
 
 BLOOPRINT USER MODEL: 
