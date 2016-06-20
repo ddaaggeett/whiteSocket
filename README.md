@@ -12,4 +12,6 @@ ____________________________________________________________________________
 
 Blooprint.xyz is a living handwriting/drawing documentation system.
 
-If a picture is placed in front of an audience and the only thing that had to be done was the group of people looking at it had to argue about it, you'd eventually get to a refined explanation, perhaps even an exact transcription of what was drawn by hand.  This is the measurement system that gives credibility to hand-drawn/written work.  Imagine design and education applications.
+If a hand drawing was placed in front of an audience and the only thing that had to be done was the group of people looking at it had to argue about it, you'd eventually get to a refined explanation, perhaps even an exact transcription of what was written.  Blooprint.xyz is a handwriting input system and is a platform enabling documentation and distribution of hand-drawn work.
+
+Now, imagine changing the drawing and taking credit for that change.
