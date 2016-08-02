@@ -74,7 +74,7 @@ public class BLOOPRINT extends JFrame {
 
 	/**
 	 * TODO:
-	 * system information
+	 * system information - use JSON
 	 * */
 	
 	//	LINUX SYSTEM
