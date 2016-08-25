@@ -1,7 +1,7 @@
 # www.blooprint.xyz
 commoditizing hand-written design - world's most reliable think tank - influenced by literal blueprinting
 
-Creator:	DAVE DAGGETT, EIT - BLOOPRINT, LLC
+Creator:	DAVE DAGGETT - BLOOPRINT, LLC
 
 Licence:	GPLv3
 
