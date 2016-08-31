@@ -87,7 +87,7 @@ public class BLOOPRINT extends JFrame {
 	public static String sketchImageFileName = 		sketchDir+"sketch.jpg";
 	
 	//	WINDOWS SYSTEM
-	public static String win_homeDirectory = 			"C:/Users/david_000/coding/Blooprint.xyz/";
+	public static String win_homeDirectory = 			"C:/Users/david_000/workspace/blooprint.xyz/";
 	public static String win_sourceDir =				win_homeDirectory+"src/xyz/blooprint/";
 	public static String win_sketchDir = 				win_homeDirectory+"in/";
 	public static String win_tmpDir = 					win_sketchDir+"tmp/";
@@ -905,7 +905,7 @@ public class BLOOPRINT extends JFrame {
 		/**
 		 * change int to projector monitor
 		 * */
-		int screen = 1;
+		int screen = 2;
 		
 		/*
 		 * index which screen to display on
