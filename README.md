@@ -1,4 +1,4 @@
-Please visit the official [blooprint.xyz](http://www.blooprint.xyz) website
+Please visit the official [blooprint.xyz](http://www.blooprint.xyz) website and see our [wiki](https://github.com/ddaaggeett/blooprint.xyz/wiki).
 ------------------------------------------------------------------------
 
 The Blooprint command line API is the world's most cost-effective content generation platform for a global web of handwriting.
