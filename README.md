@@ -1,5 +1,6 @@
 # www.blooprint.xyz
-commoditizing hand-written design - world's most reliable think tank - influenced by literal blueprinting
+The Blooprint.xyz API is a GUI input platform for web applications projected onto a whiteboard surface.
+Gives user a design platform with autosave and instantaneous editablility of hand-drawn work.
 
 Creator:	DAVE DAGGETT - BLOOPRINT, LLC
 
