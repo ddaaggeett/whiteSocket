@@ -1,6 +1,6 @@
 # www.blooprint.xyz
-The Blooprint.xyz API is a GUI input platform for web applications projected onto a whiteboard surface.
-Gives user a design platform with autosave and instantaneous editablility of hand-drawn work.
+The Blooprint.xyz API is the world's most cost-effective platform for content generation of a global web of handwriting.
+Simply put -> it gives the user a whiteboard design space with autosave and instantaneous editablility of hand-drawn work.
 
 Creator:	DAVE DAGGETT - BLOOPRINT, LLC
 
