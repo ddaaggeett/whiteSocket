@@ -9,9 +9,18 @@ Run command line API inside web application:
 
     javac Blooprint.java
     java Blooprint args[0] args[1] args[2] .......
+    java Blooprint [username] [current blooprint title] [input mode]
 
-args[] -> command line arguments = note updated arguments required in Bloopint-API/Blooprint.java
+For updated args[] -> note updated changes in Bloopint-API/Blooprint.java
 
+Image capture **input mode** = "bloop", "blip", "erase", "calibrate"
+
+ - **bloop** = returns compiled blooprint image - input image contains user-drawn marker to be added
+ - **blip** = returns textarea location info for dynamic DOM element addition
+ - **erase** = returns compiled blooprint image - input image contains user-drawn eraser area
+ - **calibrate** = to be run once after physical hardware is setup and stationary
+
+________________________________
 Creator:	DAVE DAGGETT - BLOOPRINT, LLC
 
 Licence:	GPLv3
