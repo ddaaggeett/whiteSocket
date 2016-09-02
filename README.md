@@ -10,10 +10,7 @@ Licence:	GPLv3
 Have fun, please consider getting involved.  I look forward to working with you!!!
 
 Check out the blooprint.xyz wiki (above) for detailed explanation.
-____________________________________________________________________________
 
-Blooprint.xyz is a hand drawing input platform enabling the mechanics to a living documentation system through handwriting.
+How to use: run command line program Blooprint.java inside web application.
 
-If a hand drawing was placed in front of an audience and the only thing that had to be done was the group of people looking at it had to argue about it, you'd eventually get to a refined explanation, perhaps even an exact transcription of what was written.
-
-Now, imagine changing the drawing and taking credit for its use.
+javac Blooprint.java -> command line arguments = see latest args used in Bloopint-API/Blooprint.java file
