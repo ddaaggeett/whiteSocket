@@ -40,7 +40,6 @@ import java.io.File;
 
 public class Blooprint{
 
-	private static String userID = "";	//	unique - email address
 	private static String title = "";	//	blooprint DB table name
 	private static String inMode = "";	//	bloop/erase/blip/calibrate
 	private static BufferedImage sketch;
