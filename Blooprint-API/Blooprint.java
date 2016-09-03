@@ -2,61 +2,13 @@
 *	Blooprint command line API:
 *
 *	javac Blooprint.java
-*	java Blooprint [user email] [blooprint title] [calibrate/bloop/erase/blip]
-*	
-*	purpose: input image from DB -> returns processed image to DB for display
-**/
-
-/*
-
-MySQL -> 
-'blooprint.xyz'.'_calibration'.'areaOfInterest' = bool[][] -> single array bool[]
-'blooprint.xyz'.'_calibration'.'browserCorners' = int[] -> aax,aay,bbx,bby,ccx,ccy,ddx,ddy
-'blooprint.xyz'.'_calibration'.'slopes' = double[] -> topSlope, bottomSlope, leftSploe, 
-'blooprint.xyz'.'_calibration'.'_BLIPS' = float[] -> x,y,width,height
-
-
-
-Coordinate values and SLOPES should be found in client-side browser -> saved to DB
-JavaScript client side can set all of the following
-int aax,aay,bbx,bby,ccx,ccy,ddx,ddy
-User of web application needs to draw a border inside the input image that is
-entirely on whiteboard's WHITE surface and 
-
-double aax_ = (double)browserCorners[0] / (double)widthBrowser * (double)sketch.getWidth();
-double aay_ = (double)browserCorners[1] / (double)heightBrowser * (double)sketch.getHeight();
-double bbx_ = (double)browserCorners[2] / (double)widthBrowser  * (double)sketch.getWidth();
-double bby_	= (double)browserCorners[3] / (double)heightBrowser  * (double)sketch.getHeight();
-double ccx_	= (double)browserCorners[4] / (double)widthBrowser  * (double)sketch.getWidth();
-double ccy_	= (double)browserCorners[5] / (double)heightBrowser  * (double)sketch.getHeight();
-double ddx_	= (double)browserCorners[6] / (double)widthBrowser  * (double)sketch.getWidth();
-double ddy_	= (double)browserCorners[7] / (double)heightBrowser  * (double)sketch.getHeight();
-
-order of corners: TL->TR->BL->BR
-
-aax = (int)Math.round(aax_);
-aay = (int)Math.round(aay_);
-bbx = (int)Math.round(bbx_);
-bby = (int)Math.round(bby_);
-ccx = (int)Math.round(ccx_);
-ccy = (int)Math.round(ccy_);
-ddx = (int)Math.round(ddx_);
-ddy = (int)Math.round(ddy_);
-
-We are finding the AREA OF INTEREST using client browser screen resolution as coordinates.
-For SLOPES to be used on sketch, we must make sure TODO: that our sketch input image is the
-same aspect ratio of our end client-browser's aspect ratio.
-
-sketch should result these slopes as NOT 0 OR INFINITY
-TODO: case for when (rare) slopes calculate to 0 OR INFINITY
-
-topSlope 	= ((double)bby-(double)aay)/((double)bbx-(double)aax);
-bottomSlope = ((double)ddy-(double)ccy)/((double)ddx-(double)ccx);
-leftSlope 	= ((double)ccy-(double)aay)/((double)ccx-(double)aax);
-rightSlope 	= ((double)ddy-(double)bby)/((double)ddx-(double)bbx);	
-
-AREA OF INTEREST is then found using calibration info loaded into API from DB
-
+*	java Blooprint [blooprint title] [calibrate/bloop/erase/blip]
+*
+*	RULES:
+*	-must make blooprint image and sketch image same aspect ratio - for now
+*	TODO: fix for any case
+*
+*	TODO: set up MySQL tables
 */
 
 package xyz.blooprint;
@@ -105,9 +57,13 @@ public class Blooprint{
 						yOUT_temp, lxA, lxB, lyA, lyB, kxA, kxB, kyA, kyB, jx, jy, ix, iy, lx, ly, 
 						kx, ky, A, B, C, lA, lB, lC, lD, lE, lF, lG, lH;
 	
-	private static int newBorder_X,newBorder_Y;
+	private static int borderStart_X,borderStart_Y;
 	
 	private static boolean[][] sketchEraseArea;
+	
+	private static double unit_aax,unit_aay,unit_bbx,unit_bby,unit_ccx,unit_ccy,unit_ddx,unit_ddy;
+	
+	private static double browserWidth, browserHeight;
 	
 	
 
@@ -115,29 +71,23 @@ public class Blooprint{
 	*	TODO: load calibrate data from DB
 	*	calibrate()
 	*
-	*	browserCorners need to be set by user in browser
+	*	unitBrowsertCorners need to be set by user in browser
 	*
-	*	TODO: add browserCorners[] loadCalibration()
+	*	TODO: add unitBrowsertCorners[] loadCalibration()
 	*
 	*/
-	private int[] browserCorners = new int[8];
+	private static double[] clientUnitClicks = new double[8];
 	private static boolean[][] areaOfInterest;
 
 
 	public static void main(String[] args) throws Exception{
 		
-		userID = args[0];
-		title = args[1];
-		inMode = args[2];
-
-
-		/*
-		 * we need fixed imaged
-		 * */
-//		blooprint = loadImage(title);
-//		sketch = loadImage(null);
-		blooprint = ImageIO.read(new File(""));
-
+		title = args[0];
+		inMode = args[1];
+		
+		blooprint = loadImage(title);
+		sketch = loadImage(null);
+		
 		/*
 		*	blooprint width and height pixel counts
 		*/
@@ -146,8 +96,8 @@ public class Blooprint{
 	    fy = blooprint.getHeight()-1;
 	    hy = blooprint.getHeight()-1;
 		
-
-
+	    getClientUnitClicks();
+	    
 		switch(inMode){
 
 			case "calibrate":
@@ -205,9 +155,58 @@ public class Blooprint{
 		/*
 		*	exit API after every run
 		*/
-		System.exit(0);
+//		System.exit(0);
 
 	}//END main()
+	
+	/*
+	 * get client side selected points just outside lit corners
+	 * */
+	private static void getClientUnitClicks(){
+		
+		/*
+		 * double[] array 
+		 * */
+		int[] some = new int[8];
+		
+		try{
+			System.out.println("loading calibration.......");
+			
+			
+			Connection connx = getDataBaseConnection();
+			Statement statement = (Statement) connx.createStatement();
+			String cmd = "SELECT * FROM _browsercorners ORDER BY id DESC LIMIT 1";
+			ResultSet result = statement.executeQuery(cmd);
+			while(result.next()){
+				
+				some[0] = result.getInt("browsercorner0");
+				some[1] = result.getInt("browsercorner1");
+				some[2] = result.getInt("browsercorner2");
+				some[3] = result.getInt("browsercorner3");
+				some[4] = result.getInt("browsercorner4");
+				some[5] = result.getInt("browsercorner5");
+				some[6] = result.getInt("browsercorner6");
+				some[7] = result.getInt("browsercorner7");
+				browserWidth = result.getInt("browserWidth");
+				browserHeight = result.getInt("browserHeight");
+				
+			}
+		}
+		catch(Exception e){
+			System.out.println("\nERROR loadCalibration\n"+e+"\n");
+		}
+		
+		clientUnitClicks[0] = (double)some[0]/(double)browserWidth;
+		clientUnitClicks[1] = (double)some[1]/(double)browserHeight;
+		clientUnitClicks[2] = (double)some[2]/(double)browserWidth;
+		clientUnitClicks[3] = (double)some[3]/(double)browserHeight;
+		clientUnitClicks[4] = (double)some[4]/(double)browserWidth;
+		clientUnitClicks[5] = (double)some[5]/(double)browserHeight;
+		clientUnitClicks[6] = (double)some[6]/(double)browserWidth;
+		clientUnitClicks[7] = (double)some[7]/(double)browserHeight;
+
+
+	}//END getClientUnitClicks()
 
 	
 	/*
@@ -711,6 +710,24 @@ public class Blooprint{
 	*/
 	private static void calibrate() throws Exception{
 		
+		
+		
+		aax = (int)Math.round(clientUnitClicks[0] * (double)sketch.getWidth());
+		aay = (int)Math.round(clientUnitClicks[1] * (double)sketch.getHeight());
+		bbx = (int)Math.round(clientUnitClicks[0] * (double)sketch.getWidth());
+		bby = (int)Math.round(clientUnitClicks[1] * (double)sketch.getHeight());
+		ccx = (int)Math.round(clientUnitClicks[0] * (double)sketch.getWidth());
+		ccy = (int)Math.round(clientUnitClicks[1] * (double)sketch.getHeight());
+		ddx = (int)Math.round(clientUnitClicks[0] * (double)sketch.getWidth());
+		ddy = (int)Math.round(clientUnitClicks[1] * (double)sketch.getHeight());
+		
+		topSlope 	= ((double)bby-(double)aay)/((double)bbx-(double)aax);
+		bottomSlope = ((double)ddy-(double)ccy)/((double)ddx-(double)ccx);
+		leftSlope 	= ((double)ccy-(double)aay)/((double)ccx-(double)aax);
+		rightSlope 	= ((double)ddy-(double)bby)/((double)ddx-(double)bbx);
+
+		
+		
 		/**
 		 * calibration object uses boolean[][] where true values represent 
 		 * lit projection area on whiteboard
@@ -756,6 +773,14 @@ public class Blooprint{
 				ccy = result.getInt("ccy");
 				ddx = result.getInt("ddx");
 				ddy = result.getInt("ddy");
+				unit_aax = result.getDouble("unit_aax");
+				unit_aay = result.getDouble("unit_aay");
+				unit_bbx = result.getDouble("unit_bbx");
+				unit_bby = result.getDouble("unit_bby");
+				unit_ccx = result.getDouble("unit_ccx");
+				unit_ccy = result.getDouble("unit_ccy");
+				unit_ddx = result.getDouble("unit_ddx");
+				unit_ddy = result.getDouble("unit_ddy");
 				mA = result.getDouble("mA");
 				mB = result.getDouble("mB");
 				mC = result.getDouble("mC");
@@ -770,6 +795,9 @@ public class Blooprint{
 		catch(Exception e){
 			System.out.println("\nERROR loadCalibration\n"+e+"\n");
 		}
+		
+		
+		
 	}//END loadCalibration()
 
 	/**
@@ -785,10 +813,12 @@ public class Blooprint{
 		String cmd = "INSERT INTO `blooprint.xyz`.`_calibration` (`id`, `ax`, `ay`, `bx`, `by`, "
 				+"`cx`, `cy`, `dx`, `dy`, `fx`, `fy`, `gx`, `hy`, `aax`, `aay`, "
 				+"`bbx`, `bby`, `ccx`, `ccy`, `ddx`, `ddy`, `mA`, `mB`, `mC`, `mD`, `xCenterIN`, `yCenterIN`, "
+				+"`unit_aax`,`unit_aay`,`unit_bbx`,`unit_bby`,`unit_ccx`,`unit_ccy`,`unit_ddx`,`unit_ddy`, " 
 				+"`xCenterOUT`, `yCenterOUT`) VALUES (NULL, '"+ax+"','"+ay+"','"+bx+"','"+by
 				+"','"+cx+"','"+cy+"','"+dx+"','"+dy+"','"+fx+"','"+fy+"','"+gx+"','"+hy+"','"
 				+aax+"','"+aay+"','"+bbx+"','"+bby+"','"+ccx+"','"+ccy+"','"+ddx+"','"+ddy+"','"+mA+"','"
-				+mB+"','"+mC+"','"+mD+"','"+xCenterIN+"','"+yCenterIN+"','"+xCenterOUT+"','"
+				+mB+"','"+mC+"','"+mD+"','"+xCenterIN+"','"+yCenterIN+"','"+unit_aax+"','"+unit_aay+"','"
+				+unit_bbx+"','"+unit_bby+"','"+unit_ccx+"','"+unit_ccy+"','"+unit_ddx+"','"+unit_ddy+"','"+xCenterOUT+"','"
 				+yCenterOUT+"');";
 		
 		PreparedStatement statement = (PreparedStatement)connx.prepareStatement(cmd);
@@ -1016,8 +1046,8 @@ public class Blooprint{
 							if((inCoord[0] == xIN) && (inCoord[1] == yIN)){
 								
 								
-								newBorder_X = xIN;
-								newBorder_Y = yIN;
+								borderStart_X = xIN;
+								borderStart_Y = yIN;
 								
 								
 								System.out.println("made it all the way around the border");
@@ -1054,8 +1084,8 @@ public class Blooprint{
 		
 		boolean[][] area = getUserDrawnBorder();
 		
-		int xStart = newBorder_X;
-		int yStart = newBorder_Y + 2;
+		int xStart = borderStart_X;
+		int yStart = borderStart_Y + 2; /*TODO:	must consider the case in which borderStart_Y+2 is not inside border wall*/
 		
 		area = floodBorder(area, xStart,yStart);
 		
@@ -1438,10 +1468,8 @@ public class Blooprint{
 		
 		boolean[][] border = new boolean[sketch.getHeight()][sketch.getWidth()];
 		
-		/*
-		aax,aay,bbx,bby,ccx,ccy,ddx,ddy,topSlope,bottomSlope,leftSlope,rightSlope
-		are loaded at program start from DB
-		*/
+		
+		
 		for(int x = aax; x <= bbx; x++){//top
 			
 			double intersect_double = bby - (topSlope*bbx);
