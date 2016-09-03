@@ -18,7 +18,7 @@ Image capture **input mode** = pick one -> "bloop", "blip", "erase", "calibrate"
  - **bloop** = returns compiled blooprint image - input image contains user-drawn marker to be added
  - **blip** = returns textarea location info for dynamic DOM element addition
  - **erase** = returns compiled blooprint image - input image contains user-drawn eraser area
- - **calibrate** = to be run once after hardware ((whiteboard, camera, projector))[https://github.com/ddaaggeett/blooprint.xyz/wiki/Required-Hardware] is set up and stationary
+ - **calibrate** = to be run once after hardware [(whiteboard, camera, projector)](https://github.com/ddaaggeett/blooprint.xyz/wiki/Required-Hardware) is set up and stationary
 
 ________________________________
 Creator:	DAVE DAGGETT - BLOOPRINT, LLC
