@@ -8,8 +8,8 @@ Simply put, it gives the user a whiteboard design space with autosave and instan
 Run command line API inside web application:
 
     javac Blooprint.java
-    java Blooprint args[0] args[1] args[2] .......
-    java Blooprint [username] [current blooprint title] [input mode]
+    java Blooprint args[0] args[1] .......
+    java Blooprint [current blooprint title] [input mode]
 
 Note any potential updates to accepted arguments by API in the [java file](https://github.com/ddaaggeett/blooprint.xyz/blob/master/Blooprint-API/Blooprint.java).
 
