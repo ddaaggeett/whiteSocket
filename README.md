@@ -11,7 +11,7 @@ Run command line API inside web application:
     java Blooprint args[0] args[1] args[2] .......
     java Blooprint [username] [current blooprint title] [input mode]
 
-Note any potential updates to accepted arguments by API in [java file](https://github.com/ddaaggeett/blooprint.xyz/blob/master/Blooprint-API/Blooprint.java).
+Note any potential updates to accepted arguments by API in the [java file](https://github.com/ddaaggeett/blooprint.xyz/blob/master/Blooprint-API/Blooprint.java).
 
 Image capture **input mode** = pick one -> "bloop", "blip", "erase", "calibrate"
 
