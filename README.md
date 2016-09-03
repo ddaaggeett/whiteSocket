@@ -23,4 +23,4 @@ Image capture **input mode** = pick one -> "bloop", "blip", "erase", "calibrate"
 ________________________________
 Creator:	DAVE DAGGETT - BLOOPRINT, LLC
 
-Licence:	GPLv3
+Licence:	[GPLv3](https://github.com/ddaaggeett/blooprint.xyz/blob/master/LICENSE)
