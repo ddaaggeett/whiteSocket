@@ -90,10 +90,7 @@ public class Blooprint{
 		/*=======================================*/
 		
 		
-		fx = blooprint.getWidth()-1;
-		gx = blooprint.getWidth()-1;
-	    fy = blooprint.getHeight()-1;
-	    hy = blooprint.getHeight()-1;
+		
 	    
 	    switch(inMode){
 
@@ -126,15 +123,26 @@ public class Blooprint{
 				**/
 				loadCalibration();
 				
+				System.out.println("aax = "+aax);
+				
 				areaOfInterest = getAreaOfInterestBorder();
+				
+//				System.out.println("topSlope = "+topSlope);
+//				System.out.println("bottomSlope = "+bottomSlope);
+//				System.out.println("leftSlope = "+leftSlope);
+//				System.out.println("rightSlope = "+rightSlope);
+				
+				
+				printAOI(areaOfInterest,"don't fill");
 				
 				/*
 				 * start flooding right below center of topSlope
 				 * */
-				int tx = (bbx-aax)/2;
-				int ty = (bby-aay)/2;
+				int tx = (bbx+aax)/2;
+				int ty = (bby+aay)/2;
 				areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
 				
+				printAOI(areaOfInterest,"fill");
 				
 				bloop();
 				saveBlooprint();
@@ -183,6 +191,44 @@ public class Blooprint{
 		
 	}//END main()
 	
+	/*
+	 * TODO: delete method upon debugging completion
+	 * this method exists to display that we're examining the correct AREA OF INTEREST in sketch image
+	 * */
+	private static void printAOI(boolean[][] isHit, String action) throws IOException {
+		
+		
+		try{
+		
+			BufferedImage ghostBorder = ImageIO.read(new File("C:/Users/david_000/blooprint_api/camera/01/calibrate.jpg"));
+			
+			for (int row = 0; row < ghostBorder.getHeight(); row ++){
+				for (int col = 0; col < ghostBorder.getWidth(); col++){
+					
+					if(isHit[row][col]){
+						ghostBorder.setRGB(col, row, 0x000000);//turn black
+					}
+					
+				}
+			}
+			
+			if(action == "fill"){
+				ImageIO.write(ghostBorder, "jpg", new File("C:/Users/david_000/blooprint_api/camera/01/areaOfInterest_filled.jpg"));
+			}
+			else{
+				ImageIO.write(ghostBorder, "jpg", new File("C:/Users/david_000/blooprint_api/camera/01/areaOfInterest.jpg"));
+			}
+			
+			
+		}
+		catch(Exception e){
+			System.out.println(e);
+		}
+		
+	}//END printAOI()
+			
+		    
+
 	/*
 	 * get client side selected points just outside lit corners
 	 * */
@@ -735,7 +781,7 @@ public class Blooprint{
 	private static void calibrate() throws Exception{
 		
 		
-		
+		aax = (int)Math.round(unit_aax * (double)sketch.getWidth());
 		aax = (int)Math.round(unit_aax * (double)sketch.getWidth());
 		aay = (int)Math.round(unit_aay * (double)sketch.getHeight());
 		bbx = (int)Math.round(unit_bbx * (double)sketch.getWidth());
@@ -745,10 +791,29 @@ public class Blooprint{
 		ddx = (int)Math.round(unit_ddx * (double)sketch.getWidth());
 		ddy = (int)Math.round(unit_ddy * (double)sketch.getHeight());
 		
+		
+		/*
+		 * if slopes will equal 0 or INFINITY : move one of the pixels off by 1 just to give it some slope
+		 * */
+		if(bbx == ddx) ddx = ddx + 1;
+		if(ccx == aax) aax = aax - 1;
+		if(bby == aay) aay = aay - 1;
+		if(ccy == ddy) ddy = ddy + 1;
+		
+		
+		
 		topSlope 	= ((double)bby-(double)aay)/((double)bbx-(double)aax);
 		bottomSlope = ((double)ddy-(double)ccy)/((double)ddx-(double)ccx);
 		leftSlope 	= ((double)ccy-(double)aay)/((double)ccx-(double)aax);
 		rightSlope 	= ((double)ddy-(double)bby)/((double)ddx-(double)bbx);
+		
+		
+		
+		
+//		System.out.println("topSlope = "+topSlope);
+//		System.out.println("rightSlope = "+rightSlope);
+//		System.out.println("leftSlope = "+leftSlope);
+//		System.out.println("bottomSlope = "+bottomSlope);
 		
 
 		
@@ -759,8 +824,8 @@ public class Blooprint{
 		areaOfInterest = getAreaOfInterestBorder();
 		
 		
-		int tx = (bbx-aax)/2;
-		int ty = (bby-aay)/2;
+		int tx = (bbx+aax)/2;
+		int ty = (bby+aay)/2;
 		/*
 		 * TODO: set flood starting point to just below the center point
 		 * of the top line spanning a and b
@@ -829,7 +894,10 @@ public class Blooprint{
 			System.out.println("\nERROR loadCalibration\n"+e+"\n");
 		}
 		
-		
+		topSlope 	= ((double)bby-(double)aay)/((double)bbx-(double)aax);
+		bottomSlope = ((double)ddy-(double)ccy)/((double)ddx-(double)ccx);
+		leftSlope 	= ((double)ccy-(double)aay)/((double)ccx-(double)aax);
+		rightSlope 	= ((double)ddy-(double)bby)/((double)ddx-(double)bbx);
 		
 	}//END loadCalibration()
 
@@ -986,6 +1054,9 @@ public class Blooprint{
                     {
                     	cx = col;
                     	cy = row;
+                    	
+                    	System.out.println("cx = "+cx+"\tcy = "+cy);
+                    	
                         System.out.println("Corner 2:\nURx = "+cx+"\nURy = "+cy);
                         hit = true;
                         break Next2;
@@ -1271,7 +1342,7 @@ public class Blooprint{
 
 		BufferedImage some = null;
 		
-		if (title == null){
+		if (title == null){	//	if sketch
 			/**
 			*	load image from sketch table in DB (default)
 			**/
@@ -1299,12 +1370,17 @@ public class Blooprint{
 				
 				connx.close();
 				
+				fx = some.getWidth()-1;
+				gx = some.getWidth()-1;
+			    fy = some.getHeight()-1;
+			    hy = some.getHeight()-1;
+				
 			}catch(Exception exc){
 				exc.getMessage();
 			}
 			
 		}
-		else{
+		else{	//	if blooprint
 
 			/**
 			*	load last image from particular active blooprint
@@ -1380,6 +1456,8 @@ public class Blooprint{
 		final boolean hasAlpha = sketch.getAlphaRaster() != null;
 
 		int[] xyOUT = new int[2];	
+		
+		int count = 0;
 
 
 		if (hasAlpha) {
@@ -1392,6 +1470,8 @@ public class Blooprint{
 			    int r = (int)Math.abs(sketchBytes[pixel+3]);
 
 
+			    System.out.println("areaOfInterest[row][col] = " + areaOfInterest[row][col]);
+			    
 			    try{
 	            		
             		if(areaOfInterest[row][col] & isRed(r,g,b)){
@@ -1408,8 +1488,6 @@ public class Blooprint{
             		}
             	}
             	catch(Exception e){
-            		System.out.println("error writing.....");
-            		e.getMessage();
             		e.printStackTrace();
             		/**
             		 * so error doesn't happen for every pixel
@@ -1435,8 +1513,6 @@ public class Blooprint{
 
 			    try{
 			    	
-			    	System.out.println("areaOfInterest = "+areaOfInterest.toString());
-	            		
             		if(areaOfInterest[row][col] & isRed(red,green,blue)){
             			xyOUT = stretch(col,row);
             			blooprint.setRGB(xyOUT[0], xyOUT[1], 0xff0000);//turn red
@@ -1451,8 +1527,6 @@ public class Blooprint{
             		}
             	}
             	catch(Exception e){
-            		System.out.println("error writing.....");
-            		e.getMessage();
             		e.printStackTrace();
             		/**
             		 * so error doesn't happen for every pixel
@@ -1562,6 +1636,15 @@ public class Blooprint{
 		
 		boolean[][] border = new boolean[sketch.getHeight()][sketch.getWidth()];
 		
+		System.out.println("aax = "+aax+"\taay = "+aay);
+		System.out.println("bbx = "+bbx +"\tbby = "+bby);
+		System.out.println("ccx = "+ccx +"\tccy = "+ccy);
+		System.out.println("ddx = "+ddx+"\tddy = "+ddy);
+		
+		System.out.println("topSlope = "+topSlope);
+		System.out.println("bottomSlope = "+bottomSlope);
+		System.out.println("leftSlope = "+leftSlope);
+		System.out.println("rightSlope = "+rightSlope);
 		
 		
 		for(int x = aax; x <= bbx; x++){//top
@@ -1615,6 +1698,8 @@ public class Blooprint{
 		int count = 0;
 				
         if (!floodArea[y][x]) {
+        	
+        	
 
 		    Queue<Point> queue = new LinkedList<Point>();
 		    queue.add(new Point(x, y));
@@ -1634,9 +1719,9 @@ public class Blooprint{
 	                
 	                count++;
 	        		
-	                if(count < 10){
-	                	System.out.println("floodArea X = "+p.x+"\tY = "+p.y);
-	                }
+//	                if(count < 10){
+//	                	System.out.println("floodArea X = "+p.x+"\tY = "+p.y);
+//	                }
 	                
 	            }
 		    }
