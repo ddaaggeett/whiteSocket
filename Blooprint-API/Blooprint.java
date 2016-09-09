@@ -1,4 +1,23 @@
 /**
+*   BLOOPRINT.XYZ: next-gen think tank
+*   Copyright (C) 2016 - Dave Daggett - Blooprint, LLC
+*
+*   This program is free software; you can redistribute it and/or modify
+*   it under the terms of the GNU General Public License as published by
+*   the Free Software Foundation; either version 3 of the License, or
+*   (at your option) any later version.
+*
+*   This program is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*   GNU General Public License for more details.
+*
+*   You should have received a copy of the GNU General Public License
+*   along with this program; if not, write to the Free Software Foundation,
+*   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+*/
+
+/**
 *	Blooprint command line API:
 *
 *	javac Blooprint.java
@@ -38,32 +57,34 @@ import javax.imageio.ImageIO;
 
 public class Blooprint{
 
-	private static String title = "";	//	blooprint DB table name
-	private static String inMode = "";	//	bloop/erase/blip/calibrate
-	private static BufferedImage sketch;
-	private static BufferedImage blooprint;
+	public static String title = "";	//	blooprint DB table name
+	public static String inMode = "";	//	bloop/erase/blip/calibrate
+	public static BufferedImage sketch;
+	public static BufferedImage blooprint;
 
-	private static double topSlope,bottomSlope,leftSlope,rightSlope;
+	public static double topSlope,bottomSlope,leftSlope,rightSlope;
 
 
-	private static int aax,aay,bbx,bby,ccx,ccy,ddx,ddy;
-	private static int ax,ay,bx,by,cx,cy,dx,dy,fx,fy,gx,hy;
-	private static double ex, ey, gy, hx = 0;
+	public static int aax,aay,bbx,bby,ccx,ccy,ddx,ddy;
+	public static int ax,ay,bx,by,cx,cy,dx,dy,fx,fy,gx,hy;
+	public static double ex, ey, gy, hx = 0;
 
-	private static double mA, mB, mC, mD, yCenterIN, xCenterIN, xCenterOUT, yCenterOUT, xOUT_temp, 
+	public static double mA, mB, mC, mD, yCenterIN, xCenterIN, xCenterOUT, yCenterOUT, xOUT_temp, 
 						yOUT_temp, lxA, lxB, lyA, lyB, kxA, kxB, kyA, kyB, jx, jy, ix, iy, lx, ly, 
 						kx, ky, A, B, C, lA, lB, lC, lD, lE, lF, lG, lH;
 	
 	/*first border hit*/
-	private static int borderStart_X,borderStart_Y;
+	public static int borderStart_X,borderStart_Y;
 	
 	
-	private static double unit_aax,unit_aay,unit_bbx,unit_bby,unit_ccx,unit_ccy,unit_ddx,unit_ddy;
+	public static double unit_aax,unit_aay,unit_bbx,unit_bby,unit_ccx,unit_ccy,unit_ddx,unit_ddy;
 	
-	private static double clientWidth, clientHeight;
+	public static double clientWidth, clientHeight;
 	
-	private static boolean[][] areaOfInterest;
-	private static boolean[][] selectedArea;
+	public static boolean[][] areaOfInterest;
+	public static boolean[][] sketchDrawnArea;
+	
+	public static int tx, ty;
 	
 
 	public static void main(String[] args) throws Exception{
@@ -72,15 +93,14 @@ public class Blooprint{
 		inMode = args[1];
 		 */
 		
-		
 		/*=======================================*/
 		/*=======================================*/
 		
-		title = "testBP";
+		title = "testbp";
 		
 //		inMode = "calibrate";
-		inMode = "bloop";
-//		inMode = "blip";
+//		inMode = "bloop";
+		inMode = "blip";
 //		inMode = "erase";
 		
 		blooprint = loadImage(title);
@@ -123,26 +143,21 @@ public class Blooprint{
 				**/
 				loadCalibration();
 				
-				System.out.println("aax = "+aax);
-				
-				areaOfInterest = getAreaOfInterestBorder();
-				
-//				System.out.println("topSlope = "+topSlope);
-//				System.out.println("bottomSlope = "+bottomSlope);
-//				System.out.println("leftSlope = "+leftSlope);
-//				System.out.println("rightSlope = "+rightSlope);
+				areaOfInterest = getLightBorder();
 				
 				
-				printAOI(areaOfInterest,"don't fill");
+				printAOI(areaOfInterest,"only print light border");
 				
 				/*
 				 * start flooding right below center of topSlope
 				 * */
-				int tx = (bbx+aax)/2;
-				int ty = (bby+aay)/2;
+				tx = (ax+cx)/2;
+				ty = (ay+cy)/2;
 				areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
 				
 				printAOI(areaOfInterest,"fill");
+				
+				System.out.println("AOI is printed");
 				
 				bloop();
 				saveBlooprint();
@@ -153,8 +168,27 @@ public class Blooprint{
 				*	purpose: save updated blooprint image to DB
 				**/
 				loadCalibration();
-				selectedArea = getSketchDrawnArea();
-				erase(selectedArea);
+				
+				areaOfInterest = getLightBorder();
+				
+				printAOI(areaOfInterest,"only print light border");
+				
+				/*
+				 * start flooding right below center of topSlope
+				 * */
+				tx = (ax+cx)/2;
+				ty = (ay+cy)/2;
+				areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
+				
+				printAOI(areaOfInterest,"fill");
+				
+				System.out.println("AOI is printed");
+				
+				
+				
+				
+				sketchDrawnArea = getSketchDrawnArea();
+				erase(sketchDrawnArea);
 				saveBlooprint();
 				break;
 			
@@ -170,6 +204,22 @@ public class Blooprint{
 				*	eliminating the need for a mouse entirely.
 				**/
 				loadCalibration();
+				
+				areaOfInterest = getLightBorder();
+				
+				printAOI(areaOfInterest,"only print light border");
+				
+				/*
+				 * start flooding right below center of topSlope
+				 * */
+				tx = (ax+cx)/2;
+				ty = (ay+cy)/2;
+				areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
+				
+				printAOI(areaOfInterest,"fill");
+				
+				System.out.println("AOI is printed");
+				
 
 				/**
 	    		 * box drawn by user on whiteboard dictating exactly where they want new BLIP text to be located on BLOOPRINT
@@ -195,12 +245,12 @@ public class Blooprint{
 	 * TODO: delete method upon debugging completion
 	 * this method exists to display that we're examining the correct AREA OF INTEREST in sketch image
 	 * */
-	private static void printAOI(boolean[][] isHit, String action) throws IOException {
+	public static void printAOI(boolean[][] isHit, String action) throws IOException {
 		
 		
 		try{
 		
-			BufferedImage ghostBorder = ImageIO.read(new File("C:/Users/david_000/blooprint_api/camera/01/calibrate.jpg"));
+			BufferedImage ghostBorder = ImageIO.read(new File("C:/Users/david_000/blooprint_api/camera/calibrate.jpg"));
 			
 			for (int row = 0; row < ghostBorder.getHeight(); row ++){
 				for (int col = 0; col < ghostBorder.getWidth(); col++){
@@ -213,10 +263,10 @@ public class Blooprint{
 			}
 			
 			if(action == "fill"){
-				ImageIO.write(ghostBorder, "jpg", new File("C:/Users/david_000/blooprint_api/camera/01/areaOfInterest_filled.jpg"));
+				ImageIO.write(ghostBorder, "jpg", new File("C:/Users/david_000/blooprint_api/camera/areaOfInterest_filled.jpg"));
 			}
 			else{
-				ImageIO.write(ghostBorder, "jpg", new File("C:/Users/david_000/blooprint_api/camera/01/areaOfInterest.jpg"));
+				ImageIO.write(ghostBorder, "jpg", new File("C:/Users/david_000/blooprint_api/camera/areaOfInterest.jpg"));
 			}
 			
 			
@@ -232,7 +282,7 @@ public class Blooprint{
 	/*
 	 * get client side selected points just outside lit corners
 	 * */
-	private static void getClientUnitClicks(){
+	public static void getClientUnitClicks(){
 		
 		/*
 		 * double[] array 
@@ -283,7 +333,7 @@ public class Blooprint{
 	creates a scan area around the box drawn by user in sketch
 	returns xMIN, xMAX, yMIN, yMAX in sketch
 	*/
-	private static int[] scanUserDrawnArea() {
+	public static int[] scanUserDrawnArea() {
 	
 		/**
 		 * these value's starting points are backwards in order for the boolean comparisons below to initiate properly
@@ -299,16 +349,20 @@ public class Blooprint{
 			for(int row = 0; row < sketch.getHeight(); row++){
 				for(int col = 0; col < sketch.getWidth(); col++){
 					
+					
+					int xIN = 0;
+					int yIN = 0;
+					
 					/*
 					 * dealing with pixels input by user - sketch
 					 * */
-					Color pixel = new Color(sketch.getRGB(col,row));
+					Color pixel = new Color(sketch.getRGB(xIN,yIN));
 					
 		            
 		            if(isMarker(pixel)){
 
-		            	System.out.println("xIN = " + col);
-		            	System.out.println("yIN = " + row);
+		            	System.out.println("xIN = " + xIN);
+		            	System.out.println("yIN = " + yIN);
 						
 						System.out.println("\nfound eraser border!!!\n");
 						
@@ -316,8 +370,8 @@ public class Blooprint{
 						 * encapsulate eraser area
 						 * */
 						int[] inCoord = new int[2];
-						inCoord[0] = col;
-						inCoord[1] = row;
+						inCoord[0] = xIN;
+						inCoord[1] = yIN;
 						boolean flag = true;
 						while(flag){
 							
@@ -342,7 +396,7 @@ public class Blooprint{
 								ymin = inCoord[1];
 							}
 							
-							if((inCoord[0] == col) && (inCoord[1] == row)){
+							if((inCoord[0] == xIN) && (inCoord[1] == yIN)){
 								System.out.println("made it all the way around the border");
 								
 								flag = false;
@@ -518,7 +572,7 @@ public class Blooprint{
 	/*
 	returns Rectangle to  -> x,y,width,height
 	*/
-	private static float[] setUnitTextbox(int[] corners) {
+	public static float[] setUnitTextbox(int[] corners) {
 		
 		Rectangle rect = new Rectangle();
 		int x = corners[0];
@@ -638,13 +692,24 @@ public class Blooprint{
 	 * */
 	public static int[] stretch(int x, int y) {
 		
+		
 		int[] some = new int[2];
 		
-		jx = (y - (x * mB) + (xCenterIN * mA) - yCenterIN) / (mA - mB);
-        jy = (mA * (jx - xCenterIN)) + yCenterIN;
-        ix = (y - (x * mA) + (xCenterIN * mB) - yCenterIN) / (mB - mA);
-        iy = (mB * (ix - xCenterIN)) + yCenterIN;
+//		jx = (y - (x * mB) + (xCenterIN * mA) - yCenterIN) / (mA - mB);
+//        jy = (mA * (jx - xCenterIN)) + yCenterIN;
+//        ix = (y - (x * mA) + (xCenterIN * mB) - yCenterIN) / (mB - mA);
+//        iy = (mB * (ix - xCenterIN)) + yCenterIN;
 
+		jx = ((double)y - ((double)x * mB) + (xCenterIN * mA) - yCenterIN) / (mA - mB);
+        jy = (mA * (jx - xCenterIN)) + yCenterIN;
+        ix = ((double)y - ((double)x * mA) + (xCenterIN * mB) - yCenterIN) / (mB - mA);
+        iy = (mB * (ix - xCenterIN)) + yCenterIN;
+        
+//        System.out.println("============================STRETCH==================================");
+//        System.out.println("jx = "+jx+"\tjy = "+jy);
+//        System.out.println("ix = "+ix+"\tiy = "+iy);
+
+        
         if (jy >= yCenterIN)
         {
             lA = Math.sqrt((Math.pow(jx - xCenterIN, 2)) + (Math.pow(jy - yCenterIN, 2)));
@@ -652,6 +717,8 @@ public class Blooprint{
             lF = Math.sqrt((Math.pow(fx - xCenterOUT, 2)) + (Math.pow(fy - yCenterOUT, 2)));
             
             lE = lA * lF / lB;
+            
+//            System.out.println("lA = "+lA+"\tlB = "+lB+"\tlF = "+lF+"\tlE = "+lE);
             
             A = 1 + Math.pow(mC, 2);
             B = (-2 * xCenterOUT) - (2 * fx * Math.pow(mC, 2)) + (2 * fy * mC) - (2 * yCenterOUT * mC);
@@ -681,6 +748,9 @@ public class Blooprint{
             lF = Math.sqrt((Math.pow(ex - xCenterOUT, 2)) + (Math.pow(ey - yCenterOUT, 2)));
             
             lE = lA * lF / lB;
+            
+//            System.out.println("lA = "+lA+"\tlB = "+lB+"\tlF = "+lF+"\tlE = "+lE);
+            
             
             A = 1 + Math.pow(mC, 2);
             B = (-2 * xCenterOUT) - (2 * ex * Math.pow(mC, 2)) + (2 * ey * mC) - (2 * yCenterOUT * mC);
@@ -712,6 +782,9 @@ public class Blooprint{
             
             lG = lC * lH / lD;
             
+//            System.out.println("lC = "+lC+"\tlD = "+lD+"\tlH = "+lH+"\tlG = "+lG);
+            
+            
             A = 1 + Math.pow(mD, 2);
             B = (-2 * xCenterOUT) - (2 * hx * Math.pow(mD, 2)) + (2 * hy * mD) - (2 * yCenterOUT * mD);
             C = Math.pow(xCenterOUT, 2) + Math.pow(hx * mD, 2) - (2 * hx * hy * mD) + Math.pow(hy, 2) + (2 * yCenterOUT * hx * mD) - (2 * yCenterOUT * hy) + Math.pow(yCenterOUT, 2) - Math.pow(lG, 2);
@@ -741,10 +814,16 @@ public class Blooprint{
             
             lG = lC * lH / lD;
             
+//            System.out.println("lC = "+lC+"\tlD = "+lD+"\tlH = "+lH+"\tlG = "+lG);
+            
+            
             A = 1 + Math.pow(mD, 2);
             B = (-2 * xCenterOUT) - (2 * gx * Math.pow(mD, 2)) + (2 * gy * mD) - (2 * yCenterOUT * mD);
             C = Math.pow(xCenterOUT, 2) + Math.pow(gx * mD, 2) - (2 * gx * gy * mD) + Math.pow(gy, 2) + (2 * yCenterOUT * gx * mD) - (2 * yCenterOUT * gy) + Math.pow(yCenterOUT, 2) - Math.pow(lG, 2);
 
+//            System.out.println("lC = "+lC+"\tlD = "+lD+"\tlH = "+lH+"\tlG = "+lG);
+            
+            
             kxA = (-B + Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
             kxB = (-B - Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
 
@@ -778,10 +857,9 @@ public class Blooprint{
 	/*
 	Sets calibration values to DB
 	*/
-	private static void calibrate() throws Exception{
+	public static void calibrate() throws Exception{
 		
 		
-		aax = (int)Math.round(unit_aax * (double)sketch.getWidth());
 		aax = (int)Math.round(unit_aax * (double)sketch.getWidth());
 		aay = (int)Math.round(unit_aay * (double)sketch.getHeight());
 		bbx = (int)Math.round(unit_bbx * (double)sketch.getWidth());
@@ -802,20 +880,12 @@ public class Blooprint{
 		
 		
 		
-		topSlope 	= ((double)bby-(double)aay)/((double)bbx-(double)aax);
+		topSlope = ((double)bby-(double)aay)/((double)bbx-(double)aax);
 		bottomSlope = ((double)ddy-(double)ccy)/((double)ddx-(double)ccx);
-		leftSlope 	= ((double)ccy-(double)aay)/((double)ccx-(double)aax);
+		leftSlope = ((double)ccy-(double)aay)/((double)ccx-(double)aax);
 		rightSlope 	= ((double)ddy-(double)bby)/((double)ddx-(double)bbx);
 		
 		
-		
-		
-//		System.out.println("topSlope = "+topSlope);
-//		System.out.println("rightSlope = "+rightSlope);
-//		System.out.println("leftSlope = "+leftSlope);
-//		System.out.println("bottomSlope = "+bottomSlope);
-		
-
 		
 		/**
 		 * calibration object uses boolean[][] where true values represent 
@@ -841,7 +911,7 @@ public class Blooprint{
 	/*
 	*	calibration data is to be used every bloop/erase/blip
 	*/
-	private static void loadCalibration() throws Exception{
+	public static void loadCalibration() throws Exception{
 		
 		try{
 			System.out.println("loading calibration.......");
@@ -894,10 +964,16 @@ public class Blooprint{
 			System.out.println("\nERROR loadCalibration\n"+e+"\n");
 		}
 		
-		topSlope 	= ((double)bby-(double)aay)/((double)bbx-(double)aax);
-		bottomSlope = ((double)ddy-(double)ccy)/((double)ddx-(double)ccx);
-		leftSlope 	= ((double)ccy-(double)aay)/((double)ccx-(double)aax);
-		rightSlope 	= ((double)ddy-(double)bby)/((double)ddx-(double)bbx);
+		topSlope 	= ((double)cy-(double)ay)/((double)cx-(double)ax);
+		bottomSlope = ((double)dy-(double)by)/((double)dx-(double)bx);
+		leftSlope 	= ((double)ay-(double)dy)/((double)ax-(double)dx);
+		rightSlope 	= ((double)cy-(double)by)/((double)cx-(double)bx);
+		
+		
+//		topSlope 	= ((double)bby-(double)aay)/((double)bbx-(double)aax);
+//		bottomSlope = ((double)ddy-(double)ccy)/((double)ddx-(double)ccx);
+//		leftSlope 	= ((double)ccy-(double)aay)/((double)ccx-(double)aax);
+//		rightSlope 	= ((double)ddy-(double)bby)/((double)ddx-(double)bbx);
 		
 	}//END loadCalibration()
 
@@ -907,7 +983,7 @@ public class Blooprint{
 	 * TODO:
 	 * change table columns.  no longer need borders -> DO need corner_XY values
 	 * */
-	private static void saveCalibration() throws Exception {
+	public static void saveCalibration() throws Exception {
 		
 		try{
 			
@@ -961,35 +1037,6 @@ public class Blooprint{
 			System.out.println(ex);
 		}
 		
-		
-		
-		
-		
-//		Connection connx = getDataBaseConnection();
-//		
-//		String cmd = "INSERT INTO `blooprint.xyz`.`_calibration` (`id`, `ax`, `ay`, `bx`, `by`, "
-//				+"`cx`, `cy`, `dx`, `dy`, `fx`, `fy`, `gx`, `hy`, `aax`, `aay`, "
-//				+"`bbx`, `bby`, `ccx`, `ccy`, `ddx`, `ddy`, "
-//				+"`unit_aax`,`unit_aay`,`unit_bbx`,`unit_bby`,`unit_ccx`,`unit_ccy`,`unit_ddx`,`unit_ddy`, " 
-//				+"`mA`, `mB`, `mC`, `mD`, `xCenterIN`, `yCenterIN`, "
-//				+"`xCenterOUT`, `yCenterOUT`) VALUES (NULL, '"+ax+"','"+ay+"','"+bx+"','"+by
-//				+"','"+cx+"','"+cy+"','"+dx+"','"+dy+"','"+fx+"','"+fy+"','"+gx+"','"+hy+"','"
-//				+aax+"','"+aay+"','"+bbx+"','"+bby+"','"+ccx+"','"+ccy+"','"+ddx+"','"+ddy+"','"
-//				+unit_aax+"','"+unit_aay+"','"+unit_bbx+"','"+unit_bby+"','"+unit_ccx+"','"+unit_ccy+"','"+unit_ddx+"','"+unit_ddy+"','"
-//				+mA+"','"+mB+"','"+mC+"','"+mD+"','"+xCenterIN+"','"+yCenterIN+"','"+xCenterOUT+"','"+yCenterOUT+"')";
-//		
-//		PreparedStatement statement = (PreparedStatement)connx.prepareStatement(cmd);
-//		
-//		try{
-//			
-//			statement.executeUpdate();
-//		}catch(Exception e){
-//			System.out.println("\nERROR: Calibration.saveCalibration()\n");
-//			e.getMessage();
-//			e.printStackTrace();
-//		}
-//		
-//		connx.close();
 		
 	}//END saveCalibration()
 	
@@ -1160,7 +1207,7 @@ public class Blooprint{
 	 * dealing with area drawn by user to erase
 	 * sets binary map single pixel strand border for future use in floodBorder() method
 	 * */
-	private static boolean[][] getUserDrawnBorder() {
+	public static boolean[][] getUserDrawnBorder() {
 		
 		boolean[][] border = new boolean[sketch.getHeight()][sketch.getWidth()];
 		
@@ -1312,7 +1359,7 @@ public class Blooprint{
 		return next;
 	}//END getNextBorderPixel()
 
-	private static Connection getDataBaseConnection() throws Exception{
+	public static Connection getDataBaseConnection() throws Exception{
 		try{
 
 			/**
@@ -1338,7 +1385,7 @@ public class Blooprint{
 	 *	sketch arg = "null"
 	 * BLOB object to binary stream to BufferedImage object
 	 * */
-	private static BufferedImage loadImage(String title) throws Exception {
+	public static BufferedImage loadImage(String title) throws Exception {
 
 		BufferedImage some = null;
 		
@@ -1420,7 +1467,7 @@ public class Blooprint{
 	 * ctrl + ENTER -> bloop action
 	 * DB table is updated with added image of latest blooprint image state
 	 * */
-	private static void saveBlooprint() throws IOException {
+	public static void saveBlooprint() throws IOException {
 		/*
 		 * BufferedImage object to BLOB object
 		 * */
@@ -1432,7 +1479,6 @@ public class Blooprint{
 			
 			Connection connx = getDataBaseConnection();
 			String cmd = "INSERT INTO "+title+"(blooprint) VALUES (?)";
-//			String cmd = "INSERT INTO "+title.toUpperCase()+"_BLOOPS (image) VALUES (?)";
 			PreparedStatement statement = (PreparedStatement) connx.prepareStatement(cmd);
 			statement.setBlob(1, is);
 			statement.executeUpdate();
@@ -1447,99 +1493,40 @@ public class Blooprint{
 	 * bloop blooprint.image pixel location intended by user bloop action
 	 * sets Color.RED,BLUE,GREEN according to user intension
 	 * */
-	private static void bloop() {
+	public static void bloop() {
+		
+		System.out.println("blooping......");
 
-
-		final byte[] sketchBytes = ((DataBufferByte) sketch.getRaster().getDataBuffer()).getData();
-//		final int sketchWidth = sketch.getWidth();
-//		final int sketchHeight = sketch.getHeight();
-		final boolean hasAlpha = sketch.getAlphaRaster() != null;
 
 		int[] xyOUT = new int[2];	
 		
-		int count = 0;
-
-
-		if (hasAlpha) {
-			final int pixelSpan = 4;
-			for (int pixel = 0, row = 0, col = 0; pixel < sketchBytes.length; pixel += pixelSpan) {
-			    
-			    // int alpha = (int)Math.abs(sketchBytes[pixel]);
-				int b = (int)Math.abs(sketchBytes[pixel+1]);
-			    int g = (int)Math.abs(sketchBytes[pixel+2]); 
-			    int r = (int)Math.abs(sketchBytes[pixel+3]);
-
-
-			    System.out.println("areaOfInterest[row][col] = " + areaOfInterest[row][col]);
-			    
-			    try{
-	            		
-            		if(areaOfInterest[row][col] & isRed(r,g,b)){
-            			xyOUT = stretch(col,row);
-            			blooprint.setRGB(xyOUT[0], xyOUT[1], 0xff0000);//turn red
-            		}
-            		else if(areaOfInterest[row][col] & isGreen(r,g,b)){
-            			xyOUT = stretch(col,row);
-            			blooprint.setRGB(xyOUT[0], xyOUT[1], 0x00ff00);//turn green
-            		}
-            		else if(areaOfInterest[row][col] & isBlue(r,g,b)){
-            			xyOUT = stretch(col,row);
-            			blooprint.setRGB(xyOUT[0], xyOUT[1], 0x0000ff);//turn blue
-            		}
-            	}
-            	catch(Exception e){
-            		e.printStackTrace();
-            		/**
-            		 * so error doesn't happen for every pixel
-            		 * */
-            		System.exit(0);
-            	}
-
-			    //	incrementation
-			    col++;
-			    if (col == sketch.getWidth()) {
-			       col = 0;
-			       row++;
-			    }
-			}
-		}
-		else {
-			final int pixelSpan = 3;
-			for (int pixel = 0, row = 0, col = 0; pixel < sketchBytes.length; pixel += pixelSpan) {
-			    
-			    int blue = (int)Math.abs(sketchBytes[pixel]);
-			    int green = (int)Math.abs(sketchBytes[pixel+1]);
-			    int red = (int)Math.abs(sketchBytes[pixel+2]);
-
-			    try{
-			    	
-            		if(areaOfInterest[row][col] & isRed(red,green,blue)){
-            			xyOUT = stretch(col,row);
-            			blooprint.setRGB(xyOUT[0], xyOUT[1], 0xff0000);//turn red
-            		}
-            		else if(areaOfInterest[row][col] & isGreen(red,green,blue)){
-            			xyOUT = stretch(col,row);
-            			blooprint.setRGB(xyOUT[0], xyOUT[1], 0x00ff00);//turn green
-            		}
-            		else if(areaOfInterest[row][col] & isBlue(red,green,blue)){
-            			xyOUT = stretch(col,row);
-            			blooprint.setRGB(xyOUT[0], xyOUT[1], 0x0000ff);//turn blue
-            		}
-            	}
-            	catch(Exception e){
-            		e.printStackTrace();
-            		/**
-            		 * so error doesn't happen for every pixel
-            		 * */
-            		System.exit(0);
-            	}
-
-			    //	incrementation
-			    col++;
-			    if (col == sketch.getWidth()) {
-			       col = 0;
-			       row++;
-			    }
+		for (int row = 0; row < sketch.getHeight(); row++){
+			for(int col = 0; col < sketch.getWidth(); col++){
+				
+				int xIN = col;
+				int yIN = row;
+				
+				Color pxColor = new Color(sketch.getRGB(xIN,yIN));
+				
+				try{
+					if(areaOfInterest[yIN][xIN]){
+						
+						if (isMarker(pxColor)){
+							
+							System.out.println("xIN = "+xIN+"\tyIN = "+yIN);
+							System.out.println("red = "+pxColor.getRed()+"\tgreen = "+pxColor.getGreen()+"\tblue = "+pxColor.getBlue());
+							xyOUT = stretch(xIN, yIN);
+							blooprint.setRGB(xyOUT[0], xyOUT[1], 0x000000);
+						}
+						
+						
+					}
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				
 			}
 		}
 	}//END bloop()
@@ -1547,104 +1534,107 @@ public class Blooprint{
 	/**
 	 * erase the area found inside the outer border of marker line drawn
 	 * */
-	private static void erase(boolean[][] eraseArea) {
+	public static void erase(boolean[][] eraseArea) {
 
+		
+		System.out.println("erasing......");
 
-		final byte[] sketchBytes = ((DataBufferByte) sketch.getRaster().getDataBuffer()).getData();
-//		final byte[] blooprintBytes = ((DataBufferByte) blooprint.getRaster().getDataBuffer()).getData();
-//		final int sketchWidth = sketch.getWidth();
-//		final int sketchHeight = sketch.getHeight();
-		final boolean hasAlpha = sketch.getAlphaRaster() != null;
 
 		int[] xyOUT = new int[2];	
-
-
-		if (hasAlpha) {
-			final int pixelSpan = 4;
-			for (int pixel = 0, row = 0, col = 0; pixel < sketchBytes.length; pixel += pixelSpan) {
-				int blue = (int)Math.abs(sketchBytes[pixel+1]);
-			    int green = (int)Math.abs(sketchBytes[pixel+2]);
-			    int red = (int)Math.abs(sketchBytes[pixel+3]);
-
-			    try{
-	            		
-            		if(eraseArea[row][col]){
-            			xyOUT = stretch(col,row);
-            			blooprint.setRGB(xyOUT[0], xyOUT[1], 0xffffff);//turn white
-            		}
-            	}
-            	catch(Exception e){
-            		System.out.println("error erasing.....");
-            		e.getMessage();
-            		e.printStackTrace();
-            		/**
-            		 * so error doesn't happen for every pixel
-            		 * */
-            		System.exit(0);
-            	}
-
-
-			    //	incrementation
-			    col++;
-			    if (col == sketch.getWidth()) {
-			       col = 0;
-			       row++;
-			    }
+		
+		for (int row = 0; row < sketch.getHeight(); row++){
+			for(int col = 0; col < sketch.getWidth(); col++){
+				
+				int xIN = col;
+				int yIN = row;
+				
+				try{
+					if(eraseArea[yIN][xIN]){
+						
+						xyOUT = stretch(xIN, yIN);
+						blooprint.setRGB(xyOUT[0], xyOUT[1], 0xffffff);
+						
+						
+					}
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				
 			}
 		}
-		else{
-			final int pixelSpan = 3;
-			for (int pixel = 0, row = 0, col = 0; pixel < sketchBytes.length; pixel += pixelSpan) {
-				int blue = (int)Math.abs(sketchBytes[pixel]);
-			    int green = (int)Math.abs(sketchBytes[pixel+1]);
-			    int red = (int)Math.abs(sketchBytes[pixel+2]);
 
-			    try{
-	            		
-            		if(eraseArea[row][col]){
-            			xyOUT = stretch(col,row);
-            			blooprint.setRGB(xyOUT[0], xyOUT[1], 0xffffff);//turn white
-            		}
-            	}
-            	catch(Exception e){
-            		System.out.println("error erasing.....");
-            		e.getMessage();
-            		e.printStackTrace();
-            		/**
-            		 * so error doesn't happen for every pixel
-            		 * */
-            		System.exit(0);
-            	}
-
-
-			    //	incrementation
-			    col++;
-			    if (col == sketch.getWidth()) {
-			       col = 0;
-			       row++;
-			    }
-			}
-		}
 	}//END erase()
 
+
+	
+	/**
+	 * dealing with lit projector area on whiteboard
+	 * sets binary border for future use in floodBorder() method
+	 * */
+	public static boolean[][] getLightBorder() {		
+		
+		boolean[][] border = new boolean[sketch.getHeight()][sketch.getWidth()];
+		
+		
+		for(int x = ax; x <= cx; x++){//top
+			
+			double intersect_double = cy - (topSlope*cx);
+			int intersect = (int) Math.round(intersect_double);
+			double y_double = (topSlope * x) + intersect;
+			int y = (int) Math.round(y_double);
+			border[y][x] = true;
+						
+		}
+		for(int x = dx; x <= bx; x++){//bottom
+
+			double intersect_double = by - (bottomSlope*bx);
+			int intersect = (int) Math.round(intersect_double);
+			double y_double = (bottomSlope * x) + intersect;
+			int y = (int) Math.round(y_double);
+			border[y][x] = true;
+			
+		}
+		for(int y = ay; y <= dy; y++){//left
+			
+			double intersect_double = dy - (leftSlope*dx);
+			int intersect = (int) Math.round(intersect_double);
+			double x_double = (y-intersect)/leftSlope;
+			int x = (int) Math.round(x_double);
+			border[y][x] = true;
+			
+		}
+		for(int y = cy; y <= by; y++){//right
+			
+			double intersect_double = by - (rightSlope*bx);
+			int intersect = (int) Math.round(intersect_double);
+			double x_double = (y-intersect)/rightSlope;
+			int x = (int) Math.round(x_double);
+			border[y][x] = true;
+			
+		}
+		
+		return border;
+	}//END getLightBorder()
 
 	/**
 	 * dealing with lit projector area on whiteboard
 	 * sets binary border for future use in floodBorder() method
 	 * */
-	private static boolean[][] getAreaOfInterestBorder() {		
+	public static boolean[][] getAreaOfInterestBorder() {		
 		
 		boolean[][] border = new boolean[sketch.getHeight()][sketch.getWidth()];
 		
-		System.out.println("aax = "+aax+"\taay = "+aay);
-		System.out.println("bbx = "+bbx +"\tbby = "+bby);
-		System.out.println("ccx = "+ccx +"\tccy = "+ccy);
-		System.out.println("ddx = "+ddx+"\tddy = "+ddy);
+//		System.out.println("aax = "+aax+"\taay = "+aay);
+//		System.out.println("bbx = "+bbx +"\tbby = "+bby);
+//		System.out.println("ccx = "+ccx +"\tccy = "+ccy);
+//		System.out.println("ddx = "+ddx+"\tddy = "+ddy);
 		
-		System.out.println("topSlope = "+topSlope);
-		System.out.println("bottomSlope = "+bottomSlope);
-		System.out.println("leftSlope = "+leftSlope);
-		System.out.println("rightSlope = "+rightSlope);
+//		System.out.println("topSlope = "+topSlope);
+//		System.out.println("bottomSlope = "+bottomSlope);
+//		System.out.println("leftSlope = "+leftSlope);
+//		System.out.println("rightSlope = "+rightSlope);
 		
 		
 		for(int x = aax; x <= bbx; x++){//top
@@ -1732,12 +1722,11 @@ public class Blooprint{
 	}//END floodBorder()
 
 
-	/**
-	 * checking if instantaneous pixel is blue or not
-	 * returns true or false
-	 * */
-	private static boolean isBlue(int r, int g, int b) {
-		if(r < 100 & g < 100 & b > 100){
+	
+	public static int mark = 150;
+	
+	public static boolean isBlue(int r, int g, int b) {
+		if(r < 100 & g < 100 & b > mark){
 			return true;
 		}
 		return false;
@@ -1748,8 +1737,8 @@ public class Blooprint{
 	 * checking if instantaneous pixel is green or not
 	 * returns true or false
 	 * */
-	private static boolean isGreen(int r, int g, int b) {
-		if(r < 100 & g > 100 & b < 100){
+	public static boolean isGreen(int r, int g, int b) {
+		if(r < 100 & g > mark & b < 100){
 			return true;
 		}
 		return false;
@@ -1760,8 +1749,8 @@ public class Blooprint{
 	 * checking if instantaneous pixel is red or not
 	 * returns true or false
 	 * */
-	private static boolean isRed(int r, int g, int b) {
-		if(r > 100 & g < 100 & b < 100){
+	public static boolean isRed(int r, int g, int b) {
+		if(r > mark & g < 100 & b < 100){
 			return true;
 		}
 		return false;
@@ -1770,11 +1759,12 @@ public class Blooprint{
 	/*
 	*	check if instantaneous pixel is drawn by user
 	*/
-	private static boolean isDrawn(byte r, byte g, byte b){
+	public static boolean isDrawn(int r, int g, int b){
 
-		if((r > 100 & g < 100 & b < 100)
-				|| (r < 100 & g > 100 & b < 100)
-				|| (r < 100 & g < 100 & b > 100)){
+		if((r > mark & g < 100 & b < 100)
+				|| (r < 100 & g > mark & b < 100)
+				|| (r < 100 & g < 100 & b > mark)
+				|| (r < 100 & g < 100 & b < 100)){
 			
 			return true;
 		}
@@ -1785,10 +1775,10 @@ public class Blooprint{
 	 * checking if instantaneous pixel is ANY color or not
 	 * returns true or false
 	 * */
-	private static boolean isMarker(Color x) {
-		if((x.getRed() > 100 & x.getGreen() < 100 & x.getBlue() < 100)
-				|| (x.getRed() < 100 & x.getGreen() > 100 & x.getBlue() < 100)
-				|| (x.getRed() < 100 & x.getGreen() < 100 & x.getBlue() > 100)
+	public static boolean isMarker(Color x) {
+		if((x.getRed() > mark & x.getGreen() < 100 & x.getBlue() < 100)
+				|| (x.getRed() < 100 & x.getGreen() > mark & x.getBlue() < 100)
+				|| (x.getRed() < 100 & x.getGreen() < 100 & x.getBlue() > mark)
 				|| (x.getRed() < 100 & x.getGreen() < 100 & x.getBlue() < 100)){
 			
 			return true;
