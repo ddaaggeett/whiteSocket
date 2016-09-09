@@ -1,9 +1,9 @@
 Please visit the official [blooprint.xyz](http://www.blooprint.xyz) website and see our [wiki](https://github.com/ddaaggeett/blooprint.xyz/wiki).
 ------------------------------------------------------------------------
 
-The Blooprint command line API is the world's most cost-effective content generation platform for a global web of handwriting.
+The Blooprint API is the world's most cost-effective content generation platform for a global web of live handwriting.
 
-Simply put, it gives the user a whiteboard design space with autosave and instantaneous editablility of hand-drawn work.
+Simply, it gives the user a whiteboard design space with autosave and instantaneous editablility of hand-drawn work.
 
 Run command line API inside web application:
 
