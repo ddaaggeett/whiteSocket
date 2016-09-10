@@ -15,7 +15,7 @@ Note any potential updates to accepted arguments by API in the [file](https://gi
 
 Image capture **input mode** = pick one -> "bloop", "blip", "erase", "calibrate"
 
- - **bloop** = Rreturns compiled blooprint image - input image contains user-drawn marker to be added
+ - **bloop** = Returns compiled blooprint image - input image contains user-drawn marker to be added
  - **blip** = Returns textarea location (x,y,width,height)
  - **erase** = Returns compiled blooprint image - input image contains user-drawn eraser area
  - **calibrate** = Returns calibration info to be used for image processing. Run any time client hardware [(whiteboard, camera, projector)](https://github.com/ddaaggeett/blooprint.xyz/wiki/Required-Hardware) is set up and stationary
