@@ -86,32 +86,21 @@ public class Blooprint{
 	
 	public static int tx, ty;
 	
-
+	/*
+	 * MARK = fixed RGB value for input drawing recognition
+	 * SEE -> isMarker()
+	 * */
+	public static int mark = 150;
+	
 	public static void main(String[] args) throws Exception{
-		/*
+		
 		title = args[0];
 		inMode = args[1];
-		 */
-		
-		/*=======================================*/
-		/*=======================================*/
-		
-		title = "testbp";
-		
-//		inMode = "calibrate";
-//		inMode = "bloop";
-		inMode = "blip";
-//		inMode = "erase";
 		
 		blooprint = loadImage(title);
 		sketch = loadImage(null);
 		
-		/*=======================================*/
-		/*=======================================*/
 		
-		
-		
-	    
 	    switch(inMode){
 
 			case "calibrate":
@@ -124,7 +113,7 @@ public class Blooprint{
 				 * Image is captured, image is immediately displayed to client full screen.
 				 * Image will contain image of surface behind whiteboard - this is the raw
 				 * camera capture which includes area beyond what is a writable surface to the user.
-				 * The user then clicks at points just beyond the corners swhorn in the image.
+				 * The user then clicks at points just beyond the corners shown in the image.
 				 * The user points must be ON the whiteboard shown in the image.
 				 * USER REQUIREMENT:
 				 * Each point should be able to make a line draw to the
@@ -142,11 +131,7 @@ public class Blooprint{
 				*	purpose: save updated blooprint image to DB
 				**/
 				loadCalibration();
-				
 				areaOfInterest = getLightBorder();
-				
-				
-				printAOI(areaOfInterest,"only print light border");
 				
 				/*
 				 * start flooding right below center of topSlope
@@ -154,10 +139,6 @@ public class Blooprint{
 				tx = (ax+cx)/2;
 				ty = (ay+cy)/2;
 				areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
-				
-				printAOI(areaOfInterest,"fill");
-				
-				System.out.println("AOI is printed");
 				
 				bloop();
 				saveBlooprint();
@@ -171,21 +152,12 @@ public class Blooprint{
 				
 				areaOfInterest = getLightBorder();
 				
-				printAOI(areaOfInterest,"only print light border");
-				
 				/*
 				 * start flooding right below center of topSlope
 				 * */
 				tx = (ax+cx)/2;
 				ty = (ay+cy)/2;
 				areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
-				
-				printAOI(areaOfInterest,"fill");
-				
-				System.out.println("AOI is printed");
-				
-				
-				
 				
 				sketchDrawnArea = getSketchDrawnArea();
 				erase(sketchDrawnArea);
@@ -207,8 +179,6 @@ public class Blooprint{
 				
 				areaOfInterest = getLightBorder();
 				
-				printAOI(areaOfInterest,"only print light border");
-				
 				/*
 				 * start flooding right below center of topSlope
 				 * */
@@ -216,16 +186,11 @@ public class Blooprint{
 				ty = (ay+cy)/2;
 				areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
 				
-				printAOI(areaOfInterest,"fill");
-				
-				System.out.println("AOI is printed");
-				
-
 				/**
 	    		 * box drawn by user on whiteboard dictating exactly where they want new BLIP text to be located on BLOOPRINT
 	    		 * */
 	    		int[] scanBox = new int[4];
-	    		scanBox = scanUserDrawnArea();
+	    		scanBox = zoomToBox();
 	    		int[] userIntendedCorners = getScanBoxCorners(scanBox[0], scanBox[1], scanBox[2], scanBox[3]);
 
 				/*
@@ -241,16 +206,261 @@ public class Blooprint{
 		
 	}//END main()
 	
+	/**
+	 * STRETCH() method: input pixel location -> output pixel location
+	 *
+	 *	This method is the core of Blooprint.xyz its input-output mechanism should remain as-is.
+	 *	Please see derivation approach in project description.
+	 * */
+	public static int[] stretch(int x, int y) {
+		
+		
+		int[] some = new int[2];
+		
+		jx = ((double)y - ((double)x * mB) + (xCenterIN * mA) - yCenterIN) / (mA - mB);
+        jy = (mA * (jx - xCenterIN)) + yCenterIN;
+        ix = ((double)y - ((double)x * mA) + (xCenterIN * mB) - yCenterIN) / (mB - mA);
+        iy = (mB * (ix - xCenterIN)) + yCenterIN;
+        
+//        System.out.println("============================STRETCH==================================");
+//        System.out.println("jx = "+jx+"\tjy = "+jy);
+//        System.out.println("ix = "+ix+"\tiy = "+iy);
+
+        
+        if (jy >= yCenterIN)
+        {
+            lA = Math.sqrt((Math.pow(jx - xCenterIN, 2)) + (Math.pow(jy - yCenterIN, 2)));
+            lB = Math.sqrt((Math.pow(bx - xCenterIN, 2)) + (Math.pow(by - yCenterIN, 2)));
+            lF = Math.sqrt((Math.pow(fx - xCenterOUT, 2)) + (Math.pow(fy - yCenterOUT, 2)));
+            
+            lE = lA * lF / lB;
+            
+//            System.out.println("lA = "+lA+"\tlB = "+lB+"\tlF = "+lF+"\tlE = "+lE);
+            
+            A = 1 + Math.pow(mC, 2);
+            B = (-2 * xCenterOUT) - (2 * fx * Math.pow(mC, 2)) + (2 * fy * mC) - (2 * yCenterOUT * mC);
+            C = Math.pow(xCenterOUT, 2) + Math.pow(fx * mC, 2) - (2 * fx * fy * mC) + Math.pow(fy, 2) + (2 * yCenterOUT * fx * mC) - (2 * yCenterOUT * fy) + Math.pow(yCenterOUT, 2) - Math.pow(lE, 2);
+
+            lxA = (-B + Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
+            lxB = (-B - Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
+
+            lyA = (mC * (lxA - fx)) + fy;
+            lyB = (mC * (lxB - fx)) + fy;
+
+            if (lyA >= yCenterOUT)
+            {
+                lx = lxA;
+                ly = lyA;
+            }
+            else
+            {
+                lx = lxB;
+                ly = lyB;
+            }
+        }
+        else
+        {
+            lA = Math.sqrt((Math.pow(jx - xCenterIN, 2)) + (Math.pow(jy - yCenterIN, 2)));
+            lB = Math.sqrt((Math.pow(ax - xCenterIN, 2)) + (Math.pow(ay - yCenterIN, 2)));
+            lF = Math.sqrt((Math.pow(ex - xCenterOUT, 2)) + (Math.pow(ey - yCenterOUT, 2)));
+            
+            lE = lA * lF / lB;
+            
+//            System.out.println("lA = "+lA+"\tlB = "+lB+"\tlF = "+lF+"\tlE = "+lE);
+            
+            
+            A = 1 + Math.pow(mC, 2);
+            B = (-2 * xCenterOUT) - (2 * ex * Math.pow(mC, 2)) + (2 * ey * mC) - (2 * yCenterOUT * mC);
+            C = Math.pow(xCenterOUT, 2) + Math.pow(ex * mC, 2) - (2 * ex * ey * mC) + Math.pow(ey, 2) + (2 * yCenterOUT * ex * mC) - (2 * yCenterOUT * ey) + Math.pow(yCenterOUT, 2) - Math.pow(lE, 2);
+
+            lxA = (-B + Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
+            lxB = (-B - Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
+
+            lyA = (mC * (lxA - ex)) + ey;
+            lyB = (mC * (lxB - ex)) + ey;
+
+            if (lyA < yCenterOUT)
+            {
+                lx = lxA;
+                ly = lyA;
+            }
+            else
+            {
+                lx = lxB;
+                ly = lyB;
+            }
+        }
+
+        if (iy >= yCenterIN)
+        {
+            lC = Math.sqrt((Math.pow(ix - xCenterIN, 2)) + (Math.pow(iy - yCenterIN, 2))); 
+            lD = Math.sqrt((Math.pow(dx - xCenterIN, 2)) + (Math.pow(dy - yCenterIN, 2)));
+            lH = Math.sqrt((Math.pow(hx - xCenterOUT, 2)) + (Math.pow(hy - yCenterOUT, 2)));
+            
+            lG = lC * lH / lD;
+            
+//            System.out.println("lC = "+lC+"\tlD = "+lD+"\tlH = "+lH+"\tlG = "+lG);
+            
+            
+            A = 1 + Math.pow(mD, 2);
+            B = (-2 * xCenterOUT) - (2 * hx * Math.pow(mD, 2)) + (2 * hy * mD) - (2 * yCenterOUT * mD);
+            C = Math.pow(xCenterOUT, 2) + Math.pow(hx * mD, 2) - (2 * hx * hy * mD) + Math.pow(hy, 2) + (2 * yCenterOUT * hx * mD) - (2 * yCenterOUT * hy) + Math.pow(yCenterOUT, 2) - Math.pow(lG, 2);
+
+            kxA = (-B + Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
+            kxB = (-B - Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
+
+            kyA = (mD * (kxA - hx)) + hy;
+            kyB = (mD * (kxB - hx)) + hy;
+
+            if (kyA >= yCenterOUT)
+            {
+                kx = kxA;
+                ky = kyA;
+            }
+            else
+            {
+                kx = kxB;
+                ky = kyB;
+            }
+        }
+        else
+        {
+            lC = Math.sqrt((Math.pow(ix - xCenterIN, 2)) + (Math.pow(iy - yCenterIN, 2)));
+            lD = Math.sqrt((Math.pow(cx - xCenterIN, 2)) + (Math.pow(cy - yCenterIN, 2)));
+            lH = Math.sqrt((Math.pow(gx - xCenterOUT, 2)) + (Math.pow(gy - yCenterOUT, 2)));
+            
+            lG = lC * lH / lD;
+            
+//            System.out.println("lC = "+lC+"\tlD = "+lD+"\tlH = "+lH+"\tlG = "+lG);
+            
+            
+            A = 1 + Math.pow(mD, 2);
+            B = (-2 * xCenterOUT) - (2 * gx * Math.pow(mD, 2)) + (2 * gy * mD) - (2 * yCenterOUT * mD);
+            C = Math.pow(xCenterOUT, 2) + Math.pow(gx * mD, 2) - (2 * gx * gy * mD) + Math.pow(gy, 2) + (2 * yCenterOUT * gx * mD) - (2 * yCenterOUT * gy) + Math.pow(yCenterOUT, 2) - Math.pow(lG, 2);
+
+//            System.out.println("lC = "+lC+"\tlD = "+lD+"\tlH = "+lH+"\tlG = "+lG);
+            
+            
+            kxA = (-B + Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
+            kxB = (-B - Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
+
+            kyA = (mD * (kxA - gx)) + gy;
+            kyB = (mD * (kxB - gx)) + gy;
+
+            if (kyA < yCenterOUT)
+            {
+                kx = kxA;
+                ky = kyA;
+            }
+            else
+            {
+                kx = kxB;
+                ky = kyB;
+            }
+        }
+        
+        
+        xOUT_temp = (ky - ly + (lx * mD) - (kx * mC)) / (mD - mC);
+        yOUT_temp = (mD * (xOUT_temp - lx)) + ly;
+
+        
+        some[0] = (int) Math.round(xOUT_temp);
+        some[1] = (int) Math.round(yOUT_temp);
+        
+        
+		return some;
+	}//END stretch()
+
+	/**
+	 * bloop blooprint.image pixel location intended by user bloop action
+	 * sets Color.RED,BLUE,GREEN according to user intension
+	 * */
+	public static void bloop() {
+		
+		System.out.println("blooping......");
+
+
+		int[] xyOUT = new int[2];	
+		
+		for (int row = 0; row < sketch.getHeight(); row++){
+			for(int col = 0; col < sketch.getWidth(); col++){
+				
+				int xIN = col;
+				int yIN = row;
+				
+				Color pxColor = new Color(sketch.getRGB(xIN,yIN));
+				
+				try{
+					if(areaOfInterest[yIN][xIN]){
+						
+						if (isMarker(pxColor)){
+							
+							System.out.println("xIN = "+xIN+"\tyIN = "+yIN);
+							System.out.println("red = "+pxColor.getRed()+"\tgreen = "+pxColor.getGreen()+"\tblue = "+pxColor.getBlue());
+							xyOUT = stretch(xIN, yIN);
+							blooprint.setRGB(xyOUT[0], xyOUT[1], 0x000000);
+						}
+						
+						
+					}
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				
+			}
+		}
+	}//END bloop()
+	
+	/**
+	 * erase the area found inside the outer border of marker line drawn
+	 * */
+	public static void erase(boolean[][] eraseArea) {
+
+		
+		System.out.println("erasing......");
+
+
+		int[] xyOUT = new int[2];	
+		
+		for (int row = 0; row < sketch.getHeight(); row++){
+			for(int col = 0; col < sketch.getWidth(); col++){
+				
+				int xIN = col;
+				int yIN = row;
+				
+				try{
+					if(eraseArea[yIN][xIN]){
+						
+						xyOUT = stretch(xIN, yIN);
+						blooprint.setRGB(xyOUT[0], xyOUT[1], 0xffffff);
+						
+						
+					}
+				}
+				catch(Exception e){
+					e.printStackTrace();
+				}
+				
+				
+			}
+		}
+
+	}//END erase()
+
+
+	
 	/*
-	 * TODO: delete method upon debugging completion
-	 * this method exists to display that we're examining the correct AREA OF INTEREST in sketch image
+	 * TODO: this method could come in handy for a gui to learn the blooprint system and all its components
+	 * this method exists to display that we're examining the correct AREA OF INTEREST in sketch image	 * 
 	 * */
 	public static void printAOI(boolean[][] isHit, String action) throws IOException {
 		
 		
 		try{
 		
-			BufferedImage ghostBorder = ImageIO.read(new File("C:/Users/david_000/blooprint_api/camera/calibrate.jpg"));
+			BufferedImage ghostBorder = ImageIO.read(new File("some directory/calibrate.jpg"));
 			
 			for (int row = 0; row < ghostBorder.getHeight(); row ++){
 				for (int col = 0; col < ghostBorder.getWidth(); col++){
@@ -263,10 +473,10 @@ public class Blooprint{
 			}
 			
 			if(action == "fill"){
-				ImageIO.write(ghostBorder, "jpg", new File("C:/Users/david_000/blooprint_api/camera/areaOfInterest_filled.jpg"));
+				ImageIO.write(ghostBorder, "jpg", new File("some directory/areaOfInterest_filled.jpg"));
 			}
 			else{
-				ImageIO.write(ghostBorder, "jpg", new File("C:/Users/david_000/blooprint_api/camera/areaOfInterest.jpg"));
+				ImageIO.write(ghostBorder, "jpg", new File("some directory/areaOfInterest.jpg"));
 			}
 			
 			
@@ -333,7 +543,7 @@ public class Blooprint{
 	creates a scan area around the box drawn by user in sketch
 	returns xMIN, xMAX, yMIN, yMAX in sketch
 	*/
-	public static int[] scanUserDrawnArea() {
+	public static int[] zoomToBox() {
 	
 		/**
 		 * these value's starting points are backwards in order for the boolean comparisons below to initiate properly
@@ -350,8 +560,8 @@ public class Blooprint{
 				for(int col = 0; col < sketch.getWidth(); col++){
 					
 					
-					int xIN = 0;
-					int yIN = 0;
+					int xIN = col;
+					int yIN = row;
 					
 					/*
 					 * dealing with pixels input by user - sketch
@@ -359,59 +569,61 @@ public class Blooprint{
 					Color pixel = new Color(sketch.getRGB(xIN,yIN));
 					
 		            
-		            if(isMarker(pixel)){
+		            if(areaOfInterest[yIN][xIN]){
+		            	if(isMarker(pixel)){
 
-		            	System.out.println("xIN = " + xIN);
-		            	System.out.println("yIN = " + yIN);
-						
-						System.out.println("\nfound eraser border!!!\n");
-						
-						/*
-						 * encapsulate eraser area
-						 * */
-						int[] inCoord = new int[2];
-						inCoord[0] = xIN;
-						inCoord[1] = yIN;
-						boolean flag = true;
-						while(flag){
+			            	System.out.println("xIN = " + xIN);
+			            	System.out.println("yIN = " + yIN);
 							
+							System.out.println("\nfound user-drawn border!!!\n");
 							
-							//	2dArray[y][x]
-//							some[inCoord[1]][inCoord[0]] = true;
-							
-							inCoord = getNextBorderPixel(inCoord);
 							/*
-							 * set square boundaries of user input area
+							 * encapsulate eraser area
 							 * */
-							if(inCoord[0] > xmax){
-								xmax = inCoord[0];
-							}
-							if(inCoord[0] < xmin){
-								xmin = inCoord[0];
-							}
-							if(inCoord[1] > ymax){
-								ymax = inCoord[1];
-							}
-							if(inCoord[1] < ymin){
-								ymin = inCoord[1];
+							int[] inCoord = new int[2];
+							inCoord[0] = xIN;
+							inCoord[1] = yIN;
+							boolean flag = true;
+							while(flag){
+								
+								
+								//	2dArray[y][x]
+//								some[inCoord[1]][inCoord[0]] = true;
+								
+								inCoord = getNextBorderPixel(inCoord);
+								/*
+								 * set square boundaries of user input area
+								 * */
+								if(inCoord[0] > xmax){
+									xmax = inCoord[0];
+								}
+								if(inCoord[0] < xmin){
+									xmin = inCoord[0];
+								}
+								if(inCoord[1] > ymax){
+									ymax = inCoord[1];
+								}
+								if(inCoord[1] < ymin){
+									ymin = inCoord[1];
+								}
+								
+								if((inCoord[0] == xIN) && (inCoord[1] == yIN)){
+									System.out.println("made it all the way around the border");
+									
+									flag = false;
+									break here;
+								}
+								
+								
 							}
 							
-							if((inCoord[0] == xIN) && (inCoord[1] == yIN)){
-								System.out.println("made it all the way around the border");
-								
-								flag = false;
-								break here;
-							}
 							
 							
 						}
-						
-						
-						
-					}
-					else{
-						continue;
-					}
+						else{
+							continue;
+						}
+		            }
 				}
 			}//END outer loop
 	
@@ -422,7 +634,7 @@ public class Blooprint{
 		some[3] = xmax+2;
 		
 		return some;
-	}//END scanUserDrawnArea()
+	}//END zoomToBox()
 	
 	/**
 	 * finds user defined projector corners (xy-coordinates) on whiteboard
@@ -678,182 +890,7 @@ public class Blooprint{
 /*=====================================================================*/	
 /*=====================================================================*/	
 	
-	/**
-	 * STRETCH() method: input pixel location -> output pixel location
-	 *
-	 *	This method is the core of Blooprint.xyz its input-output mechanism should remain as-is.
-	 *	Please see derivation approach in project description.
-	 *
-	 *	Forseeable upgrade:
-	 *	Due to physical radial misalignment of camera lens to projector lens, in theory, there could be a
-	 *	dead zone of action on pixels located (thin sliver) along the image center vertical and center horizontal
-	 *	This dead zone must be accounted for somehow if my theory is correct, but the whole of the image
-	 *	manipulation should remain unchanged.
-	 * */
-	public static int[] stretch(int x, int y) {
-		
-		
-		int[] some = new int[2];
-		
-//		jx = (y - (x * mB) + (xCenterIN * mA) - yCenterIN) / (mA - mB);
-//        jy = (mA * (jx - xCenterIN)) + yCenterIN;
-//        ix = (y - (x * mA) + (xCenterIN * mB) - yCenterIN) / (mB - mA);
-//        iy = (mB * (ix - xCenterIN)) + yCenterIN;
-
-		jx = ((double)y - ((double)x * mB) + (xCenterIN * mA) - yCenterIN) / (mA - mB);
-        jy = (mA * (jx - xCenterIN)) + yCenterIN;
-        ix = ((double)y - ((double)x * mA) + (xCenterIN * mB) - yCenterIN) / (mB - mA);
-        iy = (mB * (ix - xCenterIN)) + yCenterIN;
-        
-//        System.out.println("============================STRETCH==================================");
-//        System.out.println("jx = "+jx+"\tjy = "+jy);
-//        System.out.println("ix = "+ix+"\tiy = "+iy);
-
-        
-        if (jy >= yCenterIN)
-        {
-            lA = Math.sqrt((Math.pow(jx - xCenterIN, 2)) + (Math.pow(jy - yCenterIN, 2)));
-            lB = Math.sqrt((Math.pow(bx - xCenterIN, 2)) + (Math.pow(by - yCenterIN, 2)));
-            lF = Math.sqrt((Math.pow(fx - xCenterOUT, 2)) + (Math.pow(fy - yCenterOUT, 2)));
-            
-            lE = lA * lF / lB;
-            
-//            System.out.println("lA = "+lA+"\tlB = "+lB+"\tlF = "+lF+"\tlE = "+lE);
-            
-            A = 1 + Math.pow(mC, 2);
-            B = (-2 * xCenterOUT) - (2 * fx * Math.pow(mC, 2)) + (2 * fy * mC) - (2 * yCenterOUT * mC);
-            C = Math.pow(xCenterOUT, 2) + Math.pow(fx * mC, 2) - (2 * fx * fy * mC) + Math.pow(fy, 2) + (2 * yCenterOUT * fx * mC) - (2 * yCenterOUT * fy) + Math.pow(yCenterOUT, 2) - Math.pow(lE, 2);
-
-            lxA = (-B + Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
-            lxB = (-B - Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
-
-            lyA = (mC * (lxA - fx)) + fy;
-            lyB = (mC * (lxB - fx)) + fy;
-
-            if (lyA >= yCenterOUT)
-            {
-                lx = lxA;
-                ly = lyA;
-            }
-            else
-            {
-                lx = lxB;
-                ly = lyB;
-            }
-        }
-        else
-        {
-            lA = Math.sqrt((Math.pow(jx - xCenterIN, 2)) + (Math.pow(jy - yCenterIN, 2)));
-            lB = Math.sqrt((Math.pow(ax - xCenterIN, 2)) + (Math.pow(ay - yCenterIN, 2)));
-            lF = Math.sqrt((Math.pow(ex - xCenterOUT, 2)) + (Math.pow(ey - yCenterOUT, 2)));
-            
-            lE = lA * lF / lB;
-            
-//            System.out.println("lA = "+lA+"\tlB = "+lB+"\tlF = "+lF+"\tlE = "+lE);
-            
-            
-            A = 1 + Math.pow(mC, 2);
-            B = (-2 * xCenterOUT) - (2 * ex * Math.pow(mC, 2)) + (2 * ey * mC) - (2 * yCenterOUT * mC);
-            C = Math.pow(xCenterOUT, 2) + Math.pow(ex * mC, 2) - (2 * ex * ey * mC) + Math.pow(ey, 2) + (2 * yCenterOUT * ex * mC) - (2 * yCenterOUT * ey) + Math.pow(yCenterOUT, 2) - Math.pow(lE, 2);
-
-            lxA = (-B + Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
-            lxB = (-B - Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
-
-            lyA = (mC * (lxA - ex)) + ey;
-            lyB = (mC * (lxB - ex)) + ey;
-
-            if (lyA < yCenterOUT)
-            {
-                lx = lxA;
-                ly = lyA;
-            }
-            else
-            {
-                lx = lxB;
-                ly = lyB;
-            }
-        }
-
-        if (iy >= yCenterIN)
-        {
-            lC = Math.sqrt((Math.pow(ix - xCenterIN, 2)) + (Math.pow(iy - yCenterIN, 2))); 
-            lD = Math.sqrt((Math.pow(dx - xCenterIN, 2)) + (Math.pow(dy - yCenterIN, 2)));
-            lH = Math.sqrt((Math.pow(hx - xCenterOUT, 2)) + (Math.pow(hy - yCenterOUT, 2)));
-            
-            lG = lC * lH / lD;
-            
-//            System.out.println("lC = "+lC+"\tlD = "+lD+"\tlH = "+lH+"\tlG = "+lG);
-            
-            
-            A = 1 + Math.pow(mD, 2);
-            B = (-2 * xCenterOUT) - (2 * hx * Math.pow(mD, 2)) + (2 * hy * mD) - (2 * yCenterOUT * mD);
-            C = Math.pow(xCenterOUT, 2) + Math.pow(hx * mD, 2) - (2 * hx * hy * mD) + Math.pow(hy, 2) + (2 * yCenterOUT * hx * mD) - (2 * yCenterOUT * hy) + Math.pow(yCenterOUT, 2) - Math.pow(lG, 2);
-
-            kxA = (-B + Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
-            kxB = (-B - Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
-
-            kyA = (mD * (kxA - hx)) + hy;
-            kyB = (mD * (kxB - hx)) + hy;
-
-            if (kyA >= yCenterOUT)
-            {
-                kx = kxA;
-                ky = kyA;
-            }
-            else
-            {
-                kx = kxB;
-                ky = kyB;
-            }
-        }
-        else
-        {
-            lC = Math.sqrt((Math.pow(ix - xCenterIN, 2)) + (Math.pow(iy - yCenterIN, 2)));
-            lD = Math.sqrt((Math.pow(cx - xCenterIN, 2)) + (Math.pow(cy - yCenterIN, 2)));
-            lH = Math.sqrt((Math.pow(gx - xCenterOUT, 2)) + (Math.pow(gy - yCenterOUT, 2)));
-            
-            lG = lC * lH / lD;
-            
-//            System.out.println("lC = "+lC+"\tlD = "+lD+"\tlH = "+lH+"\tlG = "+lG);
-            
-            
-            A = 1 + Math.pow(mD, 2);
-            B = (-2 * xCenterOUT) - (2 * gx * Math.pow(mD, 2)) + (2 * gy * mD) - (2 * yCenterOUT * mD);
-            C = Math.pow(xCenterOUT, 2) + Math.pow(gx * mD, 2) - (2 * gx * gy * mD) + Math.pow(gy, 2) + (2 * yCenterOUT * gx * mD) - (2 * yCenterOUT * gy) + Math.pow(yCenterOUT, 2) - Math.pow(lG, 2);
-
-//            System.out.println("lC = "+lC+"\tlD = "+lD+"\tlH = "+lH+"\tlG = "+lG);
-            
-            
-            kxA = (-B + Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
-            kxB = (-B - Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
-
-            kyA = (mD * (kxA - gx)) + gy;
-            kyB = (mD * (kxB - gx)) + gy;
-
-            if (kyA < yCenterOUT)
-            {
-                kx = kxA;
-                ky = kyA;
-            }
-            else
-            {
-                kx = kxB;
-                ky = kyB;
-            }
-        }
-        
-        
-        xOUT_temp = (ky - ly + (lx * mD) - (kx * mC)) / (mD - mC);
-        yOUT_temp = (mD * (xOUT_temp - lx)) + ly;
-
-        
-        some[0] = (int) Math.round(xOUT_temp);
-        some[1] = (int) Math.round(yOUT_temp);
-        
-        
-		return some;
-	}//END stretch()
-
+	
 	/*
 	Sets calibration values to DB
 	*/
@@ -970,18 +1007,10 @@ public class Blooprint{
 		rightSlope 	= ((double)cy-(double)by)/((double)cx-(double)bx);
 		
 		
-//		topSlope 	= ((double)bby-(double)aay)/((double)bbx-(double)aax);
-//		bottomSlope = ((double)ddy-(double)ccy)/((double)ddx-(double)ccx);
-//		leftSlope 	= ((double)ccy-(double)aay)/((double)ccx-(double)aax);
-//		rightSlope 	= ((double)ddy-(double)bby)/((double)ddx-(double)bbx);
-		
 	}//END loadCalibration()
 
 	/**
 	 * User convenience calibration information saved for load next program start
-	 * 
-	 * TODO:
-	 * change table columns.  no longer need borders -> DO need corner_XY values
 	 * */
 	public static void saveCalibration() throws Exception {
 		
@@ -1306,6 +1335,9 @@ public class Blooprint{
 
 		int[] next = new int[2];
 		
+		
+		System.out.println("============================\nlastX = "+coord[0]+"\tlastY = "+coord[1]);
+		
 		/*
 		 * all 8 surrounding pixels need to be checked counterclockwise
 		 * */
@@ -1458,13 +1490,10 @@ public class Blooprint{
 			}
 		}
 		
-		System.out.println("end of loading image");
-		
 		return some;
 	}//END loadImage()
 
 	/**
-	 * ctrl + ENTER -> bloop action
 	 * DB table is updated with added image of latest blooprint image state
 	 * */
 	public static void saveBlooprint() throws IOException {
@@ -1489,86 +1518,6 @@ public class Blooprint{
 		}
 	}//END saveBlooprint()
 
-	/**
-	 * bloop blooprint.image pixel location intended by user bloop action
-	 * sets Color.RED,BLUE,GREEN according to user intension
-	 * */
-	public static void bloop() {
-		
-		System.out.println("blooping......");
-
-
-		int[] xyOUT = new int[2];	
-		
-		for (int row = 0; row < sketch.getHeight(); row++){
-			for(int col = 0; col < sketch.getWidth(); col++){
-				
-				int xIN = col;
-				int yIN = row;
-				
-				Color pxColor = new Color(sketch.getRGB(xIN,yIN));
-				
-				try{
-					if(areaOfInterest[yIN][xIN]){
-						
-						if (isMarker(pxColor)){
-							
-							System.out.println("xIN = "+xIN+"\tyIN = "+yIN);
-							System.out.println("red = "+pxColor.getRed()+"\tgreen = "+pxColor.getGreen()+"\tblue = "+pxColor.getBlue());
-							xyOUT = stretch(xIN, yIN);
-							blooprint.setRGB(xyOUT[0], xyOUT[1], 0x000000);
-						}
-						
-						
-					}
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
-				
-				
-			}
-		}
-	}//END bloop()
-	
-	/**
-	 * erase the area found inside the outer border of marker line drawn
-	 * */
-	public static void erase(boolean[][] eraseArea) {
-
-		
-		System.out.println("erasing......");
-
-
-		int[] xyOUT = new int[2];	
-		
-		for (int row = 0; row < sketch.getHeight(); row++){
-			for(int col = 0; col < sketch.getWidth(); col++){
-				
-				int xIN = col;
-				int yIN = row;
-				
-				try{
-					if(eraseArea[yIN][xIN]){
-						
-						xyOUT = stretch(xIN, yIN);
-						blooprint.setRGB(xyOUT[0], xyOUT[1], 0xffffff);
-						
-						
-					}
-				}
-				catch(Exception e){
-					e.printStackTrace();
-				}
-				
-				
-			}
-		}
-
-	}//END erase()
-
-
-	
 	/**
 	 * dealing with lit projector area on whiteboard
 	 * sets binary border for future use in floodBorder() method
@@ -1625,18 +1574,7 @@ public class Blooprint{
 	public static boolean[][] getAreaOfInterestBorder() {		
 		
 		boolean[][] border = new boolean[sketch.getHeight()][sketch.getWidth()];
-		
-//		System.out.println("aax = "+aax+"\taay = "+aay);
-//		System.out.println("bbx = "+bbx +"\tbby = "+bby);
-//		System.out.println("ccx = "+ccx +"\tccy = "+ccy);
-//		System.out.println("ddx = "+ddx+"\tddy = "+ddy);
-		
-//		System.out.println("topSlope = "+topSlope);
-//		System.out.println("bottomSlope = "+bottomSlope);
-//		System.out.println("leftSlope = "+leftSlope);
-//		System.out.println("rightSlope = "+rightSlope);
-		
-		
+				
 		for(int x = aax; x <= bbx; x++){//top
 			
 			double intersect_double = bby - (topSlope*bbx);
@@ -1685,8 +1623,6 @@ public class Blooprint{
 	 * */
 	public static boolean[][] floodBorder(boolean[][] floodArea, int x, int y) {
 		
-		int count = 0;
-				
         if (!floodArea[y][x]) {
         	
         	
@@ -1707,12 +1643,6 @@ public class Blooprint{
 	                queue.add(new Point(p.x, p.y + 1));
 	                queue.add(new Point(p.x, p.y - 1));
 	                
-	                count++;
-	        		
-//	                if(count < 10){
-//	                	System.out.println("floodArea X = "+p.x+"\tY = "+p.y);
-//	                }
-	                
 	            }
 		    }
 		    
@@ -1722,58 +1652,11 @@ public class Blooprint{
 	}//END floodBorder()
 
 
-	
-	public static int mark = 150;
-	
-	public static boolean isBlue(int r, int g, int b) {
-		if(r < 100 & g < 100 & b > mark){
-			return true;
-		}
-		return false;
-	}//END isBlue()
-
-	
-	/**
-	 * checking if instantaneous pixel is green or not
-	 * returns true or false
-	 * */
-	public static boolean isGreen(int r, int g, int b) {
-		if(r < 100 & g > mark & b < 100){
-			return true;
-		}
-		return false;
-	}//END isGreen()
-
-	
-	/**
-	 * checking if instantaneous pixel is red or not
-	 * returns true or false
-	 * */
-	public static boolean isRed(int r, int g, int b) {
-		if(r > mark & g < 100 & b < 100){
-			return true;
-		}
-		return false;
-	}//END isRed()
-
-	/*
-	*	check if instantaneous pixel is drawn by user
-	*/
-	public static boolean isDrawn(int r, int g, int b){
-
-		if((r > mark & g < 100 & b < 100)
-				|| (r < 100 & g > mark & b < 100)
-				|| (r < 100 & g < 100 & b > mark)
-				|| (r < 100 & g < 100 & b < 100)){
-			
-			return true;
-		}
-		return false;
-	}//END isDrawn()
-
 	/**
 	 * checking if instantaneous pixel is ANY color or not
 	 * returns true or false
+	 * 
+	 * TODO: for now the only color use case is black.  need to incorporate red, green, and blue user options
 	 * */
 	public static boolean isMarker(Color x) {
 		if((x.getRed() > mark & x.getGreen() < 100 & x.getBlue() < 100)
@@ -1785,6 +1668,5 @@ public class Blooprint{
 		}
 		return false;
 	}//END isMarker()
-	
 	
 }
