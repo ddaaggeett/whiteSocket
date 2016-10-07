@@ -1,5 +1,5 @@
 /**
-*   BLOOPRINT.XYZ: next-gen think tank
+*   BLOOPRINT.XYZ: we are think tank
 *   Copyright (C) 2016 - Dave Daggett - Blooprint, LLC
 *
 *   This program is free software; you can redistribute it and/or modify
