@@ -44,13 +44,15 @@ All whiteboard design must take place within lit projector bounds, including the
 	`java Blooprint <title> bloop`
 	or
 	`java Blooprint <title> erase`
-	Blooprint image updates
+
+Blooprint image updates
 
 ####blip
 1. User draws a box area and hits **blip**.  Textarea unit values are returned for textarea addition to the DOM where the text is maintained by users within the web app.
 2. Run
 	`java Blooprint <title> blip`
-	Blips textareas can also be created by user in web app by click and drag rectangle
+Blips textareas can also be created by user in web app by click and drag rectangle
+
 ________________________________
 Creator:	DAVE DAGGETT - BLOOPRINT, LLC
 
