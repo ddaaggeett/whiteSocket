@@ -7,7 +7,7 @@ The Blooprint API is the world's most cost-effective content generation platform
 
 Simply, it gives the user a whiteboard design space with autosave and instantaneous editablility of hand-drawn work.
 ________________________________
-From [web app](www.blooprint.xyz), run the following:
+From [web app](http://www.blooprint.xyz), run the following:
 
     javac Blooprint.java
     java Blooprint <current blooprint title> <input mode>
@@ -23,7 +23,7 @@ Image capture **input mode** = pick one -> "bloop", "blip", "erase", "calibrate"
 ###DETAILS
 The sole purpose of the Blooprint image-processing API is to enable a version control system in which archives revisions of freehand design.  This API is specifically built to edit the physical drawn state of the image.  There are only two functions to call on the blooprint image 1.ADD(BLOOP) 2.ERASE
 
-Blooprint image state maintenance (BLOOP+ERASE) can only be done by users with a [hardware station](https://github.com/ddaaggeett/blooprint.xyz/wiki/Required-Hardware).  Text additions (BLIP) on the other hand are able to be maintained by anyone who has open access to the website.  Blips are the way in which the [bloprint.xyz](www.blooprint.xyz) web app can tag blooprint image state details in a tagging manner, creating a user-defined layer of understanding pertaining to the blooprint image.  Think of the text as supplementary discourse about the drawings - a layer of transposing.  Blips are what give the version control system an open and maintainable argument platform.  Where the image state is the official object of interest.
+Blooprint image state maintenance (BLOOP+ERASE) can only be done by users with a [hardware station](https://github.com/ddaaggeett/blooprint.xyz/wiki/Required-Hardware).  Text additions (BLIP) on the other hand are able to be maintained by anyone who has open access to the website.  Blips are the way in which the [bloprint.xyz](http://www.blooprint.xyz) web app can tag blooprint image state details in a tagging manner, creating a user-defined layer of understanding pertaining to the blooprint image.  Think of the text as supplementary discourse about the drawings - a layer of transposing.  Blips are what give the version control system an open and maintainable argument platform.  Where the image state is the official object of interest.
 
 The Blooprint API returns DOM element data for dynamic web application development.  Web application is to run full screen (F11) in the client browser and consists of only a background image and textareas.
 
@@ -54,6 +54,6 @@ All whiteboard design must take place within lit projector bounds, including the
 Blips textareas can also be created by user in web app by click and drag rectangle
 
 ________________________________
-Creator:	DAVE DAGGETT - BLOOPRINT, LLC
+###Creator:	DAVE DAGGETT - BLOOPRINT, LLC
 
-Licence:	[GPLv3](https://github.com/ddaaggeett/blooprint.xyz/blob/master/LICENSE)
+###Licence:	[GPLv3](https://github.com/ddaaggeett/blooprint.xyz/blob/master/LICENSE)
