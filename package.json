@@ -1,0 +1,19 @@
+{
+  "name": "blooprint.xyz",
+  "version": "0.0.0",
+  "description": "version control for freehand design using the blooprint image process API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ddaaggeett/blooprint.xyz.git"
+  },
+  "author": "Dave Daggett (dave@blooprint.xyz)",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/ddaaggeett/blooprint.xyz/issues"
+  },
+  "homepage": "https://github.com/ddaaggeett/blooprint.xyz#readme"
+}
