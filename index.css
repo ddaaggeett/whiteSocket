@@ -1,0 +1,76 @@
+#introbar{
+	/*display: block;*/
+	/*border: 1px solid black;*/
+}
+#blue{
+	position: absolute;
+	top: 150px;
+	right: 0px;
+	left: 370px;
+	height: 2px;
+	border-bottom: 2px solid blue;
+}
+#red{
+	position: absolute;
+	top: 154px;
+	right: 100px;
+	height: 2px;
+	left: 380px;
+	border-bottom: 2px solid red;
+}
+#green{
+	position: absolute;
+	top: 158px;
+	right: 200px;
+	height: 2px;
+	left: 390px;
+	border-bottom: 2px solid green;
+}
+#logo{
+	position: absolute;
+	top: 100px;
+	left: 50px;
+	height: 80px;
+}
+#slogan{
+	position: absolute;
+	left: 450px;
+	top: 90px;
+	display: inline;
+	font-family: Courier;
+	font-size: 26px;
+	font-weight: 400;
+}
+#reg{
+	position: absolute;
+	top: 140px;
+	left: 335px;
+}
+#mainbody{
+
+}
+#mission{
+	position: absolute;
+	top: 45%;
+	/*left: 40%;*/
+	right: 7%;
+	font-family: Courier;
+	font-size: 22px;
+	color: red;
+}
+#smaller{
+	/*font-size: 16px;*/
+}
+#comingsoon{
+	position: absolute;
+	left: 100px;
+}
+#desc{
+	position: absolute;
+	right: 15%;
+	top: 155px;
+	display: inline;
+	font-family: Courier;
+	font-size: 18px;
+	font-weight: 400;
+}
