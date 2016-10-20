@@ -1,4 +1,4 @@
-Please visit the official [blooprint.xyz](http://www.blooprint.xyz) website and see our [wiki](https://github.com/ddaaggeett/blooprint.xyz/wiki).
+Please visit our [wiki](https://github.com/ddaaggeett/blooprint.xyz/wiki).
 ------------------------------------------------------------------------
 
 Blooprint is the means for the common person to have a public access point to a distributed version control system.

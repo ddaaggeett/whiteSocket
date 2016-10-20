@@ -1,7 +1,11 @@
 
+CREATE DATABASE blooprint;
+
+USE blooprint;
+
 -- create MySQLdatabase tables
 
-CREATE TABLE `blooprint.xyz`.`_calibration` ( 
+CREATE TABLE `blooprint`.`_calibration` ( 
 	`id` INT NOT NULL AUTO_INCREMENT , 
 	`ax` INT NOT NULL , 
 	`ay` INT NOT NULL , 
@@ -41,7 +45,7 @@ CREATE TABLE `blooprint.xyz`.`_calibration` (
 	`yCenterOUT` DOUBLE NOT NULL , 
 	PRIMARY KEY (`id`));
 
-CREATE TABLE `blooprint.xyz`.`_clientclicks` ( 
+CREATE TABLE `blooprint`.`_clientclicks` ( 
 	`id` INT NOT NULL AUTO_INCREMENT , 
 	`ulx` INT NOT NULL , 
 	`uly` INT NOT NULL , 
@@ -55,18 +59,18 @@ CREATE TABLE `blooprint.xyz`.`_clientclicks` (
 	`height` INT NOT NULL , 
 	PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
-CREATE TABLE `blooprint.xyz`.`_sketches` (
+CREATE TABLE `blooprint`.`_sketches` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `image` LONGBLOB NOT NULL,
   PRIMARY KEY (`id`));
 
-CREATE TABLE `blooprint.xyz`.`testbp` (
+CREATE TABLE `blooprint`.`testbp` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `blooprint` LONGBLOB NOT NULL,
   PRIMARY KEY (`id`));
 
 -- table name = [blooprint title]+"_blips"
-CREATE TABLE `blooprint.xyz`.`testbp_blips` (
+CREATE TABLE `blooprint`.`testbp_blips` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `x` DOUBLE NOT NULL,
   `y` DOUBLE NOT NULL,
