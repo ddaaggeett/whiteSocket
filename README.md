@@ -15,11 +15,13 @@ Image capture **input mode** = pick one -> "bloop", "blip", "erase", "calibrate"
  - **blip** = Returns textarea location (x,y,width,height)
  - **erase** = Returns compiled blooprint image - input image contains user-drawn eraser area
  - **calibrate** = Returns calibration info to be used for image processing. Run any time client hardware [(whiteboard, camera, projector)](https://github.com/ddaaggeett/blooprint.xyz/wiki/Required-Hardware) is set up and stationary
+
 ####**calibrate**
 1. Once hardware is set in place, the user draws 4 corner marks as accurately as possible in the projection area out to the corner bounds. -> user then hits **calibrate**
 2. Run
 	`java Blooprint <title> calibrate`
 3. Image capture is displayed full screen in web app where the user then clicks 4 points just outside of user drawn corner points.  ie - these 4 click points are to be located on the whiteboard in the image, but outside the lit projection area.  The image processing is then able to only act upon pixels within the desired preojection area.
+
 ####**bloop**/**erase**
 1. 	User makes drawing revisions by adding marker and hitting **bloop**, or by drawing a single encapsulating area to be erased and hitting **erase**.
 2. Run
