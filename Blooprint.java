@@ -1400,7 +1400,7 @@ public class Blooprint{
 			* http://dev.mysql.com/downloads/connector/j/
 			*/
 			Class.forName("com.mysql.jdbc.Driver");
-			String url = "jdbc:mysql://127.0.0.1:3306/blooprint.xyz";
+			String url = "jdbc:mysql://127.0.0.1:3306/blooprint";
 			String username = "root";
 			String password = "password";
 			Connection c = DriverManager.getConnection(url,username,password);
