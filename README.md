@@ -1,5 +1,5 @@
 #Welcome to the Blooprint API **source** repository
-###Are you the **non-techie** type?  Please **visit our** [**wiki**](https://github.com/ddaaggeett/blooprint-api/wiki)
+###Are you the **non-techie** type?  Please **visit our** (incomplete) [**wiki**](https://github.com/ddaaggeett/blooprint-api/wiki) page.
 This API is **used by** the [**blooprint.xyz**](http://www.blooprint.xyz) web application.
 
 ##An overview for the **web developer**
@@ -37,5 +37,5 @@ Image capture **input mode** = pick one -> "bloop", "blip", "erase", "calibrate"
 	`java Blooprint <title> blip`
 Blips textareas can also be created by user in web app by click and drag rectangle
 
-###Created by Dave Daggett - Blooprint, LLC
+###Created by Dave Daggett
 ###Licence:	[**GPL-3.0**](https://github.com/ddaaggeett/blooprint.xyz/blob/master/LICENSE)
