@@ -1,5 +1,5 @@
 #Welcome to the Blooprint API **source** repository
-###Are you the **non-techie** type?  Please **visit our** (incomplete) [**wiki**](https://github.com/ddaaggeett/blooprint-api/wiki) page.
+###Are you the **non-techie** type?  Please **visit our** (incomplete) [**wiki**](https://github.com/ddaaggeett/blooprint.xyz/wiki) page.
 This API is **used by** the [**blooprint.xyz**](http://www.blooprint.xyz) web application.
 
 ##An overview for the **web developer**
