@@ -1,1 +1,9 @@
 blooprint-api.wiki/
+*.jpg
+*.JPG
+*.jpeg
+*.JPEG
+.classpath
+.DS_store
+.project
+.settings

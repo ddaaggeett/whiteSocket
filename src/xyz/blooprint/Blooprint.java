@@ -18,16 +18,12 @@
 */
 
 /**
-*	Blooprint command line API:
+*	run this API (JAR file) from the Blooprint application (https://github.com/blooprint/blooprint)
+*	java -jar Blooprint.jar [blooprint title] [calibrate/bloop/erase/blip]
 *
-*	javac Blooprint.java
-*	java Blooprint [user email] [blooprint title] [calibrate/bloop/erase/blip]
-*	
-*	purpose: input image from DB -> returns processed image to DB for display
+*	purpose: input image from hard drive -> returns processed image to hard drive for display
 *
-*	RULES:
-*	-must make blooprint image, sketch image, and client browser the same aspect ratio - for now
-*	
+*	for now, it's recommended the input image aspect ratio EQUALS the output image aspect ratio
 */
 
 package xyz.blooprint;
@@ -40,6 +36,7 @@ import java.awt.image.DataBufferByte;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -51,6 +48,13 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import javax.imageio.ImageIO;
+
+
+import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import java.io.FileReader;
+//import java.util.Iterator;
 
 
 
@@ -69,46 +73,46 @@ public class Blooprint{
 	public static int ax,ay,bx,by,cx,cy,dx,dy,fx,fy,gx,hy;
 	public static double ex, ey, gy, hx = 0;
 
-	public static double mA, mB, mC, mD, yCenterIN, xCenterIN, xCenterOUT, yCenterOUT, xOUT_temp, 
-						yOUT_temp, lxA, lxB, lyA, lyB, kxA, kxB, kyA, kyB, jx, jy, ix, iy, lx, ly, 
+	public static double mA, mB, mC, mD, yCenterIN, xCenterIN, xCenterOUT, yCenterOUT, xOUT_temp,
+						yOUT_temp, lxA, lxB, lyA, lyB, kxA, kxB, kyA, kyB, jx, jy, ix, iy, lx, ly,
 						kx, ky, A, B, C, lA, lB, lC, lD, lE, lF, lG, lH;
-	
+
 	/*first border hit*/
 	public static int borderStart_X,borderStart_Y;
-	
-	
+
+
 	public static double unit_aax,unit_aay,unit_bbx,unit_bby,unit_ccx,unit_ccy,unit_ddx,unit_ddy;
-	
+
 	public static double clientWidth, clientHeight;
-	
+
 	public static boolean[][] areaOfInterest;
 	public static boolean[][] sketchDrawnArea;
-	
+
 	public static int tx, ty;
-	
+
 	/*
 	 * MARK = fixed RGB value for input drawing recognition
 	 * SEE -> isMarker()
 	 * */
 	public static int mark = 150;
-	
+
 	public static void main(String[] args) throws Exception{
-		
+
 		title = args[0];
 		inMode = args[1];
-		
-		blooprint = loadImage(title);
-		sketch = loadImage(null);
-		
-		
+
+		blooprint = loadBlooprint("data/blooprints/");
+		sketch = loadSketch("data/sketches/"+title+".jpg");
+
+
 	    switch(inMode){
 
 			case "calibrate":
 				/*
 				 * WEB DEV NOTE:
-				 * 
+				 *
 				 * user must have option to calibrate at any time.
-				 * 
+				 *
 				 * PROCESS
 				 * Image is captured, image is immediately displayed to client full screen.
 				 * Image will contain image of surface behind whiteboard - this is the raw
@@ -117,53 +121,53 @@ public class Blooprint{
 				 * The user points must be ON the whiteboard shown in the image.
 				 * USER REQUIREMENT:
 				 * Each point should be able to make a line draw to the
-				 * adjacent 2 points that is undisturbed by the writable area. 
+				 * adjacent 2 points that is undisturbed by the writable area.
 				 * ie - the diagonal is not an undisturbed line because
 				 * you have to pass through the writable area
 				 * */
-				
+
 				getClientUnitClicks();
 			    calibrate();
 			    break;
-			
+
 			case "bloop":
 				/**
 				*	purpose: save updated blooprint image to DB
 				**/
 				loadCalibration();
 				areaOfInterest = getLightBorder();
-				
+
 				/*
 				 * start flooding right below center of topSlope
 				 * */
 				tx = (ax+cx)/2;
 				ty = (ay+cy)/2;
 				areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
-				
+
 				bloop();
 				saveBlooprint();
 				break;
-			
+
 			case "erase":
 				/**
 				*	purpose: save updated blooprint image to DB
 				**/
 				loadCalibration();
-				
+
 				areaOfInterest = getLightBorder();
-				
+
 				/*
 				 * start flooding right below center of topSlope
 				 * */
 				tx = (ax+cx)/2;
 				ty = (ay+cy)/2;
 				areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
-				
+
 				sketchDrawnArea = getSketchDrawnArea();
 				erase(sketchDrawnArea);
 				saveBlooprint();
 				break;
-			
+
 			case "blip":
 				/*
 				*	purpose: save textbox location unit values to DB -> x,y,width,height
@@ -176,16 +180,16 @@ public class Blooprint{
 				*	eliminating the need for a mouse entirely.
 				**/
 				loadCalibration();
-				
+
 				areaOfInterest = getLightBorder();
-				
+
 				/*
 				 * start flooding right below center of topSlope
 				 * */
 				tx = (ax+cx)/2;
 				ty = (ay+cy)/2;
 				areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
-				
+
 				/**
 	    		 * box drawn by user on whiteboard dictating exactly where they want new BLIP text to be located on BLOOPRINT
 	    		 * */
@@ -198,14 +202,16 @@ public class Blooprint{
 				*/
 	    		float[] unitBox = setUnitTextbox(userIntendedCorners);
 				setBlip(unitBox);
-				
+
 				break;
-			
+
 		}
 
-		
+
 	}//END main()
+
 	
+
 	/**
 	 * STRETCH() method: input pixel location -> output pixel location
 	 *
@@ -213,30 +219,30 @@ public class Blooprint{
 	 *	Please see derivation approach in project description.
 	 * */
 	public static int[] stretch(int x, int y) {
-		
-		
+
+
 		int[] some = new int[2];
-		
+
 		jx = ((double)y - ((double)x * mB) + (xCenterIN * mA) - yCenterIN) / (mA - mB);
         jy = (mA * (jx - xCenterIN)) + yCenterIN;
         ix = ((double)y - ((double)x * mA) + (xCenterIN * mB) - yCenterIN) / (mB - mA);
         iy = (mB * (ix - xCenterIN)) + yCenterIN;
-        
+
 //        System.out.println("============================STRETCH==================================");
 //        System.out.println("jx = "+jx+"\tjy = "+jy);
 //        System.out.println("ix = "+ix+"\tiy = "+iy);
 
-        
+
         if (jy >= yCenterIN)
         {
             lA = Math.sqrt((Math.pow(jx - xCenterIN, 2)) + (Math.pow(jy - yCenterIN, 2)));
             lB = Math.sqrt((Math.pow(bx - xCenterIN, 2)) + (Math.pow(by - yCenterIN, 2)));
             lF = Math.sqrt((Math.pow(fx - xCenterOUT, 2)) + (Math.pow(fy - yCenterOUT, 2)));
-            
+
             lE = lA * lF / lB;
-            
+
 //            System.out.println("lA = "+lA+"\tlB = "+lB+"\tlF = "+lF+"\tlE = "+lE);
-            
+
             A = 1 + Math.pow(mC, 2);
             B = (-2 * xCenterOUT) - (2 * fx * Math.pow(mC, 2)) + (2 * fy * mC) - (2 * yCenterOUT * mC);
             C = Math.pow(xCenterOUT, 2) + Math.pow(fx * mC, 2) - (2 * fx * fy * mC) + Math.pow(fy, 2) + (2 * yCenterOUT * fx * mC) - (2 * yCenterOUT * fy) + Math.pow(yCenterOUT, 2) - Math.pow(lE, 2);
@@ -263,12 +269,12 @@ public class Blooprint{
             lA = Math.sqrt((Math.pow(jx - xCenterIN, 2)) + (Math.pow(jy - yCenterIN, 2)));
             lB = Math.sqrt((Math.pow(ax - xCenterIN, 2)) + (Math.pow(ay - yCenterIN, 2)));
             lF = Math.sqrt((Math.pow(ex - xCenterOUT, 2)) + (Math.pow(ey - yCenterOUT, 2)));
-            
+
             lE = lA * lF / lB;
-            
+
 //            System.out.println("lA = "+lA+"\tlB = "+lB+"\tlF = "+lF+"\tlE = "+lE);
-            
-            
+
+
             A = 1 + Math.pow(mC, 2);
             B = (-2 * xCenterOUT) - (2 * ex * Math.pow(mC, 2)) + (2 * ey * mC) - (2 * yCenterOUT * mC);
             C = Math.pow(xCenterOUT, 2) + Math.pow(ex * mC, 2) - (2 * ex * ey * mC) + Math.pow(ey, 2) + (2 * yCenterOUT * ex * mC) - (2 * yCenterOUT * ey) + Math.pow(yCenterOUT, 2) - Math.pow(lE, 2);
@@ -293,15 +299,15 @@ public class Blooprint{
 
         if (iy >= yCenterIN)
         {
-            lC = Math.sqrt((Math.pow(ix - xCenterIN, 2)) + (Math.pow(iy - yCenterIN, 2))); 
+            lC = Math.sqrt((Math.pow(ix - xCenterIN, 2)) + (Math.pow(iy - yCenterIN, 2)));
             lD = Math.sqrt((Math.pow(dx - xCenterIN, 2)) + (Math.pow(dy - yCenterIN, 2)));
             lH = Math.sqrt((Math.pow(hx - xCenterOUT, 2)) + (Math.pow(hy - yCenterOUT, 2)));
-            
+
             lG = lC * lH / lD;
-            
+
 //            System.out.println("lC = "+lC+"\tlD = "+lD+"\tlH = "+lH+"\tlG = "+lG);
-            
-            
+
+
             A = 1 + Math.pow(mD, 2);
             B = (-2 * xCenterOUT) - (2 * hx * Math.pow(mD, 2)) + (2 * hy * mD) - (2 * yCenterOUT * mD);
             C = Math.pow(xCenterOUT, 2) + Math.pow(hx * mD, 2) - (2 * hx * hy * mD) + Math.pow(hy, 2) + (2 * yCenterOUT * hx * mD) - (2 * yCenterOUT * hy) + Math.pow(yCenterOUT, 2) - Math.pow(lG, 2);
@@ -328,19 +334,19 @@ public class Blooprint{
             lC = Math.sqrt((Math.pow(ix - xCenterIN, 2)) + (Math.pow(iy - yCenterIN, 2)));
             lD = Math.sqrt((Math.pow(cx - xCenterIN, 2)) + (Math.pow(cy - yCenterIN, 2)));
             lH = Math.sqrt((Math.pow(gx - xCenterOUT, 2)) + (Math.pow(gy - yCenterOUT, 2)));
-            
+
             lG = lC * lH / lD;
-            
+
 //            System.out.println("lC = "+lC+"\tlD = "+lD+"\tlH = "+lH+"\tlG = "+lG);
-            
-            
+
+
             A = 1 + Math.pow(mD, 2);
             B = (-2 * xCenterOUT) - (2 * gx * Math.pow(mD, 2)) + (2 * gy * mD) - (2 * yCenterOUT * mD);
             C = Math.pow(xCenterOUT, 2) + Math.pow(gx * mD, 2) - (2 * gx * gy * mD) + Math.pow(gy, 2) + (2 * yCenterOUT * gx * mD) - (2 * yCenterOUT * gy) + Math.pow(yCenterOUT, 2) - Math.pow(lG, 2);
 
 //            System.out.println("lC = "+lC+"\tlD = "+lD+"\tlH = "+lH+"\tlG = "+lG);
-            
-            
+
+
             kxA = (-B + Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
             kxB = (-B - Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
 
@@ -358,16 +364,16 @@ public class Blooprint{
                 ky = kyB;
             }
         }
-        
-        
+
+
         xOUT_temp = (ky - ly + (lx * mD) - (kx * mC)) / (mD - mC);
         yOUT_temp = (mD * (xOUT_temp - lx)) + ly;
 
-        
+
         some[0] = (int) Math.round(xOUT_temp);
         some[1] = (int) Math.round(yOUT_temp);
-        
-        
+
+
 		return some;
 	}//END stretch()
 
@@ -376,139 +382,143 @@ public class Blooprint{
 	 * sets Color.RED,BLUE,GREEN according to user intension
 	 * */
 	public static void bloop() {
-		
+
 		System.out.println("blooping......");
 
 
-		int[] xyOUT = new int[2];	
-		
+		int[] xyOUT = new int[2];
+
 		for (int row = 0; row < sketch.getHeight(); row++){
 			for(int col = 0; col < sketch.getWidth(); col++){
-				
+
 				int xIN = col;
 				int yIN = row;
-				
+
 				Color pxColor = new Color(sketch.getRGB(xIN,yIN));
-				
+
 				try{
 					if(areaOfInterest[yIN][xIN]){
-						
+
 						if (isMarker(pxColor)){
-							
+
 							System.out.println("xIN = "+xIN+"\tyIN = "+yIN);
 							System.out.println("red = "+pxColor.getRed()+"\tgreen = "+pxColor.getGreen()+"\tblue = "+pxColor.getBlue());
 							xyOUT = stretch(xIN, yIN);
 							blooprint.setRGB(xyOUT[0], xyOUT[1], 0x000000);
 						}
-						
-						
+
+
 					}
 				}
 				catch(Exception e){
 					e.printStackTrace();
 				}
-				
-				
+
+
 			}
 		}
 	}//END bloop()
-	
+
 	/**
 	 * erase the area found inside the outer border of marker line drawn
 	 * */
 	public static void erase(boolean[][] eraseArea) {
 
-		
+
 		System.out.println("erasing......");
 
 
-		int[] xyOUT = new int[2];	
-		
+		int[] xyOUT = new int[2];
+
 		for (int row = 0; row < sketch.getHeight(); row++){
 			for(int col = 0; col < sketch.getWidth(); col++){
-				
+
 				int xIN = col;
 				int yIN = row;
-				
+
 				try{
 					if(eraseArea[yIN][xIN]){
-						
+
 						xyOUT = stretch(xIN, yIN);
 						blooprint.setRGB(xyOUT[0], xyOUT[1], 0xffffff);
-						
-						
+
+
 					}
 				}
 				catch(Exception e){
 					e.printStackTrace();
 				}
-				
-				
+
+
 			}
 		}
 
 	}//END erase()
 
 
-	
+
 	/*
 	 * TODO: this method could come in handy for a gui to learn the blooprint system and all its components
-	 * this method exists to display that we're examining the correct AREA OF INTEREST in sketch image	 * 
+	 * this method exists to display that we're examining the correct AREA OF INTEREST in sketch image	 *
 	 * */
 	public static void printAOI(boolean[][] isHit, String action) throws IOException {
-		
-		
+
+
 		try{
-		
+
 			BufferedImage ghostBorder = ImageIO.read(new File("some directory/calibrate.jpg"));
-			
+
 			for (int row = 0; row < ghostBorder.getHeight(); row ++){
 				for (int col = 0; col < ghostBorder.getWidth(); col++){
-					
+
 					if(isHit[row][col]){
 						ghostBorder.setRGB(col, row, 0x000000);//turn black
 					}
-					
+
 				}
 			}
-			
+
 			if(action == "fill"){
 				ImageIO.write(ghostBorder, "jpg", new File("some directory/areaOfInterest_filled.jpg"));
 			}
 			else{
 				ImageIO.write(ghostBorder, "jpg", new File("some directory/areaOfInterest.jpg"));
 			}
-			
-			
+
+
 		}
 		catch(Exception e){
 			System.out.println(e);
 		}
-		
+
 	}//END printAOI()
-			
-		    
+
+
 
 	/*
 	 * get client side selected points just outside lit corners
 	 * */
 	public static void getClientUnitClicks(){
-		
+
 		/*
-		 * double[] array 
+		 * double[] array
 		 * */
 		int[] some = new int[8];
-		
+
 		try{
 			System.out.println("getting client clicks.......");
 			
-			
+			/**
+			 * these are the click locations on the image inside the main blooprint app browser
+			 * */
+
+
 			Connection connx = getDataBaseConnection();
 			Statement statement = (Statement) connx.createStatement();
 			String cmd = "SELECT * FROM _clientclicks ORDER BY id DESC LIMIT 1";
 			ResultSet result = statement.executeQuery(cmd);
 			while(result.next()){
-				
+
 				some[0] = result.getInt("ulx");
 				some[1] = result.getInt("uly");
 				some[2] = result.getInt("urx");
@@ -519,13 +529,13 @@ public class Blooprint{
 				some[7] = result.getInt("lry");
 				clientWidth = result.getInt("width");
 				clientHeight = result.getInt("height");
-				
+
 			}
 		}
 		catch(Exception e){
 			System.out.println("\nERROR loadCalibration\n"+e+"\n");
 		}
-		
+
 		unit_aax = (double)some[0]/(double)clientWidth;
 		unit_aay = (double)some[1]/(double)clientHeight;
 		unit_bbx = (double)some[2]/(double)clientWidth;
@@ -534,17 +544,17 @@ public class Blooprint{
 		unit_ccy = (double)some[5]/(double)clientHeight;
 		unit_ddx = (double)some[6]/(double)clientWidth;
 		unit_ddy = (double)some[7]/(double)clientHeight;
-		
+
 
 	}//END getClientUnitClicks()
 
-	
+
 	/*
 	creates a scan area around the box drawn by user in sketch
 	returns xMIN, xMAX, yMIN, yMAX in sketch
 	*/
 	public static int[] zoomToBox() {
-	
+
 		/**
 		 * these value's starting points are backwards in order for the boolean comparisons below to initiate properly
 		 * */
@@ -553,30 +563,30 @@ public class Blooprint{
 		int xmin = sketch.getWidth();
 		int ymax = 0;
 		int ymin = sketch.getHeight();
-		
+
 		here:
 
 			for(int row = 0; row < sketch.getHeight(); row++){
 				for(int col = 0; col < sketch.getWidth(); col++){
-					
-					
+
+
 					int xIN = col;
 					int yIN = row;
-					
+
 					/*
 					 * dealing with pixels input by user - sketch
 					 * */
 					Color pixel = new Color(sketch.getRGB(xIN,yIN));
-					
-		            
+
+
 		            if(areaOfInterest[yIN][xIN]){
 		            	if(isMarker(pixel)){
 
 			            	System.out.println("xIN = " + xIN);
 			            	System.out.println("yIN = " + yIN);
-							
+
 							System.out.println("\nfound user-drawn border!!!\n");
-							
+
 							/*
 							 * encapsulate eraser area
 							 * */
@@ -585,11 +595,11 @@ public class Blooprint{
 							inCoord[1] = yIN;
 							boolean flag = true;
 							while(flag){
-								
-								
+
+
 								//	2dArray[y][x]
 //								some[inCoord[1]][inCoord[0]] = true;
-								
+
 								inCoord = getNextBorderPixel(inCoord);
 								/*
 								 * set square boundaries of user input area
@@ -606,19 +616,19 @@ public class Blooprint{
 								if(inCoord[1] < ymin){
 									ymin = inCoord[1];
 								}
-								
+
 								if((inCoord[0] == xIN) && (inCoord[1] == yIN)){
 									System.out.println("made it all the way around the border");
-									
+
 									flag = false;
 									break here;
 								}
-								
-								
+
+
 							}
-							
-							
-							
+
+
+
 						}
 						else{
 							continue;
@@ -626,24 +636,24 @@ public class Blooprint{
 		            }
 				}
 			}//END outer loop
-	
-	
+
+
 		some[0] = ymin-2;//could be 1 - lol
 		some[1] = ymax+2;
 		some[2] = xmin-2;
 		some[3] = xmax+2;
-		
+
 		return some;
 	}//END zoomToBox()
-	
+
 	/**
 	 * finds user defined projector corners (xy-coordinates) on whiteboard
 	 * */
 	public static int[] getScanBoxCorners(int ymin, int ymax, int xmin, int xmax) {
 		/*
 		 * action occurs on the input camera image
-		 * 
-		 * 
+		 *
+		 *
 		 * returns int[8] - corner order UL, UR, LL, LR in x,y sequence
 		 * */
 		int[] some = new int[8];
@@ -666,7 +676,7 @@ public class Blooprint{
                     if (isMarker(pixel))
                     {
                     	some[0] = col;
-                    	some[1] = row;                        
+                    	some[1] = row;
                         System.out.println("ULx = "+some[0]);
                         System.out.println("ULy = "+some[1]);
                         hit = true;
@@ -778,50 +788,50 @@ public class Blooprint{
         }
 
         return some;
-        
+
 	}//END getScanBoxCorners()
-	
+
 	/*
 	returns Rectangle to  -> x,y,width,height
 	*/
 	public static float[] setUnitTextbox(int[] corners) {
-		
+
 		Rectangle rect = new Rectangle();
 		int x = corners[0];
 		int y = corners[1];
-		
+
 //		corner order UL, UR, LL, LR in x,y sequence
-		
+
 		int width = 0;
 		int height = 0;
-		
+
 		if(corners[2] >= corners[6]){
 			width = corners[6]-x;
 		}
 		else{
 			width = corners[2]-x;
 		}
-		
+
 		if(corners[5] > corners[7]){
 			height = corners[7]-y;
 		}
 		else{
 			height = corners[5]-y;
 		}
-		
-		
+
+
 		//	scales to display output
 		double x2 		= (double)x 		/ (double)sketch.getWidth() 	* (double)blooprint.getWidth();
 		double y2 		= (double)y 		/ (double)sketch.getHeight() * (double)blooprint.getHeight();
 		double width2 	= (double)width 	/ (double)sketch.getWidth() 	* (double)blooprint.getWidth();
 		double height2 	= (double)height 	/ (double)sketch.getHeight() * (double)blooprint.getHeight();
-		
-		
+
+
 		int aa = (int)Math.round(x2);
 		int bb = (int)Math.round(y2);
 		int cc = (int)Math.round(width2);
 		int dd = (int)Math.round(height2);
-		
+
 		rect.setBounds(aa,bb,cc,dd);
 
 
@@ -839,8 +849,8 @@ public class Blooprint{
 
 		return unit;
 	}//END setUnitTextbox()
-	
-	
+
+
 	/*
 	BLIP is the generation of user drawn area to be workspace of new qwerty keyboard text input.
 	Text input is handled by web application.  Blooprint API handles the user decision to draw
@@ -848,17 +858,17 @@ public class Blooprint{
 	ALTERNATIVE OPTION is to use a mouse click and drag action by client.
 	*/
 	public static void setBlip(float box[]) throws Exception{
-		
+
 		Connection connx = getDataBaseConnection();
-		
+
 		try{
 			/*	TODO:
-			 * 
+			 *
 			 * if x AND y equal any of the table rows, update THOSE rows
 			 * else create new row
-			 * 
+			 *
 			 * */
-			
+
 			/*
 			MySQL table DOES have additional columns:
 				-textEntry
@@ -871,32 +881,33 @@ public class Blooprint{
 					+"y = VALUES(y),"
 					+"width = VALUES(width),"
 					+"height = VALUES(height)";
-					
-			PreparedStatement statement = (PreparedStatement) connx.prepareStatement(cmd);				
+
+			PreparedStatement statement = (PreparedStatement) connx.prepareStatement(cmd);
 			statement.executeUpdate();
-			
+
 		}catch(Exception ex){
 			System.out.println("\nERROR:\nsetBlip()"+ex.getMessage());
 			ex.printStackTrace();
 		}
-		
-		
-		connx.close();
-		
-	}//END setBlip()
-	
-	
 
-/*=====================================================================*/	
-/*=====================================================================*/	
-	
-	
+
+		connx.close();
+
+	}//END setBlip()
+
+
+
+
+
 	/*
 	Sets calibration values to DB
 	*/
 	public static void calibrate() throws Exception{
-		
-		
+
+		/**
+		 * these are the user corner clicks translated from the client browser locations 
+		 * to the location on the input sketch - they could be different sizes 
+		 * */
 		aax = (int)Math.round(unit_aax * (double)sketch.getWidth());
 		aay = (int)Math.round(unit_aay * (double)sketch.getHeight());
 		bbx = (int)Math.round(unit_bbx * (double)sketch.getWidth());
@@ -905,8 +916,8 @@ public class Blooprint{
 		ccy = (int)Math.round(unit_ccy * (double)sketch.getHeight());
 		ddx = (int)Math.round(unit_ddx * (double)sketch.getWidth());
 		ddy = (int)Math.round(unit_ddy * (double)sketch.getHeight());
-		
-		
+
+
 		/*
 		 * if slopes will equal 0 or INFINITY : move one of the pixels off by 1 just to give it some slope
 		 * */
@@ -914,29 +925,29 @@ public class Blooprint{
 		if(ccx == aax) aax = aax - 1;
 		if(bby == aay) aay = aay - 1;
 		if(ccy == ddy) ddy = ddy + 1;
-		
-		
-		
+
+
+
 		topSlope = ((double)bby-(double)aay)/((double)bbx-(double)aax);
 		bottomSlope = ((double)ddy-(double)ccy)/((double)ddx-(double)ccx);
 		leftSlope = ((double)ccy-(double)aay)/((double)ccx-(double)aax);
 		rightSlope 	= ((double)ddy-(double)bby)/((double)ddx-(double)bbx);
-		
-		
-		
+
+
+
 		/**
-		 * calibration object uses boolean[][] where true values represent 
+		 * calibration object uses boolean[][] where true values represent
 		 * lit projection area on whiteboard
 		 * */
 		areaOfInterest = getAreaOfInterestBorder();
-		
-		
+
+
 		int tx = (bbx+aax)/2;
 		int ty = (bby+aay)/2;
 		/*
 		 * TODO: set flood starting point to just below the center point
 		 * of the top line spanning a and b
-		 * 
+		 *
 		 * areaOfInterest = floodBorder(areaOfInterest, X, Y);
 		 * */
 		areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
@@ -950,138 +961,247 @@ public class Blooprint{
 	*/
 	public static void loadCalibration() throws Exception{
 		
-		try{
-			System.out.println("loading calibration.......");
+		JSONParser parser = new JSONParser();
+		 
+        try {
+ 
+            Object obj = parser.parse(new FileReader("./data/calibration.json"));
+            Object obj2 = parser.parse(new FileReader("../unitClicks.json"));
+ 
+            JSONObject jsonObject = (JSONObject) obj;
+            JSONObject unitObject = (JSONObject) obj2;
+ 
+            ax = (Integer) jsonObject.get("ax");
+			ay = (Integer) jsonObject.get("ay");
+			bx = (Integer) jsonObject.get("bx");
+			by = (Integer) jsonObject.get("by_");
+			cx = (Integer) jsonObject.get("cx");
+			cy = (Integer) jsonObject.get("cy");
+			dx = (Integer) jsonObject.get("dx");
+			dy = (Integer) jsonObject.get("dy");
+			fx = (Integer) jsonObject.get("fx");
+			fy = (Integer) jsonObject.get("fy");
+			gx = (Integer) jsonObject.get("gx");
+			hy = (Integer) jsonObject.get("hy");
+			aax = (Integer) jsonObject.get("aax");
+			aay = (Integer) jsonObject.get("aay");
+			bbx = (Integer) jsonObject.get("bbx");
+			bby = (Integer) jsonObject.get("bby");
+			ccx = (Integer) jsonObject.get("ccx");
+			ccy = (Integer) jsonObject.get("ccy");
+			ddx = (Integer) jsonObject.get("ddx");
+			ddy = (Integer) jsonObject.get("ddy");
+			mA = (Double) jsonObject.get("mA");
+			mB = (Double) jsonObject.get("mB");
+			mC = (Double) jsonObject.get("mC");
+			mD = (Double) jsonObject.get("mD");
+			xCenterIN = (Double) jsonObject.get("xCenterIN");
+			yCenterIN = (Double) jsonObject.get("yCenterIN");
+			xCenterOUT = (Double) jsonObject.get("xCenterOUT");
+			yCenterOUT = (Double) jsonObject.get("yCenterOUT");
+            
+			/**
+			 * unitClicks are stored in main application
+			 * */
+			unit_aax = (Double) unitObject.get("unit_ulx");
+			unit_aay = (Double) unitObject.get("unit_uly");
+			unit_bbx = (Double) unitObject.get("unit_urx");
+			unit_bby = (Double) unitObject.get("unit_ury");
+			unit_ccx = (Double) unitObject.get("unit_llx");
+			unit_ccy = (Double) unitObject.get("unit_lly");
+			unit_ddx = (Double) unitObject.get("unit_lrx");
+			unit_ddy = (Double) unitObject.get("unit_lry");
 			
-			Connection connx = getDataBaseConnection();
-			Statement statement = (Statement) connx.createStatement();
-			String cmd = "SELECT * FROM _calibration ORDER BY id DESC LIMIT 1";
-			ResultSet result = statement.executeQuery(cmd);
-			while(result.next()){
-				ax = result.getInt("ax");
-				ay = result.getInt("ay");
-				bx = result.getInt("bx");
-				by = result.getInt("by_");
-				cx = result.getInt("cx");
-				cy = result.getInt("cy");
-				dx = result.getInt("dx");
-				dy = result.getInt("dy");
-				fx = result.getInt("fx");
-				fy = result.getInt("fy");
-				gx = result.getInt("gx");
-				hy = result.getInt("hy");
-				aax = result.getInt("aax");
-				aay = result.getInt("aay");
-				bbx = result.getInt("bbx");
-				bby = result.getInt("bby");
-				ccx = result.getInt("ccx");
-				ccy = result.getInt("ccy");
-				ddx = result.getInt("ddx");
-				ddy = result.getInt("ddy");
-				unit_aax = result.getDouble("unit_aax");
-				unit_aay = result.getDouble("unit_aay");
-				unit_bbx = result.getDouble("unit_bbx");
-				unit_bby = result.getDouble("unit_bby");
-				unit_ccx = result.getDouble("unit_ccx");
-				unit_ccy = result.getDouble("unit_ccy");
-				unit_ddx = result.getDouble("unit_ddx");
-				unit_ddy = result.getDouble("unit_ddy");
-				mA = result.getDouble("mA");
-				mB = result.getDouble("mB");
-				mC = result.getDouble("mC");
-				mD = result.getDouble("mD");
-				xCenterIN = result.getDouble("xCenterIN");
-				yCenterIN = result.getDouble("yCenterIN");
-				xCenterOUT = result.getDouble("xCenterOUT");
-				yCenterOUT = result.getDouble("yCenterOUT");
-				
-			}
-		}
-		catch(Exception e){
-			System.out.println("\nERROR loadCalibration\n"+e+"\n");
-		}
-		
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+//		try{
+//			System.out.println("loading calibration.......");
+//
+//			Connection connx = getDataBaseConnection();
+//			Statement statement = (Statement) connx.createStatement();
+//			String cmd = "SELECT * FROM _calibration ORDER BY id DESC LIMIT 1";
+//			ResultSet result = statement.executeQuery(cmd);
+//			while(result.next()){
+//				ax = result.getInt("ax");
+//				ay = result.getInt("ay");
+//				bx = result.getInt("bx");
+//				by = result.getInt("by_");
+//				cx = result.getInt("cx");
+//				cy = result.getInt("cy");
+//				dx = result.getInt("dx");
+//				dy = result.getInt("dy");
+//				fx = result.getInt("fx");
+//				fy = result.getInt("fy");
+//				gx = result.getInt("gx");
+//				hy = result.getInt("hy");
+//				aax = result.getInt("aax");
+//				aay = result.getInt("aay");
+//				bbx = result.getInt("bbx");
+//				bby = result.getInt("bby");
+//				ccx = result.getInt("ccx");
+//				ccy = result.getInt("ccy");
+//				ddx = result.getInt("ddx");
+//				ddy = result.getInt("ddy");
+//				unit_aax = result.getDouble("unit_aax");
+//				unit_aay = result.getDouble("unit_aay");
+//				unit_bbx = result.getDouble("unit_bbx");
+//				unit_bby = result.getDouble("unit_bby");
+//				unit_ccx = result.getDouble("unit_ccx");
+//				unit_ccy = result.getDouble("unit_ccy");
+//				unit_ddx = result.getDouble("unit_ddx");
+//				unit_ddy = result.getDouble("unit_ddy");
+//				mA = result.getDouble("mA");
+//				mB = result.getDouble("mB");
+//				mC = result.getDouble("mC");
+//				mD = result.getDouble("mD");
+//				xCenterIN = result.getDouble("xCenterIN");
+//				yCenterIN = result.getDouble("yCenterIN");
+//				xCenterOUT = result.getDouble("xCenterOUT");
+//				yCenterOUT = result.getDouble("yCenterOUT");
+//
+//			}
+//		}
+//		catch(Exception e){
+//			System.out.println("\nERROR loadCalibration\n"+e+"\n");
+//		}
+
 		topSlope 	= ((double)cy-(double)ay)/((double)cx-(double)ax);
 		bottomSlope = ((double)dy-(double)by)/((double)dx-(double)bx);
 		leftSlope 	= ((double)ay-(double)dy)/((double)ax-(double)dx);
 		rightSlope 	= ((double)cy-(double)by)/((double)cx-(double)bx);
-		
-		
+
+
 	}//END loadCalibration()
 
 	/**
 	 * User convenience calibration information saved for load next program start
 	 * */
 	public static void saveCalibration() throws Exception {
+
+		JSONObject obj = new JSONObject();
+		FileWriter file = null;
 		
 		try{
 			
-			Connection connx = getDataBaseConnection();
-			String cmd = "INSERT INTO _calibration(ax,ay,bx,by_,cx,cy,dx,dy,fx,fy,gx,hy,"
-					+"aax,aay,bbx,bby,ccx,ccy,ddx,ddy,unit_aax,unit_aay,unit_bbx,unit_bby,"
-					+"unit_ccx,unit_ccy,unit_ddx,unit_ddy,mA,mB,mC,mD,xCenterIN,yCenterIN,xCenterOUT,yCenterOUT) "
-					+"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-			PreparedStatement statement = (PreparedStatement) connx.prepareStatement(cmd);
-			statement.setInt(1, ax);
-			statement.setInt(2, ay);
-			statement.setInt(3, bx);
-			statement.setInt(4, by);
-			statement.setInt(5, cx);
-			statement.setInt(6, cy);
-			statement.setInt(7, dx);
-			statement.setInt(8, dy);
-			statement.setInt(9, fx);
-			statement.setInt(10, fy);
-			statement.setInt(11, gx);
-			statement.setInt(12, hy);
-			statement.setInt(13, aax);
-			statement.setInt(14, aay);
-			statement.setInt(15, bbx);
-			statement.setInt(16, bby);
-			statement.setInt(17, ccx);
-			statement.setInt(18, ccy);
-			statement.setInt(19, ddx);
-			statement.setInt(20, ddy);
-			statement.setDouble(21, unit_aax);
-			statement.setDouble(22, unit_aay);
-			statement.setDouble(23, unit_bbx);
-			statement.setDouble(24, unit_bby);
-			statement.setDouble(25, unit_ccx);
-			statement.setDouble(26, unit_ccy);
-			statement.setDouble(27, unit_ddx);
-			statement.setDouble(28, unit_ddy);
-			statement.setDouble(29, mA);
-			statement.setDouble(30, mB);
-			statement.setDouble(31, mC);
-			statement.setDouble(32, mD);
-			statement.setDouble(33, xCenterIN);
-			statement.setDouble(34, yCenterIN);
-			statement.setDouble(35, xCenterOUT);
-			statement.setDouble(36, yCenterOUT);
+			obj.put("ax", ax);
+			obj.put("ay", ay);
+			obj.put("bx", bx);
+			obj.put("cx", cx);
+			obj.put("by", by);
+			obj.put("cy", cy);
+			obj.put("dx", dx);
+			obj.put("dy", dy);
+			obj.put("fx", fx);
+			obj.put("fy", fy);
+			obj.put("gx", gx);
+			obj.put("hy", hy);
+			obj.put("aax", aax);
+			obj.put("aay", aay);
+			obj.put("bbx", bbx);
+			obj.put("bby", bby);
+			obj.put("ccx", ccx);
+			obj.put("ccy", ccy);
+			obj.put("ddx", ddx);
+			obj.put("ddy", ddy);
+			obj.put("unit_aax", unit_aax);
+			obj.put("unit_aay", unit_aay);
+			obj.put("unit_bbx", unit_bbx);
+			obj.put("unit_bby", unit_bby);
+			obj.put("unit_ccx", unit_ccx);
+			obj.put("unit_ccy", unit_ccy);
+			obj.put("unit_ddx", unit_ddx);
+			obj.put("unit_ddy", unit_ddy);
+			obj.put("mA", mA);
+			obj.put("mB", mB);
+			obj.put("mC", mC);
+			obj.put("mD", mD);
+			obj.put("xCenterIN", xCenterIN);
+			obj.put("yCenterIN", yCenterIN);
+			obj.put("xCenterOUT", xCenterOUT);
+			obj.put("yCenterOUT", yCenterOUT);
 			
-			statement.executeUpdate();
-			connx.close();
+			file = new FileWriter("./data/calibration.json");
+			file.write(obj.toJSONString());
 			
+			
+			
+			System.out.print(obj);
+			
+			
+			/////////////////////////////////
+
+//			Connection connx = getDataBaseConnection();
+//			String cmd = "INSERT INTO _calibration(ax,ay,bx,by_,cx,cy,dx,dy,fx,fy,gx,hy,"
+//					+"aax,aay,bbx,bby,ccx,ccy,ddx,ddy,unit_aax,unit_aay,unit_bbx,unit_bby,"
+//					+"unit_ccx,unit_ccy,unit_ddx,unit_ddy,mA,mB,mC,mD,xCenterIN,yCenterIN,xCenterOUT,yCenterOUT) "
+//					+"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+//			PreparedStatement statement = (PreparedStatement) connx.prepareStatement(cmd);
+//			statement.setInt(1, ax);
+//			statement.setInt(2, ay);
+//			statement.setInt(3, bx);
+//			statement.setInt(4, by);
+//			statement.setInt(5, cx);
+//			statement.setInt(6, cy);
+//			statement.setInt(7, dx);
+//			statement.setInt(8, dy);
+//			statement.setInt(9, fx);
+//			statement.setInt(10, fy);
+//			statement.setInt(11, gx);
+//			statement.setInt(12, hy);
+//			statement.setInt(13, aax);
+//			statement.setInt(14, aay);
+//			statement.setInt(15, bbx);
+//			statement.setInt(16, bby);
+//			statement.setInt(17, ccx);
+//			statement.setInt(18, ccy);
+//			statement.setInt(19, ddx);
+//			statement.setInt(20, ddy);
+//			statement.setDouble(21, unit_aax);
+//			statement.setDouble(22, unit_aay);
+//			statement.setDouble(23, unit_bbx);
+//			statement.setDouble(24, unit_bby);
+//			statement.setDouble(25, unit_ccx);
+//			statement.setDouble(26, unit_ccy);
+//			statement.setDouble(27, unit_ddx);
+//			statement.setDouble(28, unit_ddy);
+//			statement.setDouble(29, mA);
+//			statement.setDouble(30, mB);
+//			statement.setDouble(31, mC);
+//			statement.setDouble(32, mD);
+//			statement.setDouble(33, xCenterIN);
+//			statement.setDouble(34, yCenterIN);
+//			statement.setDouble(35, xCenterOUT);
+//			statement.setDouble(36, yCenterOUT);
+//
+//			statement.executeUpdate();
+//			connx.close();
+
 		}catch(Exception ex){
 			System.out.println(ex);
 		}
-		
-		
+		finally{
+			file.close();
+		}
+
+
 	}//END saveCalibration()
-	
+
 	/**
 	*	sets -> ax,ay,bx,by,cx,cy,dx,dy
 	*	gets corner values user draws on whiteboard (corners of lit projection area)
 	*
-	*	TODO: 
+	*	TODO:
 	 * */
 	public static void setCorners() {
-		
+
 		boolean hit = false;
 		int rowStart = 0;
 		int row;
 		Color pixel = null;
-        
+
 		Next1:
 		try
         {
@@ -1096,7 +1216,7 @@ public class Blooprint{
                     if (areaOfInterest[row][col] && isMarker(pixel))
                     {
                     	ax = col;
-                    	ay = row;                        
+                    	ay = row;
                         System.out.println("Corner 1:\nULx = "+ax+"\nULy = "+ay);
                         hit = true;
                         break Next1;
@@ -1111,7 +1231,7 @@ public class Blooprint{
         	e.getMessage();
         	e.printStackTrace();
         }
-		
+
 		//  upper right
         hit = false;
         rowStart = 0;
@@ -1130,9 +1250,9 @@ public class Blooprint{
                     {
                     	cx = col;
                     	cy = row;
-                    	
+
                     	System.out.println("cx = "+cx+"\tcy = "+cy);
-                    	
+
                         System.out.println("Corner 2:\nURx = "+cx+"\nURy = "+cy);
                         hit = true;
                         break Next2;
@@ -1215,7 +1335,7 @@ public class Blooprint{
         	e.printStackTrace();
         }
 	}//END setCorners()
-	
+
 	/**
 	 * Find center of the input image.
 	 * Only considering location of light projector lit area on whiteboard.
@@ -1231,17 +1351,16 @@ public class Blooprint{
         yCenterOUT = (double)(mC * (xCenterOUT - ex)) + (double)ey;
 	}//END setCenters()
 
-
 	/**
 	 * dealing with area drawn by user to erase
 	 * sets binary map single pixel strand border for future use in floodBorder() method
 	 * */
 	public static boolean[][] getUserDrawnBorder() {
-		
+
 		boolean[][] border = new boolean[sketch.getHeight()][sketch.getWidth()];
-		
+
 		here:
-			
+
 			for(int row = 0; row < sketch.getHeight(); row++){
 				for(int col = 0; col < sketch.getWidth(); col++){
 
@@ -1251,20 +1370,20 @@ public class Blooprint{
 					Color pxColor = new Color(sketch.getRGB(col,row));
 					int xIN = col;
 		            int yIN = row;
-		            
-		            
-		            
+
+
+
 		            if(areaOfInterest[row][col] && isMarker(pxColor)){
-		            	
-		            	
-		            	
-		            	
+
+
+
+
 
 		            	System.out.println("xIN = "+xIN);
 		            	System.out.println("yIN = "+yIN);
-						
+
 						System.out.println("\nfound eraser border!!!\n");
-						
+
 						/*
 						 * encapsulate eraser area
 						 * */
@@ -1273,58 +1392,57 @@ public class Blooprint{
 						inCoord[1] = row;
 						boolean flag = true;
 						while(flag){
-							
+
 							//	2dArray[y][x]
 							border[inCoord[1]][inCoord[0]] = true;
-							
+
 							inCoord = getNextBorderPixel(inCoord);
-							
+
 							if((inCoord[0] == xIN) && (inCoord[1] == yIN)){
-								
-								
+
+
 								borderStart_X = xIN;
 								borderStart_Y = yIN;
-								
-								
+
+
 								System.out.println("made it all the way around the border");
-								
+
 								flag = false;
 								break here;
 							}
 						}
-						
-						
-						
+
+
+
 					}
 					else{
 						continue;
 					}
 				}
 			}//END outer loop
-	
-	
+
+
 		return border;
 	}//END getUserDrawnBorder()
-
 
 	/**
 	 * returns binary map. area of interest on whiteboard, just outside of projected corners
 	 * */
 	public static boolean[][] getSketchDrawnArea() {
-		
-		
+
+
 		/**
 		 * TODO: need to scan for multiple getSketchDrawnArea areas.  so far we are only checking for
 		 * the first one that we come across.
 		 * */
-		
+
 		boolean[][] area = getUserDrawnBorder();
-		
+
 		int xStart = borderStart_X;
 		int yStart = borderStart_Y + 2; /*TODO:	must consider the case in which borderStart_Y+2 is not inside border wall*/
-		
+
 		area = floodBorder(area, xStart,yStart);
-		
+
 		return area;
 	}//END getSketchDrawnArea()
 
@@ -1334,10 +1452,10 @@ public class Blooprint{
 	public static int[] getNextBorderPixel(int[] coord) {
 
 		int[] next = new int[2];
-		
-		
+
+
 		System.out.println("============================\nlastX = "+coord[0]+"\tlastY = "+coord[1]);
-		
+
 		/*
 		 * all 8 surrounding pixels need to be checked counterclockwise
 		 * */
@@ -1349,8 +1467,8 @@ public class Blooprint{
 		Color f = new Color(sketch.getRGB(coord[0]-1,coord[1]-1));	//	LU
 		Color g = new Color(sketch.getRGB(coord[0],coord[1]-1));	//	U
 		Color h = new Color(sketch.getRGB(coord[0]+1,coord[1]-1));	//	RU
-		
-		
+
+
 		if(isMarker(a) & !isMarker(h)){
 			next[0] = coord[0]+1;	//	R
 			next[1] = coord[1];
@@ -1386,8 +1504,8 @@ public class Blooprint{
 		else{
 			System.err.println("something wrong with setting next border pixel!!!");
 		}
-		
-		
+
+
 		return next;
 	}//END getNextBorderPixel()
 
@@ -1417,81 +1535,70 @@ public class Blooprint{
 	 *	sketch arg = "null"
 	 * BLOB object to binary stream to BufferedImage object
 	 * */
-	public static BufferedImage loadImage(String title) throws Exception {
-
+	public static BufferedImage loadBlooprint(String dir) {
+		/**
+		 * find the last modified file in a directory
+		 * */
+		System.out.println("loading blooprint from " + dir);
+		File file = getLatestFilefromDir(dir);
+		System.out.println("blooprint file loading = " + file.toString());
+		
 		BufferedImage some = null;
 		
-		if (title == null){	//	if sketch
-			/**
-			*	load image from sketch table in DB (default)
-			**/
-			
-			
-			try{
-				Connection connx = getDataBaseConnection();
-				Statement statement = connx.createStatement();
-				
-				InputStream is = null;
-				
-				/**
-				*	TODO: create DB table -> sketches (universal table - blooprint.xyz wide)
-				*		- will need unique sketch ID to user per work station
-				**/
-				String cmd = "SELECT image FROM _sketches ORDER BY id DESC LIMIT 1";
-				
-				ResultSet result = statement.executeQuery(cmd);
-				
-				if(result.next()){
-					is = result.getBinaryStream("image");
-					
-					some = ImageIO.read(is);
-				}
-				
-				connx.close();
-				
-				fx = some.getWidth()-1;
-				gx = some.getWidth()-1;
-			    fy = some.getHeight()-1;
-			    hy = some.getHeight()-1;
-				
-			}catch(Exception exc){
-				exc.getMessage();
-			}
-			
-		}
-		else{	//	if blooprint
+		try{
 
-			/**
-			*	load last image from particular active blooprint
-			*
-			 * BLOB object to BufferedImage object
-			 * */		
-			
-			try{
-				Connection connx = getDataBaseConnection();
-				Statement statement = connx.createStatement();
-				
-				InputStream is = null;
-				
-				String cmd = "SELECT blooprint FROM "+title+" ORDER BY id DESC LIMIT 1";
-				
-				ResultSet result = statement.executeQuery(cmd);
-				
-				if(result.next()){
-					is = result.getBinaryStream("blooprint");
-					
-					some = ImageIO.read(is);
-				}
-				
-				connx.close();
-				
-			}catch(Exception exc){
-				exc.getMessage();
-			}
+			some = ImageIO.read(file);
+
+		}catch(Exception exc){
+			exc.getMessage();
 		}
 		
 		return some;
-	}//END loadImage()
+	}//END loadBlooprint()
+	
+	public static File getLatestFilefromDir(String dirPath){
+	    File dir = new File(dirPath);
+	    File[] files = dir.listFiles();
+	    if (files == null || files.length == 0) {
+	        return null;
+	    }
+
+	    File lastModifiedFile = files[0];
+	    for (int i = 1; i < files.length; i++) {
+	       if (lastModifiedFile.lastModified() < files[i].lastModified()) {
+	           lastModifiedFile = files[i];
+	       }
+	    }
+	    return lastModifiedFile;
+	}
+	
+	/**
+	 * load image from DB table - either an input sketch or a compiled blooprint image
+	 *	sketch arg = "null"
+	 * BLOB object to binary stream to BufferedImage object
+	 * */
+	public static BufferedImage loadSketch(String file) throws Exception {
+
+		BufferedImage some = null;
+
+		try{
+//			
+			//	TODO:
+			//	load image by sketch id
+			some = ImageIO.read(new File(file));
+
+			fx = some.getWidth()-1;
+			gx = some.getWidth()-1;
+		    fy = some.getHeight()-1;
+		    hy = some.getHeight()-1;
+
+		}catch(Exception exc){
+			exc.getMessage();
+		}
+
+
+		return some;
+	}//END loadSketch()
 
 	/**
 	 * DB table is updated with added image of latest blooprint image state
@@ -1500,19 +1607,22 @@ public class Blooprint{
 		/*
 		 * BufferedImage object to BLOB object
 		 * */
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ImageIO.write(blooprint, "jpg", baos);
-		InputStream is = new ByteArrayInputStream(baos.toByteArray());
-		
+//		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//		ImageIO.write(blooprint, "jpg", baos);
+//		InputStream is = new ByteArrayInputStream(baos.toByteArray());
+
 		try{
+
+//			Connection connx = getDataBaseConnection();
+//			String cmd = "INSERT INTO "+title+"(blooprint) VALUES (?)";
+//			PreparedStatement statement = (PreparedStatement) connx.prepareStatement(cmd);
+//			statement.setBlob(1, is);
+//			statement.executeUpdate();
+//			connx.close();
 			
-			Connection connx = getDataBaseConnection();
-			String cmd = "INSERT INTO "+title+"(blooprint) VALUES (?)";
-			PreparedStatement statement = (PreparedStatement) connx.prepareStatement(cmd);
-			statement.setBlob(1, is);
-			statement.executeUpdate();
-			connx.close();
-			
+			File outputfile = new File("data/blooprints/"+title+".jpg");
+		    ImageIO.write(blooprint, "jpg", outputfile);
+
 		}catch(Exception ex){
 			System.out.println(ex.getMessage());
 		}
@@ -1522,19 +1632,19 @@ public class Blooprint{
 	 * dealing with lit projector area on whiteboard
 	 * sets binary border for future use in floodBorder() method
 	 * */
-	public static boolean[][] getLightBorder() {		
-		
+	public static boolean[][] getLightBorder() {
+
 		boolean[][] border = new boolean[sketch.getHeight()][sketch.getWidth()];
-		
-		
+
+
 		for(int x = ax; x <= cx; x++){//top
-			
+
 			double intersect_double = cy - (topSlope*cx);
 			int intersect = (int) Math.round(intersect_double);
 			double y_double = (topSlope * x) + intersect;
 			int y = (int) Math.round(y_double);
 			border[y][x] = true;
-						
+
 		}
 		for(int x = dx; x <= bx; x++){//bottom
 
@@ -1543,27 +1653,27 @@ public class Blooprint{
 			double y_double = (bottomSlope * x) + intersect;
 			int y = (int) Math.round(y_double);
 			border[y][x] = true;
-			
+
 		}
 		for(int y = ay; y <= dy; y++){//left
-			
+
 			double intersect_double = dy - (leftSlope*dx);
 			int intersect = (int) Math.round(intersect_double);
 			double x_double = (y-intersect)/leftSlope;
 			int x = (int) Math.round(x_double);
 			border[y][x] = true;
-			
+
 		}
 		for(int y = cy; y <= by; y++){//right
-			
+
 			double intersect_double = by - (rightSlope*bx);
 			int intersect = (int) Math.round(intersect_double);
 			double x_double = (y-intersect)/rightSlope;
 			int x = (int) Math.round(x_double);
 			border[y][x] = true;
-			
+
 		}
-		
+
 		return border;
 	}//END getLightBorder()
 
@@ -1571,18 +1681,18 @@ public class Blooprint{
 	 * dealing with lit projector area on whiteboard
 	 * sets binary border for future use in floodBorder() method
 	 * */
-	public static boolean[][] getAreaOfInterestBorder() {		
-		
+	public static boolean[][] getAreaOfInterestBorder() {
+
 		boolean[][] border = new boolean[sketch.getHeight()][sketch.getWidth()];
-				
+
 		for(int x = aax; x <= bbx; x++){//top
-			
+
 			double intersect_double = bby - (topSlope*bbx);
 			int intersect = (int) Math.round(intersect_double);
 			double y_double = (topSlope * x) + intersect;
 			int y = (int) Math.round(y_double);
 			border[y][x] = true;
-						
+
 		}
 		for(int x = ccx; x <= ddx; x++){//bottom
 
@@ -1591,71 +1701,70 @@ public class Blooprint{
 			double y_double = (bottomSlope * x) + intersect;
 			int y = (int) Math.round(y_double);
 			border[y][x] = true;
-			
+
 		}
 		for(int y = aay; y <= ccy; y++){//left
-			
+
 			double intersect_double = ccy - (leftSlope*ccx);
 			int intersect = (int) Math.round(intersect_double);
 			double x_double = (y-intersect)/leftSlope;
 			int x = (int) Math.round(x_double);
 			border[y][x] = true;
-			
+
 		}
 		for(int y = bby; y <= ddy; y++){//right
-			
+
 			double intersect_double = ddy - (rightSlope*ddx);
 			int intersect = (int) Math.round(intersect_double);
 			double x_double = (y-intersect)/rightSlope;
 			int x = (int) Math.round(x_double);
 			border[y][x] = true;
-			
+
 		}
-		
+
 		return border;
 	}//END getAreaOfInterestBorder()
 
 	/**
 	 * paint bucket-like algorithm to fill binary map border
-	 * this filled area becomes the area to be filtered through the stretch() 
+	 * this filled area becomes the area to be filtered through the stretch()
 	 * area pixels to be turned Color.WHITE (unless notified otherwise by user dictation)
-	 * 
+	 *
 	 * */
 	public static boolean[][] floodBorder(boolean[][] floodArea, int x, int y) {
-		
+
         if (!floodArea[y][x]) {
-        	
-        	
+
+
 
 		    Queue<Point> queue = new LinkedList<Point>();
 		    queue.add(new Point(x, y));
 
 		    while (!queue.isEmpty()) {
-		        
+
 		    	Point p = queue.remove();
 
 	        	if (!floodArea[p.y][p.x]) {
-	        		
+
 	            	floodArea[p.y][p.x] = true;
 
 	                queue.add(new Point(p.x + 1, p.y));
 	                queue.add(new Point(p.x - 1, p.y));
 	                queue.add(new Point(p.x, p.y + 1));
 	                queue.add(new Point(p.x, p.y - 1));
-	                
+
 	            }
 		    }
-		    
+
 		}
-        
+
 		return floodArea;
 	}//END floodBorder()
-
 
 	/**
 	 * checking if instantaneous pixel is ANY color or not
 	 * returns true or false
-	 * 
+	 *
 	 * TODO: for now the only color use case is black.  need to incorporate red, green, and blue user options
 	 * */
 	public static boolean isMarker(Color x) {
@@ -1663,10 +1772,10 @@ public class Blooprint{
 				|| (x.getRed() < 100 & x.getGreen() > mark & x.getBlue() < 100)
 				|| (x.getRed() < 100 & x.getGreen() < 100 & x.getBlue() > mark)
 				|| (x.getRed() < 100 & x.getGreen() < 100 & x.getBlue() < 100)){
-			
+
 			return true;
 		}
 		return false;
 	}//END isMarker()
-	
+
 }
