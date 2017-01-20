@@ -19,7 +19,7 @@
 
 /**
 *	run this API (JAR file) from the Blooprint application (https://github.com/blooprint/blooprint)
-*	java -jar Blooprint.jar [blooprint title] [calibrate/bloop/erase/blip]
+*	java -jar Blooprint.jar [blooprint title] [calibrate/write/erase] [write color]
 *
 *	purpose: input image from hard drive -> returns processed image to hard drive for display
 *
@@ -62,7 +62,8 @@ import java.io.FileReader;
 public class Blooprint{
 
 	public static String title = "";	//	blooprint DB table name
-	public static String inMode = "";	//	bloop/erase/blip/calibrate
+	public static String inMode = "";	//	write/erase/calibrate
+	public static String writeColor = "black";  //	default black
 	public static BufferedImage sketch;
 	public static BufferedImage blooprint;
 
@@ -95,9 +96,9 @@ public class Blooprint{
 	 * SEE -> isMarker()
 	 * */
 	public static int mark = 150;
-	
-	public static String calibrationFile = "./data/calibration.json";
-	public static String unitClicksFile = "./unitClicks.json";
+
+	public static String calibrationFile = "./calibration/calibration.json";
+	public static String unitClicksFile = "./calibration/unitClicks.json";
 	public static String blooprintLoc = "./blooprints/";
 	public static String sketchLoc = "./sketches/";
 
@@ -105,10 +106,15 @@ public class Blooprint{
 
 		title = args[0];
 		inMode = args[1];
+		if(args[2] == null) {
+			writeColor = "black";		
+		}
+		else {
+			writeColor = args[2];		
+		}
 
 		blooprint = loadBlooprint(blooprintLoc);
 		sketch = loadSketch(sketchLoc+title+".jpg");
-
 
 	    switch(inMode){
 
@@ -135,7 +141,7 @@ public class Blooprint{
 			    calibrate();
 			    break;
 
-			case "bloop":
+			case "write":
 				/**
 				*	purpose: save updated blooprint image to DB
 				**/
@@ -178,7 +184,7 @@ public class Blooprint{
 				 * DEPRECATED !!
 				 * use if you want, but the main blooprint desktop application
 				 * will need to render textareas in the DOM
-				 * 
+				 *
 				*	purpose: save textbox location unit values to DB -> x,y,width,height
 				*	does NOT save updated blooprint image to DB -> only new BLIP location info
 				*
@@ -213,13 +219,12 @@ public class Blooprint{
 				setBlip(unitBox);
 
 				break;
-
 		}
 
 
 	}//END main()
 
-	
+
 
 	/**
 	 * STRETCH() method: input pixel location -> output pixel location
@@ -413,10 +418,16 @@ public class Blooprint{
 							System.out.println("xIN = "+xIN+"\tyIN = "+yIN);
 							System.out.println("red = "+pxColor.getRed()+"\tgreen = "+pxColor.getGreen()+"\tblue = "+pxColor.getBlue());
 							xyOUT = stretch(xIN, yIN);
-							blooprint.setRGB(xyOUT[0], xyOUT[1], 0x000000);
+							
+							if (writeColor == "black") blooprint.setRGB(xyOUT[0], xyOUT[1], 0x000000);
+							else if (writeColor == "red") blooprint.setRGB(xyOUT[0], xyOUT[1], 0xFF0000);
+							else if (writeColor == "green") blooprint.setRGB(xyOUT[0], xyOUT[1], 0x00FF00);
+							else if (writeColor == "blue") blooprint.setRGB(xyOUT[0], xyOUT[1], 0x0000FF);
+							else if (writeColor == "gray") blooprint.setRGB(xyOUT[0], xyOUT[1], 0x808080);
+							else if (writeColor == "brown") blooprint.setRGB(xyOUT[0], xyOUT[1], 0xA52A2A);
+							else if (writeColor == "orange") blooprint.setRGB(xyOUT[0], xyOUT[1], 0xFFA500);
+							else if (writeColor == "purple") blooprint.setRGB(xyOUT[0], xyOUT[1], 0x800080);
 						}
-
-
 					}
 				}
 				catch(Exception e){
@@ -516,7 +527,7 @@ public class Blooprint{
 
 		try{
 			System.out.println("getting client clicks.......");
-			
+
 			/**
 			 * these are the click locations on the image inside the main blooprint app browser
 			 * */
@@ -911,8 +922,8 @@ public class Blooprint{
 	public static void calibrate() throws Exception{
 
 		/**
-		 * these are the user corner clicks translated from the client browser locations 
-		 * to the location on the input sketch - they could be different sizes 
+		 * these are the user corner clicks translated from the client browser locations
+		 * to the location on the input sketch - they could be different sizes
 		 * */
 		aax = (int)Math.round(unit_aax * (double)sketch.getWidth());
 		aay = (int)Math.round(unit_aay * (double)sketch.getHeight());
@@ -966,17 +977,17 @@ public class Blooprint{
 	*	calibration data is to be used every bloop/erase/blip
 	*/
 	public static void loadCalibration() throws Exception{
-		
+
 		JSONParser parser = new JSONParser();
-		 
+
         try {
- 
+
             Object obj = parser.parse(new FileReader(calibrationFile));
             Object obj2 = parser.parse(new FileReader(unitClicksFile));
- 
+
             JSONObject jsonObject = (JSONObject) obj;
             JSONObject unitObject = (JSONObject) obj2;
- 
+
             ax = (Integer) jsonObject.get("ax");
 			ay = (Integer) jsonObject.get("ay");
 			bx = (Integer) jsonObject.get("bx");
@@ -1005,7 +1016,7 @@ public class Blooprint{
 			yCenterIN = (Double) jsonObject.get("yCenterIN");
 			xCenterOUT = (Double) jsonObject.get("xCenterOUT");
 			yCenterOUT = (Double) jsonObject.get("yCenterOUT");
-            
+
 			/**
 			 * unitClicks are stored in main application
 			 * */
@@ -1017,8 +1028,8 @@ public class Blooprint{
 			unit_ccy = (Double) unitObject.get("unit_lly");
 			unit_ddx = (Double) unitObject.get("unit_lrx");
 			unit_ddy = (Double) unitObject.get("unit_lry");
-			
-            
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1089,9 +1100,9 @@ public class Blooprint{
 
 		JSONObject obj = new JSONObject();
 		FileWriter file = null;
-		
+
 		try{
-			
+
 			obj.put("ax", ax);
 			obj.put("ay", ay);
 			obj.put("bx", bx);
@@ -1128,15 +1139,15 @@ public class Blooprint{
 			obj.put("yCenterIN", yCenterIN);
 			obj.put("xCenterOUT", xCenterOUT);
 			obj.put("yCenterOUT", yCenterOUT);
-			
+
 			file = new FileWriter(calibrationFile);
 			file.write(obj.toJSONString());
-			
-			
-			
+
+
+
 			System.out.print(obj);
-			
-			
+
+
 			/////////////////////////////////
 
 //			Connection connx = getDataBaseConnection();
@@ -1548,9 +1559,9 @@ public class Blooprint{
 		System.out.println("loading blooprint from " + dir);
 		File file = getLatestFilefromDir(dir);
 		System.out.println("blooprint file loading = " + file.toString());
-		
+
 		BufferedImage some = null;
-		
+
 		try{
 
 			some = ImageIO.read(file);
@@ -1558,10 +1569,10 @@ public class Blooprint{
 		}catch(Exception exc){
 			exc.getMessage();
 		}
-		
+
 		return some;
 	}//END loadBlooprint()
-	
+
 	public static File getLatestFilefromDir(String dirPath){
 	    File dir = new File(dirPath);
 	    File[] files = dir.listFiles();
@@ -1577,7 +1588,7 @@ public class Blooprint{
 	    }
 	    return lastModifiedFile;
 	}
-	
+
 	/**
 	 * load image from DB table - either an input sketch or a compiled blooprint image
 	 *	sketch arg = "null"
@@ -1588,7 +1599,7 @@ public class Blooprint{
 		BufferedImage some = null;
 
 		try{
-//			
+//
 			//	TODO:
 			//	load image by sketch id
 			some = ImageIO.read(new File(file));
@@ -1625,7 +1636,7 @@ public class Blooprint{
 //			statement.setBlob(1, is);
 //			statement.executeUpdate();
 //			connx.close();
-			
+
 			File outputfile = new File(blooprintLoc+title+".jpg");
 		    ImageIO.write(blooprint, "jpg", outputfile);
 
