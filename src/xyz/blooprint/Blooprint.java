@@ -95,14 +95,19 @@ public class Blooprint{
 	 * SEE -> isMarker()
 	 * */
 	public static int mark = 150;
+	
+	public static String calibrationFile = "./data/calibration.json";
+	public static String unitClicksFile = "./unitClicks.json";
+	public static String blooprintLoc = "./blooprints/";
+	public static String sketchLoc = "./sketches/";
 
 	public static void main(String[] args) throws Exception{
 
 		title = args[0];
 		inMode = args[1];
 
-		blooprint = loadBlooprint("data/blooprints/");
-		sketch = loadSketch("data/sketches/"+title+".jpg");
+		blooprint = loadBlooprint(blooprintLoc);
+		sketch = loadSketch(sketchLoc+title+".jpg");
 
 
 	    switch(inMode){
@@ -170,6 +175,10 @@ public class Blooprint{
 
 			case "blip":
 				/*
+				 * DEPRECATED !!
+				 * use if you want, but the main blooprint desktop application
+				 * will need to render textareas in the DOM
+				 * 
 				*	purpose: save textbox location unit values to DB -> x,y,width,height
 				*	does NOT save updated blooprint image to DB -> only new BLIP location info
 				*
@@ -896,9 +905,6 @@ public class Blooprint{
 	}//END setBlip()
 
 
-
-
-
 	/*
 	Sets calibration values to DB
 	*/
@@ -965,8 +971,8 @@ public class Blooprint{
 		 
         try {
  
-            Object obj = parser.parse(new FileReader("./data/calibration.json"));
-            Object obj2 = parser.parse(new FileReader("../unitClicks.json"));
+            Object obj = parser.parse(new FileReader(calibrationFile));
+            Object obj2 = parser.parse(new FileReader(unitClicksFile));
  
             JSONObject jsonObject = (JSONObject) obj;
             JSONObject unitObject = (JSONObject) obj2;
@@ -1123,7 +1129,7 @@ public class Blooprint{
 			obj.put("xCenterOUT", xCenterOUT);
 			obj.put("yCenterOUT", yCenterOUT);
 			
-			file = new FileWriter("./data/calibration.json");
+			file = new FileWriter(calibrationFile);
 			file.write(obj.toJSONString());
 			
 			
@@ -1620,7 +1626,7 @@ public class Blooprint{
 //			statement.executeUpdate();
 //			connx.close();
 			
-			File outputfile = new File("data/blooprints/"+title+".jpg");
+			File outputfile = new File(blooprintLoc+title+".jpg");
 		    ImageIO.write(blooprint, "jpg", outputfile);
 
 		}catch(Exception ex){
