@@ -33,12 +33,18 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -53,15 +59,17 @@ import javax.imageio.ImageIO;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+
 import java.io.FileReader;
 //import java.util.Iterator;
 
-
-
+import org.apache.commons.io.FileUtils;
 
 public class Blooprint{
 
-	public static String title = "";	//	blooprint DB table name
+	public static String title = "";	//	sketch image name (timestamp)
 	public static String inMode = "";	//	write/erase/calibrate
 	public static String writeColor = "black";  //	default black
 	public static BufferedImage sketch;
@@ -97,25 +105,33 @@ public class Blooprint{
 	 * */
 	public static int mark = 150;
 
-	public static String calibrationFile = "./calibration/calibration.json";
-	public static String unitClicksFile = "./calibration/unitClicks.json";
-	public static String blooprintLoc = "./blooprints/";
-	public static String sketchLoc = "./sketches/";
-
+	public static String calibrationFile = "/calibration/calibration.json";
+	public static String unitClicksFile = "/calibration/unitClicks.json";
+	public static String blooprintLoc = "/blooprints/";
+	public static String blooprintFile = "";
+	public static String sketchLoc = "/sketches/";
+	public static String sketchFile = "";
+	
 	public static void main(String[] args) throws Exception{
 
 		title = args[0];
-		inMode = args[1];
+		
+		sketchFile = sketchLoc + title + ".jpg";
+		
+		blooprintFile = blooprintLoc + args[1] + ".jpg";
+	
+		inMode = args[2];
+		
 		if(args[2] == null) {
-			writeColor = "black";		
+			writeColor = "black";
 		}
 		else {
-			writeColor = args[2];		
+			writeColor = args[3];
 		}
 
-		blooprint = loadBlooprint(blooprintLoc);
-		sketch = loadSketch(sketchLoc+title+".jpg");
-
+		blooprint = loadBlooprint();
+		sketch = loadSketch();
+		
 	    switch(inMode){
 
 			case "calibrate":
@@ -137,23 +153,31 @@ public class Blooprint{
 				 * you have to pass through the writable area
 				 * */
 
-				getClientUnitClicks();
 			    calibrate();
 			    break;
 
 			case "write":
-				/**
-				*	purpose: save updated blooprint image to DB
-				**/
-				loadCalibration();
-				areaOfInterest = getLightBorder();
 
+				loadCalibration();
+				
+				areaOfInterest = getLightBorder();
+				
+//				printAOI(areaOfInterest, "border");
+				
 				/*
 				 * start flooding right below center of topSlope
 				 * */
 				tx = (ax+cx)/2;
 				ty = (ay+cy)/2;
-				areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
+				
+				try {
+					areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
+//					printAOI(areaOfInterest, "fill");
+					
+				}
+				catch(Exception e) {
+					System.out.println("ERROR floodBorder():" + e.getMessage());
+				}
 
 				bloop();
 				saveBlooprint();
@@ -173,52 +197,56 @@ public class Blooprint{
 				tx = (ax+cx)/2;
 				ty = (ay+cy)/2;
 				areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
+//				printAOI(areaOfInterest, "fill");
 
 				sketchDrawnArea = getSketchDrawnArea();
 				erase(sketchDrawnArea);
 				saveBlooprint();
 				break;
 
-			case "blip":
-				/*
-				 * DEPRECATED !!
-				 * use if you want, but the main blooprint desktop application
-				 * will need to render textareas in the DOM
-				 *
-				*	purpose: save textbox location unit values to DB -> x,y,width,height
-				*	does NOT save updated blooprint image to DB -> only new BLIP location info
-				*
-				*	WEB DEV NOTE:
-				*	new blip location can just as easily be created in a user
-				*	click-and-drag box area type entry in DOM elements
-				*	The Blip action is to give the option of entirely
-				*	eliminating the need for a mouse entirely.
-				**/
-				loadCalibration();
-
-				areaOfInterest = getLightBorder();
-
-				/*
-				 * start flooding right below center of topSlope
-				 * */
-				tx = (ax+cx)/2;
-				ty = (ay+cy)/2;
-				areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
-
-				/**
-	    		 * box drawn by user on whiteboard dictating exactly where they want new BLIP text to be located on BLOOPRINT
-	    		 * */
-	    		int[] scanBox = new int[4];
-	    		scanBox = zoomToBox();
-	    		int[] userIntendedCorners = getScanBoxCorners(scanBox[0], scanBox[1], scanBox[2], scanBox[3]);
-
-				/*
-				save BLIP unitBox to DB
-				*/
-	    		float[] unitBox = setUnitTextbox(userIntendedCorners);
-				setBlip(unitBox);
-
-				break;
+//			case "blip":
+//				/*
+//				 * DEPRECATED !!
+//				 * use if you want, but the main blooprint desktop application
+//				 * will need to render textareas in the DOM
+//				 *
+//				*	purpose: save textbox location unit values to DB -> x,y,width,height
+//				*	does NOT save updated blooprint image to DB -> only new BLIP location info
+//				*
+//				*	WEB DEV NOTE:
+//				*	new blip location can just as easily be created in a user
+//				*	click-and-drag box area type entry in DOM elements
+//				*	The Blip action is to give the option of entirely
+//				*	eliminating the need for a mouse entirely.
+//				**/
+//				loadCalibration();
+//
+//				areaOfInterest = getLightBorder();
+//
+//				/*
+//				 * start flooding right below center of topSlope
+//				 * */
+//				tx = (ax+cx)/2;
+//				ty = (ay+cy)/2;
+//				areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
+//
+//				/**
+//	    		 * box drawn by user on whiteboard dictating exactly where they want new BLIP text to be located on BLOOPRINT
+//	    		 * */
+//	    		int[] scanBox = new int[4];
+//	    		scanBox = zoomToBox();
+//	    		int[] userIntendedCorners = getScanBoxCorners(scanBox[0], scanBox[1], scanBox[2], scanBox[3]);
+//
+//				/*
+//				save BLIP unitBox to DB
+//				*/
+//	    		float[] unitBox = setUnitTextbox(userIntendedCorners);
+//				setBlip(unitBox);
+//
+//				break;
+				
+			default:
+				return;
 		}
 
 
@@ -397,7 +425,7 @@ public class Blooprint{
 	 * */
 	public static void bloop() {
 
-		System.out.println("blooping......");
+		System.out.println("writing......");
 
 
 		int[] xyOUT = new int[2];
@@ -415,23 +443,43 @@ public class Blooprint{
 
 						if (isMarker(pxColor)){
 
-							System.out.println("xIN = "+xIN+"\tyIN = "+yIN);
-							System.out.println("red = "+pxColor.getRed()+"\tgreen = "+pxColor.getGreen()+"\tblue = "+pxColor.getBlue());
+//							System.out.println("xIN = "+xIN+"\tyIN = "+yIN);
+//							System.out.println("red = "+pxColor.getRed()+"\tgreen = "+pxColor.getGreen()+"\tblue = "+pxColor.getBlue());
 							xyOUT = stretch(xIN, yIN);
 							
-							if (writeColor == "black") blooprint.setRGB(xyOUT[0], xyOUT[1], 0x000000);
-							else if (writeColor == "red") blooprint.setRGB(xyOUT[0], xyOUT[1], 0xFF0000);
-							else if (writeColor == "green") blooprint.setRGB(xyOUT[0], xyOUT[1], 0x00FF00);
-							else if (writeColor == "blue") blooprint.setRGB(xyOUT[0], xyOUT[1], 0x0000FF);
-							else if (writeColor == "gray") blooprint.setRGB(xyOUT[0], xyOUT[1], 0x808080);
-							else if (writeColor == "brown") blooprint.setRGB(xyOUT[0], xyOUT[1], 0xA52A2A);
-							else if (writeColor == "orange") blooprint.setRGB(xyOUT[0], xyOUT[1], 0xFFA500);
-							else if (writeColor == "purple") blooprint.setRGB(xyOUT[0], xyOUT[1], 0x800080);
+							switch(writeColor) {
+								case "black":
+									blooprint.setRGB(xyOUT[0], xyOUT[1], 0x000000);
+									break;
+								case "red":
+									blooprint.setRGB(xyOUT[0], xyOUT[1], 0xFF0000);
+									break;
+								case "green":
+									blooprint.setRGB(xyOUT[0], xyOUT[1], 0x00FF00);
+									break;
+								case "blue":
+									blooprint.setRGB(xyOUT[0], xyOUT[1], 0x0000FF);
+									break;
+								case "gray":
+									blooprint.setRGB(xyOUT[0], xyOUT[1], 0x808080);
+									break;
+								case "brown":
+									blooprint.setRGB(xyOUT[0], xyOUT[1], 0xA52A2A);
+									break;
+								case "orange":
+									blooprint.setRGB(xyOUT[0], xyOUT[1], 0xFFA500);
+									break;
+								case "purple":
+									blooprint.setRGB(xyOUT[0], xyOUT[1], 0x800080);
+									break;
+								default:
+									return;
+							}
 						}
 					}
 				}
 				catch(Exception e){
-					e.printStackTrace();
+					System.out.println("ERROR bloop(): " + e.getMessage());
 				}
 
 
@@ -482,11 +530,13 @@ public class Blooprint{
 	 * this method exists to display that we're examining the correct AREA OF INTEREST in sketch image	 *
 	 * */
 	public static void printAOI(boolean[][] isHit, String action) throws IOException {
-
+		
+		InputStream stream = Blooprint.class.getClass().getResourceAsStream("/sketches/calibrate.jpg");
+		BufferedImage ghostBorder = ImageIO.read(stream);
 
 		try{
 
-			BufferedImage ghostBorder = ImageIO.read(new File("some directory/calibrate.jpg"));
+//			BufferedImage ghostBorder = ImageIO.read(Blooprint.class.getClass().getResourceAsStream("/sketches/calibrate.jpg"));
 
 			for (int row = 0; row < ghostBorder.getHeight(); row ++){
 				for (int col = 0; col < ghostBorder.getWidth(); col++){
@@ -499,10 +549,23 @@ public class Blooprint{
 			}
 
 			if(action == "fill"){
-				ImageIO.write(ghostBorder, "jpg", new File("some directory/areaOfInterest_filled.jpg"));
+//				ImageIO.write(ghostBorder, "jpg", new File("/blooprints/areaOfInterest_filled.jpg"));
+				
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				ImageIO.write(ghostBorder, "jpg", baos);
+				InputStream stream2 = new ByteArrayInputStream(baos.toByteArray());
+				File outputfile = new File("./api/calibration/areaOfInterest_filled.jpg");
+				FileUtils.copyInputStreamToFile(stream2, outputfile);
 			}
-			else{
-				ImageIO.write(ghostBorder, "jpg", new File("some directory/areaOfInterest.jpg"));
+			else if (action == "border"){
+//				ImageIO.write(ghostBorder, "jpg", new File("/blooprints/areaOfInterest.jpg"));
+				
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				ImageIO.write(ghostBorder, "jpg", baos);
+				InputStream stream2 = new ByteArrayInputStream(baos.toByteArray());
+				File outputfile = new File("./api/calibration/areaOfInterest.jpg");
+				FileUtils.copyInputStreamToFile(stream2, outputfile);
+				
 			}
 
 
@@ -518,54 +581,33 @@ public class Blooprint{
 	/*
 	 * get client side selected points just outside lit corners
 	 * */
-	public static void getClientUnitClicks(){
-
-		/*
-		 * double[] array
-		 * */
-		int[] some = new int[8];
-
-		try{
-			System.out.println("getting client clicks.......");
-
-			/**
-			 * these are the click locations on the image inside the main blooprint app browser
-			 * */
-
-
-			Connection connx = getDataBaseConnection();
-			Statement statement = (Statement) connx.createStatement();
-			String cmd = "SELECT * FROM _clientclicks ORDER BY id DESC LIMIT 1";
-			ResultSet result = statement.executeQuery(cmd);
-			while(result.next()){
-
-				some[0] = result.getInt("ulx");
-				some[1] = result.getInt("uly");
-				some[2] = result.getInt("urx");
-				some[3] = result.getInt("ury");
-				some[4] = result.getInt("llx");
-				some[5] = result.getInt("lly");
-				some[6] = result.getInt("lrx");
-				some[7] = result.getInt("lry");
-				clientWidth = result.getInt("width");
-				clientHeight = result.getInt("height");
-
-			}
-		}
-		catch(Exception e){
-			System.out.println("\nERROR loadCalibration\n"+e+"\n");
-		}
-
-		unit_aax = (double)some[0]/(double)clientWidth;
-		unit_aay = (double)some[1]/(double)clientHeight;
-		unit_bbx = (double)some[2]/(double)clientWidth;
-		unit_bby = (double)some[3]/(double)clientHeight;
-		unit_ccx = (double)some[4]/(double)clientWidth;
-		unit_ccy = (double)some[5]/(double)clientHeight;
-		unit_ddx = (double)some[6]/(double)clientWidth;
-		unit_ddy = (double)some[7]/(double)clientHeight;
+	public static void getClientUnitClicks() throws Exception{
+		
+		JSONParser parser = new JSONParser();
+		InputStream stream = null;
+		JSONObject unitObject = null;
+		
+		
+		try {
+			
+			stream = Blooprint.class.getClass().getResourceAsStream(unitClicksFile);
+			unitObject = (JSONObject)parser.parse(new InputStreamReader(stream, "UTF-8"));
+			System.out.println("unitClicks stream = "+ stream );
+			
+			unit_aax = (Double) unitObject.get("unit_ulx");
+			unit_aay = (Double) unitObject.get("unit_uly");
+			unit_bbx = (Double) unitObject.get("unit_urx");
+			unit_bby = (Double) unitObject.get("unit_ury");
+			unit_ccx = (Double) unitObject.get("unit_llx");
+			unit_ccy = (Double) unitObject.get("unit_lly");
+			unit_ddx = (Double) unitObject.get("unit_lrx");
+			unit_ddy = (Double) unitObject.get("unit_lry");
 
 
+        } catch (Exception e) {
+        	System.out.println("ERROR getUnitClientClick(): " + e.getMessage());
+        }
+		
 	}//END getClientUnitClicks()
 
 
@@ -920,6 +962,12 @@ public class Blooprint{
 	Sets calibration values to DB
 	*/
 	public static void calibrate() throws Exception{
+		
+		/**
+		 * loads user click data from main application
+		 * */
+		getClientUnitClicks();
+	    
 
 		/**
 		 * these are the user corner clicks translated from the client browser locations
@@ -933,7 +981,17 @@ public class Blooprint{
 		ccy = (int)Math.round(unit_ccy * (double)sketch.getHeight());
 		ddx = (int)Math.round(unit_ddx * (double)sketch.getWidth());
 		ddy = (int)Math.round(unit_ddy * (double)sketch.getHeight());
-
+		
+		System.out.println("aax = " + aax);
+		System.out.println("aay = " + aay);
+		System.out.println("bbx = " + bbx);
+		System.out.println("bby = " + bby);
+		System.out.println("ccx = " + ccx);
+		System.out.println("ccy = " + ccy);
+		System.out.println("ddx = " + ddx);
+		System.out.println("sketch width = " + sketch.getWidth());
+		System.out.println("sketch height = " + sketch.getHeight());
+		
 
 		/*
 		 * if slopes will equal 0 or INFINITY : move one of the pixels off by 1 just to give it some slope
@@ -957,8 +1015,7 @@ public class Blooprint{
 		 * lit projection area on whiteboard
 		 * */
 		areaOfInterest = getAreaOfInterestBorder();
-
-
+		
 		int tx = (bbx+aax)/2;
 		int ty = (bby+aay)/2;
 		/*
@@ -968,6 +1025,7 @@ public class Blooprint{
 		 * areaOfInterest = floodBorder(areaOfInterest, X, Y);
 		 * */
 		areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
+		
 		setCorners();
 		setCenters();
 		saveCalibration();
@@ -977,119 +1035,64 @@ public class Blooprint{
 	*	calibration data is to be used every bloop/erase/blip
 	*/
 	public static void loadCalibration() throws Exception{
+		
+		
 
 		JSONParser parser = new JSONParser();
-
+		JSONObject obj = null;
+		InputStream stream = null;
+		
         try {
-
-            Object obj = parser.parse(new FileReader(calibrationFile));
-            Object obj2 = parser.parse(new FileReader(unitClicksFile));
-
-            JSONObject jsonObject = (JSONObject) obj;
-            JSONObject unitObject = (JSONObject) obj2;
-
-            ax = (Integer) jsonObject.get("ax");
-			ay = (Integer) jsonObject.get("ay");
-			bx = (Integer) jsonObject.get("bx");
-			by = (Integer) jsonObject.get("by_");
-			cx = (Integer) jsonObject.get("cx");
-			cy = (Integer) jsonObject.get("cy");
-			dx = (Integer) jsonObject.get("dx");
-			dy = (Integer) jsonObject.get("dy");
-			fx = (Integer) jsonObject.get("fx");
-			fy = (Integer) jsonObject.get("fy");
-			gx = (Integer) jsonObject.get("gx");
-			hy = (Integer) jsonObject.get("hy");
-			aax = (Integer) jsonObject.get("aax");
-			aay = (Integer) jsonObject.get("aay");
-			bbx = (Integer) jsonObject.get("bbx");
-			bby = (Integer) jsonObject.get("bby");
-			ccx = (Integer) jsonObject.get("ccx");
-			ccy = (Integer) jsonObject.get("ccy");
-			ddx = (Integer) jsonObject.get("ddx");
-			ddy = (Integer) jsonObject.get("ddy");
-			mA = (Double) jsonObject.get("mA");
-			mB = (Double) jsonObject.get("mB");
-			mC = (Double) jsonObject.get("mC");
-			mD = (Double) jsonObject.get("mD");
-			xCenterIN = (Double) jsonObject.get("xCenterIN");
-			yCenterIN = (Double) jsonObject.get("yCenterIN");
-			xCenterOUT = (Double) jsonObject.get("xCenterOUT");
-			yCenterOUT = (Double) jsonObject.get("yCenterOUT");
-
-			/**
-			 * unitClicks are stored in main application
-			 * */
-			unit_aax = (Double) unitObject.get("unit_ulx");
-			unit_aay = (Double) unitObject.get("unit_uly");
-			unit_bbx = (Double) unitObject.get("unit_urx");
-			unit_bby = (Double) unitObject.get("unit_ury");
-			unit_ccx = (Double) unitObject.get("unit_llx");
-			unit_ccy = (Double) unitObject.get("unit_lly");
-			unit_ddx = (Double) unitObject.get("unit_lrx");
-			unit_ddy = (Double) unitObject.get("unit_lry");
-
+        	
+        	stream = Blooprint.class.getClass().getResourceAsStream(calibrationFile);
+			obj = (JSONObject)parser.parse(new InputStreamReader(stream, "UTF-8"));
+			System.out.println("load calibration stream = "+ stream );
+			
+			ax = (int)(long) obj.get("ax");
+            ay = (int)(long) obj.get("ay");
+			bx = (int)(long) obj.get("bx");
+			by = (int)(long) obj.get("by");
+			cx = (int)(long) obj.get("cx");
+			cy = (int)(long) obj.get("cy");
+			dx = (int)(long) obj.get("dx");
+			dy = (int)(long) obj.get("dy");
+			fx = (int)(long) obj.get("fx");
+			fy = (int)(long) obj.get("fy");
+			gx = (int)(long) obj.get("gx");
+			hy = (int)(long) obj.get("hy");
+			aax = (int)(long) obj.get("aax");
+			aay = (int)(long) obj.get("aay");
+			bbx = (int)(long) obj.get("bbx");
+			bby = (int)(long) obj.get("bby");
+			ccx = (int)(long) obj.get("ccx");
+			ccy = (int)(long) obj.get("ccy");
+			ddx = (int)(long) obj.get("ddx");
+			ddy = (int)(long) obj.get("ddy");
+			mA = (Double) obj.get("mA");
+			mB = (Double) obj.get("mB");
+			mC = (Double) obj.get("mC");
+			mD = (Double) obj.get("mD");
+			xCenterIN = (Double) obj.get("xCenterIN");
+			yCenterIN = (Double) obj.get("yCenterIN");
+			xCenterOUT = (Double) obj.get("xCenterOUT");
+			yCenterOUT = (Double) obj.get("yCenterOUT");
+			unit_aax = (Double) obj.get("unit_aax");
+			unit_aay = (Double) obj.get("unit_aay");
+			unit_bbx = (Double) obj.get("unit_bbx");
+			unit_bby = (Double) obj.get("unit_bby");
+			unit_ccx = (Double) obj.get("unit_ccx");
+			unit_ccy = (Double) obj.get("unit_ccy");
+			unit_ddx = (Double) obj.get("unit_ddx");
+			unit_ddy = (Double) obj.get("unit_ddy");
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("ERROR loadCalibration(): " + e.getMessage());
         }
-
-//		try{
-//			System.out.println("loading calibration.......");
-//
-//			Connection connx = getDataBaseConnection();
-//			Statement statement = (Statement) connx.createStatement();
-//			String cmd = "SELECT * FROM _calibration ORDER BY id DESC LIMIT 1";
-//			ResultSet result = statement.executeQuery(cmd);
-//			while(result.next()){
-//				ax = result.getInt("ax");
-//				ay = result.getInt("ay");
-//				bx = result.getInt("bx");
-//				by = result.getInt("by_");
-//				cx = result.getInt("cx");
-//				cy = result.getInt("cy");
-//				dx = result.getInt("dx");
-//				dy = result.getInt("dy");
-//				fx = result.getInt("fx");
-//				fy = result.getInt("fy");
-//				gx = result.getInt("gx");
-//				hy = result.getInt("hy");
-//				aax = result.getInt("aax");
-//				aay = result.getInt("aay");
-//				bbx = result.getInt("bbx");
-//				bby = result.getInt("bby");
-//				ccx = result.getInt("ccx");
-//				ccy = result.getInt("ccy");
-//				ddx = result.getInt("ddx");
-//				ddy = result.getInt("ddy");
-//				unit_aax = result.getDouble("unit_aax");
-//				unit_aay = result.getDouble("unit_aay");
-//				unit_bbx = result.getDouble("unit_bbx");
-//				unit_bby = result.getDouble("unit_bby");
-//				unit_ccx = result.getDouble("unit_ccx");
-//				unit_ccy = result.getDouble("unit_ccy");
-//				unit_ddx = result.getDouble("unit_ddx");
-//				unit_ddy = result.getDouble("unit_ddy");
-//				mA = result.getDouble("mA");
-//				mB = result.getDouble("mB");
-//				mC = result.getDouble("mC");
-//				mD = result.getDouble("mD");
-//				xCenterIN = result.getDouble("xCenterIN");
-//				yCenterIN = result.getDouble("yCenterIN");
-//				xCenterOUT = result.getDouble("xCenterOUT");
-//				yCenterOUT = result.getDouble("yCenterOUT");
-//
-//			}
-//		}
-//		catch(Exception e){
-//			System.out.println("\nERROR loadCalibration\n"+e+"\n");
-//		}
 
 		topSlope 	= ((double)cy-(double)ay)/((double)cx-(double)ax);
 		bottomSlope = ((double)dy-(double)by)/((double)dx-(double)bx);
 		leftSlope 	= ((double)ay-(double)dy)/((double)ax-(double)dx);
 		rightSlope 	= ((double)cy-(double)by)/((double)cx-(double)bx);
-
 
 	}//END loadCalibration()
 
@@ -1098,8 +1101,9 @@ public class Blooprint{
 	 * */
 	public static void saveCalibration() throws Exception {
 
+		System.out.println("saveCalibration()...");
 		JSONObject obj = new JSONObject();
-		FileWriter file = null;
+//		FileWriter file = null;
 
 		try{
 
@@ -1140,70 +1144,17 @@ public class Blooprint{
 			obj.put("xCenterOUT", xCenterOUT);
 			obj.put("yCenterOUT", yCenterOUT);
 
-			file = new FileWriter(calibrationFile);
-			file.write(obj.toJSONString());
-
-
-
-			System.out.print(obj);
-
-
-			/////////////////////////////////
-
-//			Connection connx = getDataBaseConnection();
-//			String cmd = "INSERT INTO _calibration(ax,ay,bx,by_,cx,cy,dx,dy,fx,fy,gx,hy,"
-//					+"aax,aay,bbx,bby,ccx,ccy,ddx,ddy,unit_aax,unit_aay,unit_bbx,unit_bby,"
-//					+"unit_ccx,unit_ccy,unit_ddx,unit_ddy,mA,mB,mC,mD,xCenterIN,yCenterIN,xCenterOUT,yCenterOUT) "
-//					+"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-//			PreparedStatement statement = (PreparedStatement) connx.prepareStatement(cmd);
-//			statement.setInt(1, ax);
-//			statement.setInt(2, ay);
-//			statement.setInt(3, bx);
-//			statement.setInt(4, by);
-//			statement.setInt(5, cx);
-//			statement.setInt(6, cy);
-//			statement.setInt(7, dx);
-//			statement.setInt(8, dy);
-//			statement.setInt(9, fx);
-//			statement.setInt(10, fy);
-//			statement.setInt(11, gx);
-//			statement.setInt(12, hy);
-//			statement.setInt(13, aax);
-//			statement.setInt(14, aay);
-//			statement.setInt(15, bbx);
-//			statement.setInt(16, bby);
-//			statement.setInt(17, ccx);
-//			statement.setInt(18, ccy);
-//			statement.setInt(19, ddx);
-//			statement.setInt(20, ddy);
-//			statement.setDouble(21, unit_aax);
-//			statement.setDouble(22, unit_aay);
-//			statement.setDouble(23, unit_bbx);
-//			statement.setDouble(24, unit_bby);
-//			statement.setDouble(25, unit_ccx);
-//			statement.setDouble(26, unit_ccy);
-//			statement.setDouble(27, unit_ddx);
-//			statement.setDouble(28, unit_ddy);
-//			statement.setDouble(29, mA);
-//			statement.setDouble(30, mB);
-//			statement.setDouble(31, mC);
-//			statement.setDouble(32, mD);
-//			statement.setDouble(33, xCenterIN);
-//			statement.setDouble(34, yCenterIN);
-//			statement.setDouble(35, xCenterOUT);
-//			statement.setDouble(36, yCenterOUT);
-//
-//			statement.executeUpdate();
-//			connx.close();
-
 		}catch(Exception ex){
-			System.out.println(ex);
+			System.out.println("ERROR assembling calibration JSON Object: " + ex.getMessage());
 		}
-		finally{
-			file.close();
+			
+		try {
+			FileUtils.writeStringToFile(new File("./api/calibration/calibration.json"),obj.toJSONString(),"UTF-8");
 		}
-
-
+		catch(Exception e){
+			System.out.println("ERROR saveCalibration() - writing JSON to file: " + e.getMessage());
+		}
+		
 	}//END saveCalibration()
 
 	/**
@@ -1234,7 +1185,7 @@ public class Blooprint{
                     {
                     	ax = col;
                     	ay = row;
-                        System.out.println("Corner 1:\nULx = "+ax+"\nULy = "+ay);
+                        System.out.println("Corner 1:\tULx = "+ax+"\tULy = "+ay);
                         hit = true;
                         break Next1;
                     }
@@ -1267,10 +1218,7 @@ public class Blooprint{
                     {
                     	cx = col;
                     	cy = row;
-
-                    	System.out.println("cx = "+cx+"\tcy = "+cy);
-
-                        System.out.println("Corner 2:\nURx = "+cx+"\nURy = "+cy);
+                        System.out.println("Corner 2:\tURx = "+cx+"\tURy = "+cy);
                         hit = true;
                         break Next2;
                     }
@@ -1303,7 +1251,7 @@ public class Blooprint{
                     {
                     	dx = col;
                     	dy = row;
-                        System.out.println("Corner 3:\nLLx = "+dx+"\nLLy = "+dy);
+                        System.out.println("Corner 3:\tLLx = "+dx+"\tLLy = "+dy);
                         hit = true;
                         break Next3;
                     }
@@ -1336,7 +1284,7 @@ public class Blooprint{
                     {
                     	bx = col;
                     	by = row;
-                        System.out.println("Corner 4:\nLRx = "+bx+"\nLRy = "+by);
+                        System.out.println("Corner 4:\tLRx = "+bx+"\tLRy = "+by);
                         hit = true;
                         break Next4;
                     }
@@ -1445,7 +1393,7 @@ public class Blooprint{
 	/**
 	 * returns binary map. area of interest on whiteboard, just outside of projected corners
 	 * */
-	public static boolean[][] getSketchDrawnArea() {
+	public static boolean[][] getSketchDrawnArea() throws Exception {
 
 
 		/**
@@ -1552,68 +1500,60 @@ public class Blooprint{
 	 *	sketch arg = "null"
 	 * BLOB object to binary stream to BufferedImage object
 	 * */
-	public static BufferedImage loadBlooprint(String dir) {
-		/**
-		 * find the last modified file in a directory
-		 * */
-		System.out.println("loading blooprint from " + dir);
-		File file = getLatestFilefromDir(dir);
-		System.out.println("blooprint file loading = " + file.toString());
-
-		BufferedImage some = null;
-
+	public static BufferedImage loadBlooprint() throws IOException {
+		System.out.println("loadBlooprint() from " + blooprintFile);
+		InputStream stream = null;
 		try{
-
-			some = ImageIO.read(file);
-
+			/**
+			 * http://stackoverflow.com/questions/39081215/access-a-resource-outside-a-jar-from-the-jar
+			 * */
+			stream = Blooprint.class.getClass().getResourceAsStream(blooprintFile);
+			
+			System.out.println("blooprint stream = "+ stream );
+		}
+		catch(Exception e) {
+			System.out.println("error blooprint to stream: " + e.getMessage());
+		}
+		BufferedImage some = null;
+		try{
+			some = ImageIO.read(stream);
 		}catch(Exception exc){
 			exc.getMessage();
 		}
-
 		return some;
 	}//END loadBlooprint()
 
-	public static File getLatestFilefromDir(String dirPath){
-	    File dir = new File(dirPath);
-	    File[] files = dir.listFiles();
-	    if (files == null || files.length == 0) {
-	        return null;
-	    }
-
-	    File lastModifiedFile = files[0];
-	    for (int i = 1; i < files.length; i++) {
-	       if (lastModifiedFile.lastModified() < files[i].lastModified()) {
-	           lastModifiedFile = files[i];
-	       }
-	    }
-	    return lastModifiedFile;
-	}
 
 	/**
 	 * load image from DB table - either an input sketch or a compiled blooprint image
 	 *	sketch arg = "null"
 	 * BLOB object to binary stream to BufferedImage object
 	 * */
-	public static BufferedImage loadSketch(String file) throws Exception {
-
-		BufferedImage some = null;
-
+	public static BufferedImage loadSketch() throws Exception {
+		System.out.println("loadSketch() from " + sketchFile);
+		InputStream stream = null;
 		try{
-//
-			//	TODO:
-			//	load image by sketch id
-			some = ImageIO.read(new File(file));
-
+			/**
+			 * http://stackoverflow.com/questions/39081215/access-a-resource-outside-a-jar-from-the-jar
+			 * */
+			stream = Blooprint.class.getClass().getResourceAsStream(sketchFile);
+			System.out.println("sketch stream = "+ stream );
+		}
+		catch(Exception e) {
+			System.out.print("error sketch to stream: ");
+			System.out.println(e.getMessage());
+		}
+		BufferedImage some = null;
+		try{
+			some = ImageIO.read(stream);
 			fx = some.getWidth()-1;
 			gx = some.getWidth()-1;
 		    fy = some.getHeight()-1;
 		    hy = some.getHeight()-1;
-
 		}catch(Exception exc){
-			exc.getMessage();
+			System.out.print("error stream to image: ");
+			System.out.println(exc.getMessage());
 		}
-
-
 		return some;
 	}//END loadSketch()
 
@@ -1621,27 +1561,19 @@ public class Blooprint{
 	 * DB table is updated with added image of latest blooprint image state
 	 * */
 	public static void saveBlooprint() throws IOException {
-		/*
-		 * BufferedImage object to BLOB object
-		 * */
-//		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//		ImageIO.write(blooprint, "jpg", baos);
-//		InputStream is = new ByteArrayInputStream(baos.toByteArray());
-
+		
+		System.out.println("saveBlooprint()...");
+		
 		try{
-
-//			Connection connx = getDataBaseConnection();
-//			String cmd = "INSERT INTO "+title+"(blooprint) VALUES (?)";
-//			PreparedStatement statement = (PreparedStatement) connx.prepareStatement(cmd);
-//			statement.setBlob(1, is);
-//			statement.executeUpdate();
-//			connx.close();
-
-			File outputfile = new File(blooprintLoc+title+".jpg");
-		    ImageIO.write(blooprint, "jpg", outputfile);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ImageIO.write(blooprint, "jpg", baos);
+			InputStream stream = new ByteArrayInputStream(baos.toByteArray());
+			File outputfile = new File("./api/blooprints/"+title+".jpg");
+			FileUtils.copyInputStreamToFile(stream, outputfile);
+//		    ImageIO.write(blooprint, "jpg", outputfile);
 
 		}catch(Exception ex){
-			System.out.println(ex.getMessage());
+			System.out.println("ERROR saveBlooprint(): " + ex.getMessage());
 		}
 	}//END saveBlooprint()
 
