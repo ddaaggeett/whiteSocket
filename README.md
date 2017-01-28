@@ -2,11 +2,20 @@
 ###Are you the **non-techie** type?  Please **visit our** (incomplete) [**wiki**](https://github.com/blooprint/blooprint/wiki) page.
 This API is **used by** the [**blooprint**](https://github.com/blooprint/blooprint) desktop application.
 
-##An overview - first [create a JAR file](http://docs.oracle.com/javase/tutorial/deployment/jar/build.html) (blooprint.jar) and place in [here](https://github.com/blooprint/blooprint/tree/master/api).
+##An overview
+
+First [create a JAR file](http://docs.oracle.com/javase/tutorial/deployment/jar/build.html) (blooprint.jar) and place it **[here](https://github.com/blooprint/blooprint/tree/master/api)**.
 
 Don't forget to include a few required external JARs
 - Google's [json-simple-1.1.1.jar](https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/json-simple/json-simple-1.1.1.jar)
 - Apache's [commons-io-2.5.jar](http://www-us.apache.org/dist//commons/io/source/commons-io-2.5-src.zip)
+
+**Or** you could **download the latest [blooprint.jar](https://github.com/blooprint/blooprint-api/releases) file** which already includes the external JAR dependencies you need to run with the main blooprint application.  Still, place it **[here](https://github.com/blooprint/blooprint/tree/master/api)**.
+
+####Runtime requirements
+```
+"jdk": ">=1.8"
+```
 
 The [parent module](https://github.com/blooprint/blooprint) triggers this API a few different ways. A trigger always includes the filename of the image to scrape pixel data from and a specific mode specifying what the API is to do with the image.
 

@@ -4,7 +4,7 @@
 *.jpeg
 *.JPEG
 .DS_store
-dependencies/
+dependencies/**/*.jar
 
 .metadata
 bin/

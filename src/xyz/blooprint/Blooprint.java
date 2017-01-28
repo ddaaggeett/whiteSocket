@@ -129,7 +129,7 @@ public class Blooprint{
 			writeColor = args[3];
 		}
 
-		blooprint = loadBlooprint();
+		if(args[1] != "null") blooprint = loadBlooprint();
 		sketch = loadSketch();
 		
 	    switch(inMode){
@@ -1149,6 +1149,7 @@ public class Blooprint{
 		}
 			
 		try {
+			System.out.println("writing calibration to file");
 			FileUtils.writeStringToFile(new File("./api/calibration/calibration.json"),obj.toJSONString(),"UTF-8");
 		}
 		catch(Exception e){
@@ -1344,10 +1345,10 @@ public class Blooprint{
 
 
 
-		            	System.out.println("xIN = "+xIN);
-		            	System.out.println("yIN = "+yIN);
+//		            	System.out.println("xIN = "+xIN);
+//		            	System.out.println("yIN = "+yIN);
 
-						System.out.println("\nfound eraser border!!!\n");
+						System.out.println("found eraser border!!!");
 
 						/*
 						 * encapsulate eraser area
@@ -1376,9 +1377,6 @@ public class Blooprint{
 								break here;
 							}
 						}
-
-
-
 					}
 					else{
 						continue;
@@ -1418,8 +1416,7 @@ public class Blooprint{
 
 		int[] next = new int[2];
 
-
-		System.out.println("============================\nlastX = "+coord[0]+"\tlastY = "+coord[1]);
+//		System.out.println("============================\nlastX = "+coord[0]+"\tlastY = "+coord[1]);
 
 		/*
 		 * all 8 surrounding pixels need to be checked counterclockwise
