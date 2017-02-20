@@ -72,6 +72,7 @@ public class Blooprint{
 	public static String title = "";	//	sketch image name (timestamp)
 	public static String inMode = "";	//	write/erase/calibrate
 	public static String writeColor = "black";  //	default black
+	public static int markerHex = 0x000000;  //	default black
 	public static BufferedImage sketch;
 	public static BufferedImage blooprint;
 
@@ -111,27 +112,22 @@ public class Blooprint{
 	public static String blooprintFile = "";
 	public static String sketchLoc = "/sketches/";
 	public static String sketchFile = "";
-	
+
 	public static void main(String[] args) throws Exception{
 
 		title = args[0];
-		
+
 		sketchFile = sketchLoc + title + ".jpg";
-		
+
 		blooprintFile = blooprintLoc + args[1] + ".jpg";
-	
+
 		inMode = args[2];
-		
-		if(args[2] == null) {
-			writeColor = "black";
-		}
-		else {
-			writeColor = args[3];
-		}
+
+		markerHex = Integer.parseInt("0x" + args[3]);
 
 		if(args[1] != "null") blooprint = loadBlooprint();
 		sketch = loadSketch();
-		
+
 	    switch(inMode){
 
 			case "calibrate":
@@ -159,21 +155,21 @@ public class Blooprint{
 			case "write":
 
 				loadCalibration();
-				
+
 				areaOfInterest = getLightBorder();
-				
+
 //				printAOI(areaOfInterest, "border");
-				
+
 				/*
 				 * start flooding right below center of topSlope
 				 * */
 				tx = (ax+cx)/2;
 				ty = (ay+cy)/2;
-				
+
 				try {
 					areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
 //					printAOI(areaOfInterest, "fill");
-					
+
 				}
 				catch(Exception e) {
 					System.out.println("ERROR floodBorder():" + e.getMessage());
@@ -244,7 +240,7 @@ public class Blooprint{
 //				setBlip(unitBox);
 //
 //				break;
-				
+
 			default:
 				return;
 		}
@@ -443,38 +439,10 @@ public class Blooprint{
 
 						if (isMarker(pxColor)){
 
-//							System.out.println("xIN = "+xIN+"\tyIN = "+yIN);
-//							System.out.println("red = "+pxColor.getRed()+"\tgreen = "+pxColor.getGreen()+"\tblue = "+pxColor.getBlue());
 							xyOUT = stretch(xIN, yIN);
-							
-							switch(writeColor) {
-								case "black":
-									blooprint.setRGB(xyOUT[0], xyOUT[1], 0x000000);
-									break;
-								case "red":
-									blooprint.setRGB(xyOUT[0], xyOUT[1], 0xFF0000);
-									break;
-								case "green":
-									blooprint.setRGB(xyOUT[0], xyOUT[1], 0x00FF00);
-									break;
-								case "blue":
-									blooprint.setRGB(xyOUT[0], xyOUT[1], 0x0000FF);
-									break;
-								case "gray":
-									blooprint.setRGB(xyOUT[0], xyOUT[1], 0x808080);
-									break;
-								case "brown":
-									blooprint.setRGB(xyOUT[0], xyOUT[1], 0xA52A2A);
-									break;
-								case "orange":
-									blooprint.setRGB(xyOUT[0], xyOUT[1], 0xFFA500);
-									break;
-								case "purple":
-									blooprint.setRGB(xyOUT[0], xyOUT[1], 0x800080);
-									break;
-								default:
-									return;
-							}
+
+							blooprint.setRGB(xyOUT[0], xyOUT[1], markerHex);
+
 						}
 					}
 				}
@@ -530,7 +498,7 @@ public class Blooprint{
 	 * this method exists to display that we're examining the correct AREA OF INTEREST in sketch image	 *
 	 * */
 	public static void printAOI(boolean[][] isHit, String action) throws IOException {
-		
+
 		InputStream stream = Blooprint.class.getClass().getResourceAsStream("/sketches/calibrate.jpg");
 		BufferedImage ghostBorder = ImageIO.read(stream);
 
@@ -550,7 +518,7 @@ public class Blooprint{
 
 			if(action == "fill"){
 //				ImageIO.write(ghostBorder, "jpg", new File("/blooprints/areaOfInterest_filled.jpg"));
-				
+
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				ImageIO.write(ghostBorder, "jpg", baos);
 				InputStream stream2 = new ByteArrayInputStream(baos.toByteArray());
@@ -559,13 +527,13 @@ public class Blooprint{
 			}
 			else if (action == "border"){
 //				ImageIO.write(ghostBorder, "jpg", new File("/blooprints/areaOfInterest.jpg"));
-				
+
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				ImageIO.write(ghostBorder, "jpg", baos);
 				InputStream stream2 = new ByteArrayInputStream(baos.toByteArray());
 				File outputfile = new File("./api/calibration/areaOfInterest.jpg");
 				FileUtils.copyInputStreamToFile(stream2, outputfile);
-				
+
 			}
 
 
@@ -582,18 +550,18 @@ public class Blooprint{
 	 * get client side selected points just outside lit corners
 	 * */
 	public static void getClientUnitClicks() throws Exception{
-		
+
 		JSONParser parser = new JSONParser();
 		InputStream stream = null;
 		JSONObject unitObject = null;
-		
-		
+
+
 		try {
-			
+
 			stream = Blooprint.class.getClass().getResourceAsStream(unitClicksFile);
 			unitObject = (JSONObject)parser.parse(new InputStreamReader(stream, "UTF-8"));
 			System.out.println("unitClicks stream = "+ stream );
-			
+
 			unit_aax = (Double) unitObject.get("unit_ulx");
 			unit_aay = (Double) unitObject.get("unit_uly");
 			unit_bbx = (Double) unitObject.get("unit_urx");
@@ -607,7 +575,7 @@ public class Blooprint{
         } catch (Exception e) {
         	System.out.println("ERROR getUnitClientClick(): " + e.getMessage());
         }
-		
+
 	}//END getClientUnitClicks()
 
 
@@ -962,12 +930,12 @@ public class Blooprint{
 	Sets calibration values to DB
 	*/
 	public static void calibrate() throws Exception{
-		
+
 		/**
 		 * loads user click data from main application
 		 * */
 		getClientUnitClicks();
-	    
+
 
 		/**
 		 * these are the user corner clicks translated from the client browser locations
@@ -981,7 +949,7 @@ public class Blooprint{
 		ccy = (int)Math.round(unit_ccy * (double)sketch.getHeight());
 		ddx = (int)Math.round(unit_ddx * (double)sketch.getWidth());
 		ddy = (int)Math.round(unit_ddy * (double)sketch.getHeight());
-		
+
 		System.out.println("aax = " + aax);
 		System.out.println("aay = " + aay);
 		System.out.println("bbx = " + bbx);
@@ -991,7 +959,7 @@ public class Blooprint{
 		System.out.println("ddx = " + ddx);
 		System.out.println("sketch width = " + sketch.getWidth());
 		System.out.println("sketch height = " + sketch.getHeight());
-		
+
 
 		/*
 		 * if slopes will equal 0 or INFINITY : move one of the pixels off by 1 just to give it some slope
@@ -1015,7 +983,7 @@ public class Blooprint{
 		 * lit projection area on whiteboard
 		 * */
 		areaOfInterest = getAreaOfInterestBorder();
-		
+
 		int tx = (bbx+aax)/2;
 		int ty = (bby+aay)/2;
 		/*
@@ -1025,7 +993,7 @@ public class Blooprint{
 		 * areaOfInterest = floodBorder(areaOfInterest, X, Y);
 		 * */
 		areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
-		
+
 		setCorners();
 		setCenters();
 		saveCalibration();
@@ -1035,19 +1003,19 @@ public class Blooprint{
 	*	calibration data is to be used every bloop/erase/blip
 	*/
 	public static void loadCalibration() throws Exception{
-		
-		
+
+
 
 		JSONParser parser = new JSONParser();
 		JSONObject obj = null;
 		InputStream stream = null;
-		
+
         try {
-        	
+
         	stream = Blooprint.class.getClass().getResourceAsStream(calibrationFile);
 			obj = (JSONObject)parser.parse(new InputStreamReader(stream, "UTF-8"));
 			System.out.println("load calibration stream = "+ stream );
-			
+
 			ax = (int)(long) obj.get("ax");
             ay = (int)(long) obj.get("ay");
 			bx = (int)(long) obj.get("bx");
@@ -1147,7 +1115,7 @@ public class Blooprint{
 		}catch(Exception ex){
 			System.out.println("ERROR assembling calibration JSON Object: " + ex.getMessage());
 		}
-			
+
 		try {
 			System.out.println("writing calibration to file");
 			FileUtils.writeStringToFile(new File("./api/calibration/calibration.json"),obj.toJSONString(),"UTF-8");
@@ -1155,7 +1123,7 @@ public class Blooprint{
 		catch(Exception e){
 			System.out.println("ERROR saveCalibration() - writing JSON to file: " + e.getMessage());
 		}
-		
+
 	}//END saveCalibration()
 
 	/**
@@ -1505,7 +1473,7 @@ public class Blooprint{
 			 * http://stackoverflow.com/questions/39081215/access-a-resource-outside-a-jar-from-the-jar
 			 * */
 			stream = Blooprint.class.getClass().getResourceAsStream(blooprintFile);
-			
+
 			System.out.println("blooprint stream = "+ stream );
 		}
 		catch(Exception e) {
@@ -1558,9 +1526,9 @@ public class Blooprint{
 	 * DB table is updated with added image of latest blooprint image state
 	 * */
 	public static void saveBlooprint() throws IOException {
-		
+
 		System.out.println("saveBlooprint()...");
-		
+
 		try{
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ImageIO.write(blooprint, "jpg", baos);

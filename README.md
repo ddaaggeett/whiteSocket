@@ -4,56 +4,47 @@ This API is **used by** the [**blooprint**](https://github.com/blooprint/bloopri
 
 ##An overview
 
-First [create a JAR file](http://docs.oracle.com/javase/tutorial/deployment/jar/build.html) (blooprint.jar) and place it **[here](https://github.com/blooprint/blooprint/tree/master/api)**.
+Simply **download the latest [blooprint.jar](https://github.com/blooprint/blooprint-api/releases) file** which already includes the external JAR dependencies you need to run with the main blooprint application.  Place it **[here](https://github.com/blooprint/blooprint/tree/master/api)**.
 
-Don't forget to include a few required external JARs
+**OR**, using the most updated clone of the source code, [create a JAR file](http://docs.oracle.com/javase/tutorial/deployment/jar/build.html) (blooprint.jar) and place it **[here](https://github.com/blooprint/blooprint/tree/master/api)**. Don't forget to include a few required external JARs
 - Google's [json-simple-1.1.1.jar](https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/json-simple/json-simple-1.1.1.jar)
 - Apache's [commons-io-2.5.jar](http://www-us.apache.org/dist//commons/io/source/commons-io-2.5-src.zip)
 
-**Or** you could **download the latest [blooprint.jar](https://github.com/blooprint/blooprint-api/releases) file** which already includes the external JAR dependencies you need to run with the main blooprint application.  Still, place it **[here](https://github.com/blooprint/blooprint/tree/master/api)**.
 
 ####Runtime requirements
 ```
 "jdk": ">=1.8"
 ```
 
-The [parent module](https://github.com/blooprint/blooprint) triggers this API a few different ways. A trigger always includes the filename of the image to scrape pixel data from and a specific mode specifying what the API is to do with the image.
+The [parent application](https://github.com/blooprint/blooprint) triggers this API a few different ways. A trigger always includes the timestamp of the input image to scrape pixel data from and a specific mode specifying what the API is to do with the image.
 
-    java -jar blooprint.jar <sketch title timestamp> <blooprint file title> <input mode> <write color>
+    java -jar blooprint.jar <timestamp> <branching image path> <bloop action mode> <write color>
 
-**sketch title timestamp** = example -> `2017019234910931` - refers to 2017019234910931.jpg in `./sketches/` directory
+**timestamp** = example -> `2017019234910931` - refers to 2017019234910931.jpg in `./sketches/` directory
 
-**blooprint title** = example -> timestamp of the last saved blooprint in the `./blooprints/` directory
+**branching image path** = example -> `./blooprints/some_blooprint/2016010753850931.jpg`: image to be altered (branched from). Output image will be saved next to this input image under the name of its corresponding sketch, ./sketches/2017019234910931.jpg: `./blooprints/some_blooprint/2017019234910931.jpg`.
 
-**write color** = pick one -> `red, green, blue, orange, purple, gray, brown, black, null`
+**write color** = example -> if RED, then `FF0000`
 
-**input mode** = pick one -> `write, erase, calibrate`
+**bloop action** = `write`, `erase`, `calibrate`
 
 - **write** = Returns compiled blooprint image - input image contains user-drawn marker to be added
 - **erase** = Returns compiled blooprint image - input image contains user-drawn eraser area
 - **calibrate** = Returns calibration info to be used for image processing. Run any time client hardware [(whiteboard, camera, projector)](https://github.com/blooprint/blooprint/wiki/Required-Hardware) is set up and stationary
-- **blip** = Returns textarea location (x,y,width,height) - **DEPRECATED** - blips are handled in main parent application
 
 ####**calibrate**
-1. Once [hardware](https://github.com/blooprint/blooprint/wiki/Required-Hardware) is set in place, the user draws 4 corner marks as accurately as possible in the projection area out to the corner bounds. -> user then hits **calibrate**
+1. Once the [hardware](https://github.com/blooprint/blooprint/wiki/Required-Hardware) is set in place, the desktop application prompts the user through clicking the location of each corner, and then triggering **calibrate**.
 2. Run
-	`java -jar blooprint.jar <title> <blooprint> calibrate null`
-3. Image capture is displayed full screen in web app where the user then clicks 4 points just outside of user drawn corner points.  ie - these 4 click points are to be located on the whiteboard in the image, but outside the lit projection area.  The image processing is then able to only act upon pixels within the desired projection area.
+	`java -jar blooprint.jar <timestamp> null **calibrate** null`
+    Returns `calibration.json` data object to [parent app directory](https://github.com/blooprint/blooprint/tree/master/api/calibration): `./calibration/` in which is automatically accessed for all proceeding write/erase bloop actions.
 
-####**write**/**erase**
-1. 	User makes drawing revisions by adding marker and hitting **write**, or by drawing a single encapsulating area to be erased and hitting **erase**.
+####**write** or **erase**
+1. 	User makes drawing revisions by adding marker and triggering **write**, or by drawing a single encapsulating area to be erased and hitting **erase**.
 2. Run
-	`java -jar blooprint.jar <title> <blooprint> write <color>`
+	`java -jar blooprint.jar <timestamp> <branching image path> **write** <color>`
 	or
-	`java -jar blooprint.jar <title> <blooprint> erase null`
-
-	Blooprint image returns to containing directory and renders to DOM
-
-####**blip** - **DEPRECATED**
-1. User draws a box area and hits **blip**.  Textarea unit values are returned for textarea addition to the DOM where the text is maintained by users within the web app.
-2. Run
-	`java -jar blooprint.jar <title> <blooprint> blip null`
-Blips textareas can also be created by user in web app by click and drag rectangle - NOTE: blips are deprecated in the API because they are created and maintained by the parent module as part of the data state structure of the app with Redux.
+	`java -jar blooprint.jar <timestamp> <branching image path> **erase** null`
+    Returns output image to same directory containing input branching image.
 
 ###Created by Dave Daggett
-###Licence:	[**GPL-3.0**](https://github.com/blooprint/blooprint/blob/master/LICENSE)
+###Licence:	[**GPL-3.0**](https://github.com/blooprint/blooprint-api/blob/master/LICENSE)
