@@ -1,8 +1,8 @@
-#Welcome to the Blooprint API **source** repository
-###Are you the **non-techie** type?  Please **visit our** (incomplete) [**wiki**](https://github.com/blooprint/blooprint/wiki) page.
+# Welcome to the Blooprint API **source** repository
+### Are you the **non-techie** type?  Please **visit our** (incomplete) [**wiki**](https://github.com/blooprint/blooprint/wiki) page.
 This API is **used by** the [**blooprint**](https://github.com/blooprint/blooprint) desktop application.
 
-##An overview
+## An overview
 
 Simply **download the latest [blooprint.jar](https://github.com/blooprint/blooprint-api/releases) file** which already includes the external JAR dependencies you need to run with the main blooprint application.  Place it **[here](https://github.com/blooprint/blooprint/tree/master/api)**.
 
@@ -11,7 +11,7 @@ Simply **download the latest [blooprint.jar](https://github.com/blooprint/bloopr
 - Apache's [commons-io-2.5.jar](http://www-us.apache.org/dist//commons/io/source/commons-io-2.5-src.zip)
 
 
-####Runtime requirements
+#### Runtime requirements
 ```
 "jdk": ">=1.8"
 ```
@@ -32,19 +32,19 @@ The [parent application](https://github.com/blooprint/blooprint) triggers this A
 - **erase** = Returns compiled blooprint image - input image contains user-drawn eraser area
 - **calibrate** = Returns calibration info to be used for image processing. Run any time client hardware [(whiteboard, camera, projector)](https://github.com/blooprint/blooprint/wiki/Required-Hardware) is set up and stationary
 
-####**calibrate**
+#### calibrate
 1. Once the [hardware](https://github.com/blooprint/blooprint/wiki/Required-Hardware) is set in place, the desktop application prompts the user through clicking the location of each corner, and then triggering **calibrate**.
 2. Run
 	`java -jar blooprint.jar <timestamp> null **calibrate** null`
     Returns `calibration.json` data object to [parent app directory](https://github.com/blooprint/blooprint/tree/master/api/calibration): `./calibration/` in which is automatically accessed for all proceeding write/erase bloop actions.
 
-####**write** or **erase**
+#### write or erase
 1. 	User makes drawing revisions by adding marker and triggering **write**, or by drawing a single encapsulating area to be erased and hitting **erase**.
 2. Run
-	`java -jar blooprint.jar <timestamp> <branching image path> **write** <color>`
+	`java -jar blooprint.jar <timestamp> <branching image path> write <color>`
 	or
-	`java -jar blooprint.jar <timestamp> <branching image path> **erase** null`
+	`java -jar blooprint.jar <timestamp> <branching image path> erase null`
     Returns output image to same directory containing input branching image.
 
-###Created by Dave Daggett
-###Licence:	[**GPL-3.0**](https://github.com/blooprint/blooprint-api/blob/master/LICENSE)
+### Created by Dave Daggett
+### Licence:	**[GPL-3.0](https://github.com/blooprint/blooprint-api/blob/master/LICENSE)**
