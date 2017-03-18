@@ -200,46 +200,6 @@ public class Blooprint{
 				saveBlooprint();
 				break;
 
-//			case "blip":
-//				/*
-//				 * DEPRECATED !!
-//				 * use if you want, but the main blooprint desktop application
-//				 * will need to render textareas in the DOM
-//				 *
-//				*	purpose: save textbox location unit values to DB -> x,y,width,height
-//				*	does NOT save updated blooprint image to DB -> only new BLIP location info
-//				*
-//				*	WEB DEV NOTE:
-//				*	new blip location can just as easily be created in a user
-//				*	click-and-drag box area type entry in DOM elements
-//				*	The Blip action is to give the option of entirely
-//				*	eliminating the need for a mouse entirely.
-//				**/
-//				loadCalibration();
-//
-//				areaOfInterest = getLightBorder();
-//
-//				/*
-//				 * start flooding right below center of topSlope
-//				 * */
-//				tx = (ax+cx)/2;
-//				ty = (ay+cy)/2;
-//				areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
-//
-//				/**
-//	    		 * box drawn by user on whiteboard dictating exactly where they want new BLIP text to be located on BLOOPRINT
-//	    		 * */
-//	    		int[] scanBox = new int[4];
-//	    		scanBox = zoomToBox();
-//	    		int[] userIntendedCorners = getScanBoxCorners(scanBox[0], scanBox[1], scanBox[2], scanBox[3]);
-//
-//				/*
-//				save BLIP unitBox to DB
-//				*/
-//	    		float[] unitBox = setUnitTextbox(userIntendedCorners);
-//				setBlip(unitBox);
-//
-//				break;
 
 			default:
 				return;
@@ -879,52 +839,6 @@ public class Blooprint{
 
 		return unit;
 	}//END setUnitTextbox()
-
-
-	/*
-	BLIP is the generation of user drawn area to be workspace of new qwerty keyboard text input.
-	Text input is handled by web application.  Blooprint API handles the user decision to draw
-	exactly where they want to start typing.
-	ALTERNATIVE OPTION is to use a mouse click and drag action by client.
-	*/
-	public static void setBlip(float box[]) throws Exception{
-
-		Connection connx = getDataBaseConnection();
-
-		try{
-			/*	TODO:
-			 *
-			 * if x AND y equal any of the table rows, update THOSE rows
-			 * else create new row
-			 *
-			 * */
-
-			/*
-			MySQL table DOES have additional columns:
-				-textEntry
-				-username
-				-etc
-			*/
-			String cmd = "INSERT INTO "+title+"_blips (x,y,width,height) "
-					+"VALUES ("+box[0]+","+box[1]+","+box[2]+","+box[3]+") ON DUPLICATE KEY UPDATE "
-					+"x = VALUES(x),"
-					+"y = VALUES(y),"
-					+"width = VALUES(width),"
-					+"height = VALUES(height)";
-
-			PreparedStatement statement = (PreparedStatement) connx.prepareStatement(cmd);
-			statement.executeUpdate();
-
-		}catch(Exception ex){
-			System.out.println("\nERROR:\nsetBlip()"+ex.getMessage());
-			ex.printStackTrace();
-		}
-
-
-		connx.close();
-
-	}//END setBlip()
-
 
 	/*
 	Sets calibration values to DB

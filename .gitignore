@@ -5,6 +5,7 @@
 *.JPEG
 .DS_store
 dependencies/**/*.jar
+tests/
 
 .metadata
 bin/
