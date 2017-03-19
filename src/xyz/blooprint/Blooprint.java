@@ -123,7 +123,7 @@ public class Blooprint{
 
 		inMode = args[2];
 
-		markerHex = Integer.parseInt("0x" + args[3]);
+		markerHex = Integer.parseInt(args[3],16);
 
 		if(args[1] != "null") blooprint = loadBlooprint();
 		sketch = loadSketch();
@@ -846,9 +846,14 @@ public class Blooprint{
 	public static void calibrate() throws Exception{
 
 		/**
+		 * TODO
+		 * replace getClientUnitClicks() with auto corner blob scan
+		 *
 		 * loads user click data from main application
+		 *
+		 * unit_aax,unit_aay,unit_bbx,unit_bby,unit_ccx,unit_ccy,unit_ddx,unit_ddy
 		 * */
-		getClientUnitClicks();
+		getClientUnitClicks(); // used to get corner points user click
 
 
 		/**
@@ -910,6 +915,10 @@ public class Blooprint{
 
 		setCorners();
 		setCenters();
+
+		/* TODO
+		 * saveCalibration() may be deleted since calibration and bloop will run together
+		 * */
 		saveCalibration();
 	}//END calibrate()
 
