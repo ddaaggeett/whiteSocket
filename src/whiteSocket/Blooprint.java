@@ -1,6 +1,6 @@
 /**
-*   BLOOPRINT.XYZ: we are think tank
-*   Copyright (C) 2016 - Dave Daggett - Blooprint, LLC
+*   WhiteSocket
+*   Copyright (C) 2015-2017 - Dave Daggett - Blooprint, LLC
 *
 *   This program is free software; you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@
 */
 
 package whiteSocket;
+
+import whiteSocket.Stretch;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -80,12 +82,6 @@ public class Blooprint{
 
 
 	public static int aax,aay,bbx,bby,ccx,ccy,ddx,ddy;
-	public static int ax,ay,bx,by,cx,cy,dx,dy,fx,fy,gx,hy;
-	public static double ex, ey, gy, hx = 0;
-
-	public static double mA, mB, mC, mD, yCenterIN, xCenterIN, xCenterOUT, yCenterOUT, xOUT_temp,
-						yOUT_temp, lxA, lxB, lyA, lyB, kxA, kxB, kyA, kyB, jx, jy, ix, iy, lx, ly,
-						kx, ky, A, B, C, lA, lB, lC, lD, lE, lF, lG, lH;
 
 	/*first border hit*/
 	public static int borderStart_X,borderStart_Y;
@@ -163,8 +159,8 @@ public class Blooprint{
 				/*
 				 * start flooding right below center of topSlope
 				 * */
-				tx = (ax+cx)/2;
-				ty = (ay+cy)/2;
+				tx = (Stretch.ax+Stretch.cx)/2;
+				ty = (Stretch.ay+Stretch.cy)/2;
 
 				try {
 					areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
@@ -190,8 +186,8 @@ public class Blooprint{
 				/*
 				 * start flooding right below center of topSlope
 				 * */
-				tx = (ax+cx)/2;
-				ty = (ay+cy)/2;
+				tx = (Stretch.ax+Stretch.cx)/2;
+				ty = (Stretch.ay+Stretch.cy)/2;
 				areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
 //				printAOI(areaOfInterest, "fill");
 
@@ -207,173 +203,6 @@ public class Blooprint{
 
 
 	}//END main()
-
-
-
-	/**
-	 * STRETCH() method: input pixel location -> output pixel location
-	 *
-	 *	This method is the core of Blooprint.xyz its input-output mechanism should remain as-is.
-	 *	Please see derivation approach in project description.
-	 * */
-	public static int[] stretch(int x, int y) {
-
-
-		int[] some = new int[2];
-
-		jx = ((double)y - ((double)x * mB) + (xCenterIN * mA) - yCenterIN) / (mA - mB);
-        jy = (mA * (jx - xCenterIN)) + yCenterIN;
-        ix = ((double)y - ((double)x * mA) + (xCenterIN * mB) - yCenterIN) / (mB - mA);
-        iy = (mB * (ix - xCenterIN)) + yCenterIN;
-
-//        System.out.println("============================STRETCH==================================");
-//        System.out.println("jx = "+jx+"\tjy = "+jy);
-//        System.out.println("ix = "+ix+"\tiy = "+iy);
-
-
-        if (jy >= yCenterIN)
-        {
-            lA = Math.sqrt((Math.pow(jx - xCenterIN, 2)) + (Math.pow(jy - yCenterIN, 2)));
-            lB = Math.sqrt((Math.pow(bx - xCenterIN, 2)) + (Math.pow(by - yCenterIN, 2)));
-            lF = Math.sqrt((Math.pow(fx - xCenterOUT, 2)) + (Math.pow(fy - yCenterOUT, 2)));
-
-            lE = lA * lF / lB;
-
-//            System.out.println("lA = "+lA+"\tlB = "+lB+"\tlF = "+lF+"\tlE = "+lE);
-
-            A = 1 + Math.pow(mC, 2);
-            B = (-2 * xCenterOUT) - (2 * fx * Math.pow(mC, 2)) + (2 * fy * mC) - (2 * yCenterOUT * mC);
-            C = Math.pow(xCenterOUT, 2) + Math.pow(fx * mC, 2) - (2 * fx * fy * mC) + Math.pow(fy, 2) + (2 * yCenterOUT * fx * mC) - (2 * yCenterOUT * fy) + Math.pow(yCenterOUT, 2) - Math.pow(lE, 2);
-
-            lxA = (-B + Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
-            lxB = (-B - Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
-
-            lyA = (mC * (lxA - fx)) + fy;
-            lyB = (mC * (lxB - fx)) + fy;
-
-            if (lyA >= yCenterOUT)
-            {
-                lx = lxA;
-                ly = lyA;
-            }
-            else
-            {
-                lx = lxB;
-                ly = lyB;
-            }
-        }
-        else
-        {
-            lA = Math.sqrt((Math.pow(jx - xCenterIN, 2)) + (Math.pow(jy - yCenterIN, 2)));
-            lB = Math.sqrt((Math.pow(ax - xCenterIN, 2)) + (Math.pow(ay - yCenterIN, 2)));
-            lF = Math.sqrt((Math.pow(ex - xCenterOUT, 2)) + (Math.pow(ey - yCenterOUT, 2)));
-
-            lE = lA * lF / lB;
-
-//            System.out.println("lA = "+lA+"\tlB = "+lB+"\tlF = "+lF+"\tlE = "+lE);
-
-
-            A = 1 + Math.pow(mC, 2);
-            B = (-2 * xCenterOUT) - (2 * ex * Math.pow(mC, 2)) + (2 * ey * mC) - (2 * yCenterOUT * mC);
-            C = Math.pow(xCenterOUT, 2) + Math.pow(ex * mC, 2) - (2 * ex * ey * mC) + Math.pow(ey, 2) + (2 * yCenterOUT * ex * mC) - (2 * yCenterOUT * ey) + Math.pow(yCenterOUT, 2) - Math.pow(lE, 2);
-
-            lxA = (-B + Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
-            lxB = (-B - Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
-
-            lyA = (mC * (lxA - ex)) + ey;
-            lyB = (mC * (lxB - ex)) + ey;
-
-            if (lyA < yCenterOUT)
-            {
-                lx = lxA;
-                ly = lyA;
-            }
-            else
-            {
-                lx = lxB;
-                ly = lyB;
-            }
-        }
-
-        if (iy >= yCenterIN)
-        {
-            lC = Math.sqrt((Math.pow(ix - xCenterIN, 2)) + (Math.pow(iy - yCenterIN, 2)));
-            lD = Math.sqrt((Math.pow(dx - xCenterIN, 2)) + (Math.pow(dy - yCenterIN, 2)));
-            lH = Math.sqrt((Math.pow(hx - xCenterOUT, 2)) + (Math.pow(hy - yCenterOUT, 2)));
-
-            lG = lC * lH / lD;
-
-//            System.out.println("lC = "+lC+"\tlD = "+lD+"\tlH = "+lH+"\tlG = "+lG);
-
-
-            A = 1 + Math.pow(mD, 2);
-            B = (-2 * xCenterOUT) - (2 * hx * Math.pow(mD, 2)) + (2 * hy * mD) - (2 * yCenterOUT * mD);
-            C = Math.pow(xCenterOUT, 2) + Math.pow(hx * mD, 2) - (2 * hx * hy * mD) + Math.pow(hy, 2) + (2 * yCenterOUT * hx * mD) - (2 * yCenterOUT * hy) + Math.pow(yCenterOUT, 2) - Math.pow(lG, 2);
-
-            kxA = (-B + Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
-            kxB = (-B - Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
-
-            kyA = (mD * (kxA - hx)) + hy;
-            kyB = (mD * (kxB - hx)) + hy;
-
-            if (kyA >= yCenterOUT)
-            {
-                kx = kxA;
-                ky = kyA;
-            }
-            else
-            {
-                kx = kxB;
-                ky = kyB;
-            }
-        }
-        else
-        {
-            lC = Math.sqrt((Math.pow(ix - xCenterIN, 2)) + (Math.pow(iy - yCenterIN, 2)));
-            lD = Math.sqrt((Math.pow(cx - xCenterIN, 2)) + (Math.pow(cy - yCenterIN, 2)));
-            lH = Math.sqrt((Math.pow(gx - xCenterOUT, 2)) + (Math.pow(gy - yCenterOUT, 2)));
-
-            lG = lC * lH / lD;
-
-//            System.out.println("lC = "+lC+"\tlD = "+lD+"\tlH = "+lH+"\tlG = "+lG);
-
-
-            A = 1 + Math.pow(mD, 2);
-            B = (-2 * xCenterOUT) - (2 * gx * Math.pow(mD, 2)) + (2 * gy * mD) - (2 * yCenterOUT * mD);
-            C = Math.pow(xCenterOUT, 2) + Math.pow(gx * mD, 2) - (2 * gx * gy * mD) + Math.pow(gy, 2) + (2 * yCenterOUT * gx * mD) - (2 * yCenterOUT * gy) + Math.pow(yCenterOUT, 2) - Math.pow(lG, 2);
-
-//            System.out.println("lC = "+lC+"\tlD = "+lD+"\tlH = "+lH+"\tlG = "+lG);
-
-
-            kxA = (-B + Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
-            kxB = (-B - Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
-
-            kyA = (mD * (kxA - gx)) + gy;
-            kyB = (mD * (kxB - gx)) + gy;
-
-            if (kyA < yCenterOUT)
-            {
-                kx = kxA;
-                ky = kyA;
-            }
-            else
-            {
-                kx = kxB;
-                ky = kyB;
-            }
-        }
-
-
-        xOUT_temp = (ky - ly + (lx * mD) - (kx * mC)) / (mD - mC);
-        yOUT_temp = (mD * (xOUT_temp - lx)) + ly;
-
-
-        some[0] = (int) Math.round(xOUT_temp);
-        some[1] = (int) Math.round(yOUT_temp);
-
-
-		return some;
-	}//END stretch()
 
 	/**
 	 * bloop blooprint.image pixel location intended by user bloop action
@@ -399,7 +228,7 @@ public class Blooprint{
 
 						if (isMarker(pxColor)){
 
-							xyOUT = stretch(xIN, yIN);
+							xyOUT = Stretch.stretch(xIN, yIN);
 
 							blooprint.setRGB(xyOUT[0], xyOUT[1], markerHex);
 
@@ -435,7 +264,7 @@ public class Blooprint{
 				try{
 					if(eraseArea[yIN][xIN]){
 
-						xyOUT = stretch(xIN, yIN);
+						xyOUT = Stretch.stretch(xIN, yIN);
 						blooprint.setRGB(xyOUT[0], xyOUT[1], 0xffffff);
 
 
@@ -939,18 +768,18 @@ public class Blooprint{
 			obj = (JSONObject)parser.parse(new InputStreamReader(stream, "UTF-8"));
 			System.out.println("load calibration stream = "+ stream );
 
-			ax = (int)(long) obj.get("ax");
-            ay = (int)(long) obj.get("ay");
-			bx = (int)(long) obj.get("bx");
-			by = (int)(long) obj.get("by");
-			cx = (int)(long) obj.get("cx");
-			cy = (int)(long) obj.get("cy");
-			dx = (int)(long) obj.get("dx");
-			dy = (int)(long) obj.get("dy");
-			fx = (int)(long) obj.get("fx");
-			fy = (int)(long) obj.get("fy");
-			gx = (int)(long) obj.get("gx");
-			hy = (int)(long) obj.get("hy");
+			Stretch.ax = (int)(long) obj.get("ax");
+			Stretch.ay = (int)(long) obj.get("ay");
+			Stretch.bx = (int)(long) obj.get("bx");
+			Stretch.by = (int)(long) obj.get("by");
+			Stretch.cx = (int)(long) obj.get("cx");
+			Stretch.cy = (int)(long) obj.get("cy");
+			Stretch.dx = (int)(long) obj.get("dx");
+			Stretch.dy = (int)(long) obj.get("dy");
+			Stretch.fx = (int)(long) obj.get("fx");
+			Stretch.fy = (int)(long) obj.get("fy");
+			Stretch.gx = (int)(long) obj.get("gx");
+			Stretch.hy = (int)(long) obj.get("hy");
 			aax = (int)(long) obj.get("aax");
 			aay = (int)(long) obj.get("aay");
 			bbx = (int)(long) obj.get("bbx");
@@ -959,14 +788,14 @@ public class Blooprint{
 			ccy = (int)(long) obj.get("ccy");
 			ddx = (int)(long) obj.get("ddx");
 			ddy = (int)(long) obj.get("ddy");
-			mA = (Double) obj.get("mA");
-			mB = (Double) obj.get("mB");
-			mC = (Double) obj.get("mC");
-			mD = (Double) obj.get("mD");
-			xCenterIN = (Double) obj.get("xCenterIN");
-			yCenterIN = (Double) obj.get("yCenterIN");
-			xCenterOUT = (Double) obj.get("xCenterOUT");
-			yCenterOUT = (Double) obj.get("yCenterOUT");
+			Stretch.mA = (Double) obj.get("mA");
+			Stretch.mB = (Double) obj.get("mB");
+			Stretch.mC = (Double) obj.get("mC");
+			Stretch.mD = (Double) obj.get("mD");
+			Stretch.xCenterIN = (Double) obj.get("xCenterIN");
+			Stretch.yCenterIN = (Double) obj.get("yCenterIN");
+			Stretch.xCenterOUT = (Double) obj.get("xCenterOUT");
+			Stretch.yCenterOUT = (Double) obj.get("yCenterOUT");
 			unit_aax = (Double) obj.get("unit_aax");
 			unit_aay = (Double) obj.get("unit_aay");
 			unit_bbx = (Double) obj.get("unit_bbx");
@@ -980,10 +809,10 @@ public class Blooprint{
             System.out.println("ERROR loadCalibration(): " + e.getMessage());
         }
 
-		topSlope 	= ((double)cy-(double)ay)/((double)cx-(double)ax);
-		bottomSlope = ((double)dy-(double)by)/((double)dx-(double)bx);
-		leftSlope 	= ((double)ay-(double)dy)/((double)ax-(double)dx);
-		rightSlope 	= ((double)cy-(double)by)/((double)cx-(double)bx);
+		topSlope 	= ((double)Stretch.cy-(double)Stretch.ay)/((double)Stretch.cx-(double)Stretch.ax);
+		bottomSlope = ((double)Stretch.dy-(double)Stretch.by)/((double)Stretch.dx-(double)Stretch.bx);
+		leftSlope 	= ((double)Stretch.ay-(double)Stretch.dy)/((double)Stretch.ax-(double)Stretch.dx);
+		rightSlope 	= ((double)Stretch.cy-(double)Stretch.by)/((double)Stretch.cx-(double)Stretch.bx);
 
 	}//END loadCalibration()
 
@@ -998,18 +827,18 @@ public class Blooprint{
 
 		try{
 
-			obj.put("ax", ax);
-			obj.put("ay", ay);
-			obj.put("bx", bx);
-			obj.put("cx", cx);
-			obj.put("by", by);
-			obj.put("cy", cy);
-			obj.put("dx", dx);
-			obj.put("dy", dy);
-			obj.put("fx", fx);
-			obj.put("fy", fy);
-			obj.put("gx", gx);
-			obj.put("hy", hy);
+			obj.put("ax", Stretch.ax);
+			obj.put("ay", Stretch.ay);
+			obj.put("bx", Stretch.bx);
+			obj.put("cx", Stretch.cx);
+			obj.put("by", Stretch.by);
+			obj.put("cy", Stretch.cy);
+			obj.put("dx", Stretch.dx);
+			obj.put("dy", Stretch.dy);
+			obj.put("fx", Stretch.fx);
+			obj.put("fy", Stretch.fy);
+			obj.put("gx", Stretch.gx);
+			obj.put("hy", Stretch.hy);
 			obj.put("aax", aax);
 			obj.put("aay", aay);
 			obj.put("bbx", bbx);
@@ -1026,14 +855,14 @@ public class Blooprint{
 			obj.put("unit_ccy", unit_ccy);
 			obj.put("unit_ddx", unit_ddx);
 			obj.put("unit_ddy", unit_ddy);
-			obj.put("mA", mA);
-			obj.put("mB", mB);
-			obj.put("mC", mC);
-			obj.put("mD", mD);
-			obj.put("xCenterIN", xCenterIN);
-			obj.put("yCenterIN", yCenterIN);
-			obj.put("xCenterOUT", xCenterOUT);
-			obj.put("yCenterOUT", yCenterOUT);
+			obj.put("mA", Stretch.mA);
+			obj.put("mB", Stretch.mB);
+			obj.put("mC", Stretch.mC);
+			obj.put("mD", Stretch.mD);
+			obj.put("xCenterIN", Stretch.xCenterIN);
+			obj.put("yCenterIN", Stretch.yCenterIN);
+			obj.put("xCenterOUT", Stretch.xCenterOUT);
+			obj.put("yCenterOUT", Stretch.yCenterOUT);
 
 		}catch(Exception ex){
 			System.out.println("ERROR assembling calibration JSON Object: " + ex.getMessage());
@@ -1075,9 +904,9 @@ public class Blooprint{
                 	pixel = new Color(sketch.getRGB(col, row));
                     if (areaOfInterest[row][col] && isMarker(pixel))
                     {
-                    	ax = col;
-                    	ay = row;
-                        System.out.println("Corner 1:\tULx = "+ax+"\tULy = "+ay);
+                    	Stretch.ax = col;
+                    	Stretch.ay = row;
+                        System.out.println("Corner 1:\tULx = "+Stretch.ax+"\tULy = "+Stretch.ay);
                         hit = true;
                         break Next1;
                     }
@@ -1108,9 +937,9 @@ public class Blooprint{
                 	pixel = new Color(sketch.getRGB(col, row));
                     if (areaOfInterest[row][col] && isMarker(pixel))
                     {
-                    	cx = col;
-                    	cy = row;
-                        System.out.println("Corner 2:\tURx = "+cx+"\tURy = "+cy);
+                    	Stretch.cx = col;
+                    	Stretch.cy = row;
+                        System.out.println("Corner 2:\tURx = "+Stretch.cx+"\tURy = "+Stretch.cy);
                         hit = true;
                         break Next2;
                     }
@@ -1141,9 +970,9 @@ public class Blooprint{
                 	pixel = new Color(sketch.getRGB(col, row));
                     if (areaOfInterest[row][col] && isMarker(pixel))
                     {
-                    	dx = col;
-                    	dy = row;
-                        System.out.println("Corner 3:\tLLx = "+dx+"\tLLy = "+dy);
+                    	Stretch.dx = col;
+                    	Stretch.dy = row;
+                        System.out.println("Corner 3:\tLLx = "+Stretch.dx+"\tLLy = "+Stretch.dy);
                         hit = true;
                         break Next3;
                     }
@@ -1174,9 +1003,9 @@ public class Blooprint{
                 	pixel = new Color(sketch.getRGB(col, row));
                     if (areaOfInterest[row][col] && isMarker(pixel))
                     {
-                    	bx = col;
-                    	by = row;
-                        System.out.println("Corner 4:\tLRx = "+bx+"\tLRy = "+by);
+                    	Stretch.bx = col;
+                    	Stretch.by = row;
+                        System.out.println("Corner 4:\tLRx = "+Stretch.bx+"\tLRy = "+Stretch.by);
                         hit = true;
                         break Next4;
                     }
@@ -1198,14 +1027,14 @@ public class Blooprint{
 	 * Only considering location of light projector lit area on whiteboard.
 	 * */
 	public static void setCenters() throws Exception{
-	    mA = (double)(by - ay) / (double)(bx - ax);
-		mB = (double)(cy - dy) / (double)(cx - dx);
-        mC = (double)(fy - ey) / (double)(fx - ex);
-        mD = (double)(gy - hy) / (double)(gx - hx);
-        xCenterIN = (double)(dy - ay - (dx * mB) + (ax * mA)) / (double)(mA - mB);
-        yCenterIN = (double)(mA * (xCenterIN - ax)) + (double)ay;
-        xCenterOUT = (double)(hy - ey + (ex * mC) - (hx * mD)) / (double)(mC - mD);
-        yCenterOUT = (double)(mC * (xCenterOUT - ex)) + (double)ey;
+		Stretch.mA = (double)(Stretch.by - Stretch.ay) / (double)(Stretch.bx - Stretch.ax);
+		Stretch.mB = (double)(Stretch.cy - Stretch.dy) / (double)(Stretch.cx - Stretch.dx);
+		Stretch.mC = (double)(Stretch.fy - Stretch.ey) / (double)(Stretch.fx - Stretch.ex);
+		Stretch.mD = (double)(Stretch.gy - Stretch.hy) / (double)(Stretch.gx - Stretch.hx);
+		Stretch.xCenterIN = (double)(Stretch.dy - Stretch.ay - (Stretch.dx * Stretch.mB) + (Stretch.ax * Stretch.mA)) / (double)(Stretch.mA - Stretch.mB);
+		Stretch.yCenterIN = (double)(Stretch.mA * (Stretch.xCenterIN - Stretch.ax)) + (double)Stretch.ay;
+		Stretch.xCenterOUT = (double)(Stretch.hy - Stretch.ey + (Stretch.ex * Stretch.mC) - (Stretch.hx * Stretch.mD)) / (double)(Stretch.mC - Stretch.mD);
+		Stretch.yCenterOUT = (double)(Stretch.mC * (Stretch.xCenterOUT - Stretch.ex)) + (double)Stretch.ey;
 	}//END setCenters()
 
 	/**
@@ -1434,10 +1263,10 @@ public class Blooprint{
 		BufferedImage some = null;
 		try{
 			some = ImageIO.read(stream);
-			fx = some.getWidth()-1;
-			gx = some.getWidth()-1;
-		    fy = some.getHeight()-1;
-		    hy = some.getHeight()-1;
+			Stretch.fx = some.getWidth()-1;
+			Stretch.gx = some.getWidth()-1;
+			Stretch.fy = some.getHeight()-1;
+			Stretch.hy = some.getHeight()-1;
 		}catch(Exception exc){
 			System.out.print("error stream to image: ");
 			System.out.println(exc.getMessage());
@@ -1474,36 +1303,36 @@ public class Blooprint{
 		boolean[][] border = new boolean[sketch.getHeight()][sketch.getWidth()];
 
 
-		for(int x = ax; x <= cx; x++){//top
+		for(int x = Stretch.ax; x <= Stretch.cx; x++){//top
 
-			double intersect_double = cy - (topSlope*cx);
+			double intersect_double = Stretch.cy - (topSlope*Stretch.cx);
 			int intersect = (int) Math.round(intersect_double);
 			double y_double = (topSlope * x) + intersect;
 			int y = (int) Math.round(y_double);
 			border[y][x] = true;
 
 		}
-		for(int x = dx; x <= bx; x++){//bottom
+		for(int x = Stretch.dx; x <= Stretch.bx; x++){//bottom
 
-			double intersect_double = by - (bottomSlope*bx);
+			double intersect_double = Stretch.by - (bottomSlope*Stretch.bx);
 			int intersect = (int) Math.round(intersect_double);
 			double y_double = (bottomSlope * x) + intersect;
 			int y = (int) Math.round(y_double);
 			border[y][x] = true;
 
 		}
-		for(int y = ay; y <= dy; y++){//left
+		for(int y = Stretch.ay; y <= Stretch.dy; y++){//left
 
-			double intersect_double = dy - (leftSlope*dx);
+			double intersect_double = Stretch.dy - (leftSlope*Stretch.dx);
 			int intersect = (int) Math.round(intersect_double);
 			double x_double = (y-intersect)/leftSlope;
 			int x = (int) Math.round(x_double);
 			border[y][x] = true;
 
 		}
-		for(int y = cy; y <= by; y++){//right
+		for(int y = Stretch.cy; y <= Stretch.by; y++){//right
 
-			double intersect_double = by - (rightSlope*bx);
+			double intersect_double = Stretch.by - (rightSlope*Stretch.bx);
 			int intersect = (int) Math.round(intersect_double);
 			double x_double = (y-intersect)/rightSlope;
 			int x = (int) Math.round(x_double);
