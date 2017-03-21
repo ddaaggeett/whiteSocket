@@ -26,7 +26,7 @@
 *	for now, it's recommended the input image aspect ratio EQUALS the output image aspect ratio
 */
 
-package xyz.blooprint;
+package whiteSocket;
 
 import java.awt.Color;
 import java.awt.Point;
