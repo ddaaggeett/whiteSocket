@@ -3,12 +3,14 @@
 This API is **used by** the [**blooprint**](https://github.com/blooprint/blooprint) desktop application.
 
 ## An overview
+### note: parts of this overview may be pertaining to branch: v0.0.x
+for example, `calibrate` is a separate run command in `v0.0.x`, but `master` includes `calibrate` per `write`/`erase` commands
 
 Simply **download the latest [blooprint.jar](https://github.com/blooprint/blooprint-api/releases) file** which already includes the external JAR dependencies you need to run with the main blooprint application.  Place it **[here](https://github.com/blooprint/blooprint/tree/master/api)**.
 
 **OR**, using the most updated clone of the source code, [create a JAR file](http://docs.oracle.com/javase/tutorial/deployment/jar/build.html) (blooprint.jar) and place it **[here](https://github.com/blooprint/blooprint/tree/master/api)**. Don't forget to include a few required external JARs
 - Google's [json-simple-1.1.1.jar](https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/json-simple/json-simple-1.1.1.jar)
-- Apache's [commons-io-2.5.jar](http://www-us.apache.org/dist//commons/io/source/commons-io-2.5-src.zip)
+- Apache's [commons-io-2.5.jar](http://www-eu.apache.org/dist//commons/io/binaries/commons-io-2.5-bin.zip)
 
 
 #### Runtime requirements
