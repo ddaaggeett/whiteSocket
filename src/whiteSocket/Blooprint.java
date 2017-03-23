@@ -171,7 +171,7 @@ public class Blooprint{
 					System.out.println("ERROR floodBorder():" + e.getMessage());
 				}
 
-				bloop();
+				write();
 				saveBlooprint();
 				break;
 
@@ -208,7 +208,7 @@ public class Blooprint{
 	 * bloop blooprint.image pixel location intended by user bloop action
 	 * sets Color.RED,BLUE,GREEN according to user intension
 	 * */
-	public static void bloop() {
+	public static void write() {
 
 		System.out.println("writing......");
 
@@ -236,13 +236,13 @@ public class Blooprint{
 					}
 				}
 				catch(Exception e){
-					System.out.println("ERROR bloop(): " + e.getMessage());
+					System.out.println("ERROR write(): " + e.getMessage());
 				}
 
 
 			}
 		}
-	}//END bloop()
+	}//END write()
 
 	/**
 	 * erase the area found inside the outer border of marker line drawn
@@ -746,13 +746,13 @@ public class Blooprint{
 		setCenters();
 
 		/* TODO
-		 * saveCalibration() may be deleted since calibration and bloop will run together
+		 * saveCalibration() may be deleted since calibration and bloop action will run together
 		 * */
 		saveCalibration();
 	}//END calibrate()
 
 	/*
-	*	calibration data is to be used every bloop/erase/blip
+	*	calibration data is to be used every write/erase
 	*/
 	public static void loadCalibration() throws Exception{
 
@@ -1043,6 +1043,11 @@ public class Blooprint{
 	 * */
 	public static boolean[][] getUserDrawnBorder() {
 
+		/*
+		TODO:
+		after first border pixel is hit, continue searching through rest of sketch image for other areas
+		*/
+
 		boolean[][] border = new boolean[sketch.getHeight()][sketch.getWidth()];
 
 		here:
@@ -1057,16 +1062,7 @@ public class Blooprint{
 					int xIN = col;
 		            int yIN = row;
 
-
-
 		            if(areaOfInterest[row][col] && isMarker(pxColor)){
-
-
-
-
-
-//		            	System.out.println("xIN = "+xIN);
-//		            	System.out.println("yIN = "+yIN);
 
 						System.out.println("found eraser border!!!");
 
@@ -1086,10 +1082,8 @@ public class Blooprint{
 
 							if((inCoord[0] == xIN) && (inCoord[1] == yIN)){
 
-
 								borderStart_X = xIN;
 								borderStart_Y = yIN;
-
 
 								System.out.println("made it all the way around the border");
 
@@ -1135,8 +1129,6 @@ public class Blooprint{
 	public static int[] getNextBorderPixel(int[] coord) {
 
 		int[] next = new int[2];
-
-//		System.out.println("============================\nlastX = "+coord[0]+"\tlastY = "+coord[1]);
 
 		/*
 		 * all 8 surrounding pixels need to be checked counterclockwise
@@ -1190,27 +1182,6 @@ public class Blooprint{
 
 		return next;
 	}//END getNextBorderPixel()
-
-	public static Connection getDataBaseConnection() throws Exception{
-		try{
-
-			/**
-			* TODO:
-			* make sure to download JAR
-			* http://dev.mysql.com/downloads/connector/j/
-			*/
-			Class.forName("com.mysql.jdbc.Driver");
-			String url = "jdbc:mysql://127.0.0.1:3306/blooprint";
-			String username = "root";
-			String password = "password";
-			Connection c = DriverManager.getConnection(url,username,password);
-			return c;// if connection worked
-		}catch(Exception e){
-			System.out.println("ERROR:\ngetDataBaseConnection()");
-			e.printStackTrace();
-		}
-		return null; //if connection not made
-	}//END getDataBaseConnection()
 
 	/**
 	 * load image from DB table - either an input sketch or a compiled blooprint image
