@@ -1,3 +1,22 @@
+/**
+*   WhiteSocket
+*   Copyright (C) 2015-2017 - Dave Daggett - Blooprint, LLC
+*
+*   This program is free software; you can redistribute it and/or modify
+*   it under the terms of the GNU General Public License as published by
+*   the Free Software Foundation; either version 3 of the License, or
+*   (at your option) any later version.
+*
+*   This program is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*   GNU General Public License for more details.
+*
+*   You should have received a copy of the GNU General Public License
+*   along with this program; if not, write to the Free Software Foundation,
+*   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+*/
+
 package whiteSocket;
 
 public class Stretch {
@@ -17,18 +36,12 @@ public class Stretch {
 	 * */
 	public static int[] stretch(int x, int y) {
 
-
 		int[] some = new int[2];
 
 		jx = ((double)y - ((double)x * mB) + (xCenterIN * mA) - yCenterIN) / (mA - mB);
         jy = (mA * (jx - xCenterIN)) + yCenterIN;
         ix = ((double)y - ((double)x * mA) + (xCenterIN * mB) - yCenterIN) / (mB - mA);
         iy = (mB * (ix - xCenterIN)) + yCenterIN;
-
-//        System.out.println("============================STRETCH==================================");
-//        System.out.println("jx = "+jx+"\tjy = "+jy);
-//        System.out.println("ix = "+ix+"\tiy = "+iy);
-
 
         if (jy >= yCenterIN)
         {
@@ -37,8 +50,6 @@ public class Stretch {
             lF = Math.sqrt((Math.pow(fx - xCenterOUT, 2)) + (Math.pow(fy - yCenterOUT, 2)));
 
             lE = lA * lF / lB;
-
-//            System.out.println("lA = "+lA+"\tlB = "+lB+"\tlF = "+lF+"\tlE = "+lE);
 
             A = 1 + Math.pow(mC, 2);
             B = (-2 * xCenterOUT) - (2 * fx * Math.pow(mC, 2)) + (2 * fy * mC) - (2 * yCenterOUT * mC);
@@ -68,9 +79,6 @@ public class Stretch {
             lF = Math.sqrt((Math.pow(ex - xCenterOUT, 2)) + (Math.pow(ey - yCenterOUT, 2)));
 
             lE = lA * lF / lB;
-
-//            System.out.println("lA = "+lA+"\tlB = "+lB+"\tlF = "+lF+"\tlE = "+lE);
-
 
             A = 1 + Math.pow(mC, 2);
             B = (-2 * xCenterOUT) - (2 * ex * Math.pow(mC, 2)) + (2 * ey * mC) - (2 * yCenterOUT * mC);
@@ -102,9 +110,6 @@ public class Stretch {
 
             lG = lC * lH / lD;
 
-//            System.out.println("lC = "+lC+"\tlD = "+lD+"\tlH = "+lH+"\tlG = "+lG);
-
-
             A = 1 + Math.pow(mD, 2);
             B = (-2 * xCenterOUT) - (2 * hx * Math.pow(mD, 2)) + (2 * hy * mD) - (2 * yCenterOUT * mD);
             C = Math.pow(xCenterOUT, 2) + Math.pow(hx * mD, 2) - (2 * hx * hy * mD) + Math.pow(hy, 2) + (2 * yCenterOUT * hx * mD) - (2 * yCenterOUT * hy) + Math.pow(yCenterOUT, 2) - Math.pow(lG, 2);
@@ -134,15 +139,9 @@ public class Stretch {
 
             lG = lC * lH / lD;
 
-//            System.out.println("lC = "+lC+"\tlD = "+lD+"\tlH = "+lH+"\tlG = "+lG);
-
-
             A = 1 + Math.pow(mD, 2);
             B = (-2 * xCenterOUT) - (2 * gx * Math.pow(mD, 2)) + (2 * gy * mD) - (2 * yCenterOUT * mD);
             C = Math.pow(xCenterOUT, 2) + Math.pow(gx * mD, 2) - (2 * gx * gy * mD) + Math.pow(gy, 2) + (2 * yCenterOUT * gx * mD) - (2 * yCenterOUT * gy) + Math.pow(yCenterOUT, 2) - Math.pow(lG, 2);
-
-//            System.out.println("lC = "+lC+"\tlD = "+lD+"\tlH = "+lH+"\tlG = "+lG);
-
 
             kxA = (-B + Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
             kxB = (-B - Math.sqrt(Math.pow(B, 2) - (4 * A * C))) / (2 * A);
