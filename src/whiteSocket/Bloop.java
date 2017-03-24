@@ -70,7 +70,7 @@ import java.io.FileReader;
 
 import org.apache.commons.io.FileUtils;
 
-public class Blooprint{
+public class Bloop{
 
 	public static String title = "";	//	sketch image name (timestamp)
 	public static String inMode = "";	//	write/erase/calibrate
@@ -291,12 +291,12 @@ public class Blooprint{
 	 * */
 	public static void printAOI(boolean[][] isHit, String action) throws IOException {
 
-		InputStream stream = Blooprint.class.getClass().getResourceAsStream("/sketches/calibrate.jpg");
+		InputStream stream = Bloop.class.getClass().getResourceAsStream("/sketches/calibrate.jpg");
 		BufferedImage ghostBorder = ImageIO.read(stream);
 
 		try{
 
-//			BufferedImage ghostBorder = ImageIO.read(Blooprint.class.getClass().getResourceAsStream("/sketches/calibrate.jpg"));
+//			BufferedImage ghostBorder = ImageIO.read(Bloop.class.getClass().getResourceAsStream("/sketches/calibrate.jpg"));
 
 			for (int row = 0; row < ghostBorder.getHeight(); row ++){
 				for (int col = 0; col < ghostBorder.getWidth(); col++){
@@ -350,7 +350,7 @@ public class Blooprint{
 
 		try {
 
-			stream = Blooprint.class.getClass().getResourceAsStream(unitClicksFile);
+			stream = Bloop.class.getClass().getResourceAsStream(unitClicksFile);
 			unitObject = (JSONObject)parser.parse(new InputStreamReader(stream, "UTF-8"));
 			System.out.println("unitClicks stream = "+ stream );
 
@@ -767,7 +767,7 @@ public class Blooprint{
 
         try {
 
-        	stream = Blooprint.class.getClass().getResourceAsStream(calibrationFile);
+        	stream = Bloop.class.getClass().getResourceAsStream(calibrationFile);
 			obj = (JSONObject)parser.parse(new InputStreamReader(stream, "UTF-8"));
 			System.out.println("load calibration stream = "+ stream );
 
@@ -1052,7 +1052,7 @@ public class Blooprint{
 			/**
 			 * http://stackoverflow.com/questions/39081215/access-a-resource-outside-a-jar-from-the-jar
 			 * */
-			stream = Blooprint.class.getClass().getResourceAsStream(blooprintFile);
+			stream = Bloop.class.getClass().getResourceAsStream(blooprintFile);
 
 			System.out.println("blooprint stream = "+ stream );
 		}
@@ -1081,7 +1081,7 @@ public class Blooprint{
 			/**
 			 * http://stackoverflow.com/questions/39081215/access-a-resource-outside-a-jar-from-the-jar
 			 * */
-			stream = Blooprint.class.getClass().getResourceAsStream(sketchFile);
+			stream = Bloop.class.getClass().getResourceAsStream(sketchFile);
 			System.out.println("sketch stream = "+ stream );
 		}
 		catch(Exception e) {

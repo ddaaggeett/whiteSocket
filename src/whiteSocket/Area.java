@@ -1,12 +1,31 @@
+/**
+*   WhiteSocket
+*   Copyright (C) 2015-2017 - Dave Daggett - Blooprint, LLC
+*
+*   This program is free software; you can redistribute it and/or modify
+*   it under the terms of the GNU General Public License as published by
+*   the Free Software Foundation; either version 3 of the License, or
+*   (at your option) any later version.
+*
+*   This program is distributed in the hope that it will be useful,
+*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*   GNU General Public License for more details.
+*
+*   You should have received a copy of the GNU General Public License
+*   along with this program; if not, write to the Free Software Foundation,
+*   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
+*/
+
 package whiteSocket;
 
 import java.awt.Color;
 
-import whiteSocket.Blooprint;
+import whiteSocket.Bloop;
 
 public class Area {
 	
-	boolean[][] area = new boolean[Blooprint.sketch.getHeight()][Blooprint.sketch.getWidth()];
+	boolean[][] area = new boolean[Bloop.sketch.getHeight()][Bloop.sketch.getWidth()];
 	int startX, startY;
 	
 	/*first border hit*/
@@ -33,7 +52,7 @@ public class Area {
 		int xStart = borderStart_X;
 		int yStart = borderStart_Y + 2; /*TODO:	must consider the case in which borderStart_Y+2 is not inside border wall*/
 
-		area = Blooprint.floodBorder(area, xStart,yStart);
+		area = Bloop.floodBorder(area, xStart,yStart);
 
 		return area;
 	}//END getSketchDrawnArea()
@@ -47,21 +66,21 @@ public class Area {
 		after first border pixel is hit, continue searching through rest of sketch image for other areas
 		*/
 
-		boolean[][] border = new boolean[Blooprint.sketch.getHeight()][Blooprint.sketch.getWidth()];
+		boolean[][] border = new boolean[Bloop.sketch.getHeight()][Bloop.sketch.getWidth()];
 
 		here:
 
-			for(int row = 0; row < Blooprint.sketch.getHeight(); row++){
-				for(int col = 0; col < Blooprint.sketch.getWidth(); col++){
+			for(int row = 0; row < Bloop.sketch.getHeight(); row++){
+				for(int col = 0; col < Bloop.sketch.getWidth(); col++){
 
 					/*
 					 * dealing with pixels input by user - sketch
 					 * */
-					Color pxColor = new Color(Blooprint.sketch.getRGB(col,row));
+					Color pxColor = new Color(Bloop.sketch.getRGB(col,row));
 					int xIN = col;
 		            int yIN = row;
 
-		            if(Blooprint.areaOfInterest[row][col] && Blooprint.isMarker(pxColor)){
+		            if(Bloop.areaOfInterest[row][col] && Bloop.isMarker(pxColor)){
 
 						System.out.println("found eraser border!!!");
 
@@ -111,45 +130,45 @@ public class Area {
 		/*
 		 * all 8 surrounding pixels need to be checked counterclockwise
 		 * */
-		Color a = new Color(Blooprint.sketch.getRGB(coord[0]+1,coord[1]));	//	R
-		Color b = new Color(Blooprint.sketch.getRGB(coord[0]+1,coord[1]+1));	//	RD
-		Color c = new Color(Blooprint.sketch.getRGB(coord[0],coord[1]+1));	//	D
-		Color d = new Color(Blooprint.sketch.getRGB(coord[0]-1,coord[1]+1));	//	LD
-		Color e = new Color(Blooprint.sketch.getRGB(coord[0]-1,coord[1]));	//	L
-		Color f = new Color(Blooprint.sketch.getRGB(coord[0]-1,coord[1]-1));	//	LU
-		Color g = new Color(Blooprint.sketch.getRGB(coord[0],coord[1]-1));	//	U
-		Color h = new Color(Blooprint.sketch.getRGB(coord[0]+1,coord[1]-1));	//	RU
+		Color a = new Color(Bloop.sketch.getRGB(coord[0]+1,coord[1]));	//	R
+		Color b = new Color(Bloop.sketch.getRGB(coord[0]+1,coord[1]+1));	//	RD
+		Color c = new Color(Bloop.sketch.getRGB(coord[0],coord[1]+1));	//	D
+		Color d = new Color(Bloop.sketch.getRGB(coord[0]-1,coord[1]+1));	//	LD
+		Color e = new Color(Bloop.sketch.getRGB(coord[0]-1,coord[1]));	//	L
+		Color f = new Color(Bloop.sketch.getRGB(coord[0]-1,coord[1]-1));	//	LU
+		Color g = new Color(Bloop.sketch.getRGB(coord[0],coord[1]-1));	//	U
+		Color h = new Color(Bloop.sketch.getRGB(coord[0]+1,coord[1]-1));	//	RU
 
 
-		if(Blooprint.isMarker(a) & !Blooprint.isMarker(h)){
+		if(Bloop.isMarker(a) & !Bloop.isMarker(h)){
 			next[0] = coord[0]+1;	//	R
 			next[1] = coord[1];
 		}
-		else if(Blooprint.isMarker(b) & !Blooprint.isMarker(a)){
+		else if(Bloop.isMarker(b) & !Bloop.isMarker(a)){
 			next[0] = coord[0]+1;	//	RD
 			next[1] = coord[1]+1;
 		}
-		else if(Blooprint.isMarker(c) & !Blooprint.isMarker(b)){
+		else if(Bloop.isMarker(c) & !Bloop.isMarker(b)){
 			next[0] = coord[0];		//	D
 			next[1] = coord[1]+1;
 		}
-		else if(Blooprint.isMarker(d) & !Blooprint.isMarker(c)){
+		else if(Bloop.isMarker(d) & !Bloop.isMarker(c)){
 			next[0] = coord[0]-1;	//	LD
 			next[1] = coord[1]+1;
 		}
-		else if(Blooprint.isMarker(e) & !Blooprint.isMarker(d)){
+		else if(Bloop.isMarker(e) & !Bloop.isMarker(d)){
 			next[0] = coord[0]-1;	//	L
 			next[1] = coord[1];
 		}
-		else if(Blooprint.isMarker(f) & !Blooprint.isMarker(e)){
+		else if(Bloop.isMarker(f) & !Bloop.isMarker(e)){
 			next[0] = coord[0]-1;	//	LU
 			next[1] = coord[1]-1;
 		}
-		else if(Blooprint.isMarker(g) & !Blooprint.isMarker(f)){
+		else if(Bloop.isMarker(g) & !Bloop.isMarker(f)){
 			next[0] = coord[0];		//	U
 			next[1] = coord[1]-1;
 		}
-		else if(Blooprint.isMarker(h) & !Blooprint.isMarker(g)){
+		else if(Bloop.isMarker(h) & !Bloop.isMarker(g)){
 			next[0] = coord[0]+1;	//	RU
 			next[1] = coord[1]-1;
 		}
