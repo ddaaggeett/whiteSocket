@@ -20,111 +20,70 @@
 package whiteSocket;
 
 import java.awt.Color;
+import java.awt.Point;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import whiteSocket.Bloop;
 
 public class Area {
 	
-	boolean[][] area = new boolean[Bloop.sketch.getHeight()][Bloop.sketch.getWidth()];
 	int startX, startY;
+	boolean[][] area;
 	
 	/*first border hit*/
 	public static int borderStart_X,borderStart_Y;
 
 
 	
-	
-	public void constructor(int x, int y) {
+	public Area(int x, int y) {
+		
 		this.startX = x;
 		this.startY = y;
-	}
+		this.area = floodBorder(getBorder(this), this.startX, this.startY+2);
 
-	public static boolean[][] getSketchDrawnArea() throws Exception {
-		/**
-		 * returns binary map. area of interest on whiteboard, just outside of projected corners
-		 * 
-		 * TODO: need to scan for multiple getSketchDrawnArea areas.  so far we are only checking for
-		 * the first one that we come across.
-		 * */
+	}//END constructor
+	
 
-		boolean[][] area = getUserDrawnBorder();
-
-		int xStart = borderStart_X;
-		int yStart = borderStart_Y + 2; /*TODO:	must consider the case in which borderStart_Y+2 is not inside border wall*/
-
-		area = Bloop.floodBorder(area, xStart,yStart);
-
-		return area;
-	}//END getSketchDrawnArea()
-
-	public static boolean[][] getUserDrawnBorder() {
+	public static boolean[][] getBorder(Area area) {
 		/**
 		 * dealing with area drawn by user to erase
 		 * sets binary map single pixel strand border for future use in floodBorder() method
-		
-		TODO:
-		after first border pixel is hit, continue searching through rest of sketch image for other areas
 		*/
 
 		boolean[][] border = new boolean[Bloop.sketch.getHeight()][Bloop.sketch.getWidth()];
 
-		here:
+		/*
+		 * encapsulate eraser area
+		 * */
+		int[] inCoord = new int[2];
+		inCoord[0] = area.startX;
+		inCoord[1] = area.startY;
+		boolean flag = true;
+		while(flag){
 
-			for(int row = 0; row < Bloop.sketch.getHeight(); row++){
-				for(int col = 0; col < Bloop.sketch.getWidth(); col++){
+			//	2dArray[y][x]
+			border[inCoord[1]][inCoord[0]] = true;
 
-					/*
-					 * dealing with pixels input by user - sketch
-					 * */
-					Color pxColor = new Color(Bloop.sketch.getRGB(col,row));
-					int xIN = col;
-		            int yIN = row;
+			inCoord = getNextBorderPixel(inCoord);
 
-		            if(Bloop.areaOfInterest[row][col] && Bloop.isMarker(pxColor)){
+			if((inCoord[0] == area.startX) && (inCoord[1] == area.startY)){
 
-						System.out.println("found eraser border!!!");
+				System.out.println("found single border");
 
-						/*
-						 * encapsulate eraser area
-						 * */
-						int[] inCoord = new int[2];
-						inCoord[0] = col;
-						inCoord[1] = row;
-						boolean flag = true;
-						while(flag){
-
-							//	2dArray[y][x]
-							border[inCoord[1]][inCoord[0]] = true;
-
-							inCoord = getNextBorderPixel(inCoord);
-
-							if((inCoord[0] == xIN) && (inCoord[1] == yIN)){
-
-								borderStart_X = xIN;
-								borderStart_Y = yIN;
-
-								System.out.println("made it all the way around the border");
-
-								flag = false;
-								break here;
-							}
-						}
-					}
-					else{
-						continue;
-					}
-				}
-			}//END outer loop
-
-
+				flag = false;
+			}
+		}
+						
 		return border;
-	}//END getUserDrawnBorder()
+	}//END getBorder()
+	
 
-	/**
-	 * recursive method locating pixel after last found pixel until entire border is lined
-	 * */
 	public static int[] getNextBorderPixel(int[] coord) {
-
+		/**
+		 * locate pixel after last found pixel until entire border is lined
+		 * */
+		
 		int[] next = new int[2];
 
 		/*
@@ -179,7 +138,44 @@ public class Area {
 
 		return next;
 	}//END getNextBorderPixel()
+	
+
+	public static boolean[][] floodBorder(boolean[][] floodArea, int x, int y) {
+		/**
+		 * paint bucket-like algorithm to fill binary map border
+		 * this filled area becomes the area to be filtered through the stretch()
+		 * area pixels to be turned Color.WHITE (unless notified otherwise by user dictation)
+		 *
+		 * */
+		
+        if (!floodArea[y][x]) {
 
 
+
+		    Queue<Point> queue = new LinkedList<Point>();
+		    queue.add(new Point(x, y));
+
+		    while (!queue.isEmpty()) {
+
+		    	Point p = queue.remove();
+
+	        	if (!floodArea[p.y][p.x]) {
+
+	            	floodArea[p.y][p.x] = true;
+
+	                queue.add(new Point(p.x + 1, p.y));
+	                queue.add(new Point(p.x - 1, p.y));
+	                queue.add(new Point(p.x, p.y + 1));
+	                queue.add(new Point(p.x, p.y - 1));
+
+	            }
+		    }
+
+		}
+
+		return floodArea;
+	}//END floodBorder()
+
+	
 
 }

@@ -19,7 +19,7 @@
 
 /**
 *	run this API (JAR file) from the Blooprint application (https://github.com/blooprint/blooprint)
-*	java -jar Blooprint.jar [blooprint title] [calibrate/write/erase] [write color]
+*	java -jar Blooprint.jar <args>
 *
 *	purpose: input image from hard drive -> returns processed image to hard drive for display
 *
@@ -53,6 +53,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -71,7 +72,10 @@ import java.io.FileReader;
 import org.apache.commons.io.FileUtils;
 
 public class Bloop{
-
+	
+	
+	public static ArrayList<Area> eraseAreas = null;
+	
 	public static String title = "";	//	sketch image name (timestamp)
 	public static String inMode = "";	//	write/erase/calibrate
 	public static String writeColor = "black";  //	default black
@@ -89,7 +93,7 @@ public class Bloop{
 	public static double clientWidth, clientHeight;
 
 	public static boolean[][] areaOfInterest;
-	public static boolean[][] sketchDrawnArea;
+	public static boolean[][] totalEraseArea;
 
 	public static int tx, ty;
 
@@ -160,7 +164,7 @@ public class Bloop{
 				ty = (Stretch.ay+Stretch.cy)/2;
 
 				try {
-					areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
+					areaOfInterest = Area.floodBorder(areaOfInterest, tx, ty+5);
 //					printAOI(areaOfInterest, "fill");
 
 				}
@@ -187,15 +191,39 @@ public class Bloop{
 				ty = (Stretch.ay+Stretch.cy)/2;
 
 				try {
-					areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
+					areaOfInterest = Area.floodBorder(areaOfInterest, tx, ty+5);
 //					printAOI(areaOfInterest, "fill");
 				}
 				catch(Exception e) {
 					System.out.println("ERROR floodBorder():" + e.getMessage());
 				}
 				
-				sketchDrawnArea = Area.getSketchDrawnArea();
-				erase(sketchDrawnArea);
+				Color pxColor = null;
+				
+				for (int row = 0; row < sketch.getHeight(); row++){
+					for(int col = 0; col < sketch.getWidth(); col++){
+						
+						pxColor = new Color(sketch.getRGB(col,row));
+						
+						/*
+						 * TODO
+						 * AND if NOT already hit area pixels
+						 * 
+						 * after first border pixel is hit, continue searching through rest of sketch image for other areas
+						 * */
+						if(areaOfInterest[row][col] && isMarker(pxColor)){
+							
+							eraseAreas.add(new Area(col,row));
+							
+						}
+						
+					}
+				}
+				
+				for (Area some : eraseAreas) {	
+					erase(some.area);
+				}
+				
 				saveBlooprint();
 				break;
 
@@ -743,7 +771,7 @@ public class Bloop{
 		 *
 		 * areaOfInterest = floodBorder(areaOfInterest, X, Y);
 		 * */
-		areaOfInterest = floodBorder(areaOfInterest, tx, ty+5);
+		areaOfInterest = Area.floodBorder(areaOfInterest, tx, ty+5);
 
 		setCorners();
 		setCenters();
@@ -1218,42 +1246,6 @@ public class Bloop{
 
 		return border;
 	}//END getAreaOfInterestBorder()
-
-	/**
-	 * paint bucket-like algorithm to fill binary map border
-	 * this filled area becomes the area to be filtered through the stretch()
-	 * area pixels to be turned Color.WHITE (unless notified otherwise by user dictation)
-	 *
-	 * */
-	public static boolean[][] floodBorder(boolean[][] floodArea, int x, int y) {
-
-        if (!floodArea[y][x]) {
-
-
-
-		    Queue<Point> queue = new LinkedList<Point>();
-		    queue.add(new Point(x, y));
-
-		    while (!queue.isEmpty()) {
-
-		    	Point p = queue.remove();
-
-	        	if (!floodArea[p.y][p.x]) {
-
-	            	floodArea[p.y][p.x] = true;
-
-	                queue.add(new Point(p.x + 1, p.y));
-	                queue.add(new Point(p.x - 1, p.y));
-	                queue.add(new Point(p.x, p.y + 1));
-	                queue.add(new Point(p.x, p.y - 1));
-
-	            }
-		    }
-
-		}
-
-		return floodArea;
-	}//END floodBorder()
 
 	/**
 	 * checking if instantaneous pixel is ANY color or not
