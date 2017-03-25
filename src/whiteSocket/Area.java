@@ -30,12 +30,7 @@ public class Area {
 	
 	int startX, startY;
 	boolean[][] area;
-	
-	/*first border hit*/
-	public static int borderStart_X,borderStart_Y;
-
-
-	
+		
 	public Area(int x, int y) {
 		
 		this.startX = x;
@@ -61,6 +56,8 @@ public class Area {
 		inCoord[1] = area.startY;
 		boolean flag = true;
 		while(flag){
+			
+			Bloop.totalErase[inCoord[1]][inCoord[0]] = true;
 
 			//	2dArray[y][x]
 			border[inCoord[1]][inCoord[0]] = true;
@@ -162,6 +159,9 @@ public class Area {
 	        	if (!floodArea[p.y][p.x]) {
 
 	            	floodArea[p.y][p.x] = true;
+	            	
+	            	Bloop.totalErase[p.y][p.x] = true;
+
 
 	                queue.add(new Point(p.x + 1, p.y));
 	                queue.add(new Point(p.x - 1, p.y));

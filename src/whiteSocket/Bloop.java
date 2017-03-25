@@ -75,6 +75,10 @@ public class Bloop{
 	
 	
 	public static ArrayList<Area> eraseAreas = null;
+	/* TODO
+	 * little redundant, but can fix later
+	 * */
+	public static boolean[][] totalErase = null;
 	
 	public static String title = "";	//	sketch image name (timestamp)
 	public static String inMode = "";	//	write/erase/calibrate
@@ -205,13 +209,7 @@ public class Bloop{
 						
 						pxColor = new Color(sketch.getRGB(col,row));
 						
-						/*
-						 * TODO
-						 * AND if NOT already hit area pixels
-						 * 
-						 * after first border pixel is hit, continue searching through rest of sketch image for other areas
-						 * */
-						if(areaOfInterest[row][col] && isMarker(pxColor)){
+						if(areaOfInterest[row][col] && isMarker(pxColor) && !totalErase[row][col]){
 							
 							eraseAreas.add(new Area(col,row));
 							
@@ -235,12 +233,12 @@ public class Bloop{
 
 	}//END main()
 
-	/**
-	 * bloop blooprint.image pixel location intended by user bloop action
-	 * sets Color.RED,BLUE,GREEN according to user intension
-	 * */
 	public static void write() {
-
+		/**
+		 * bloop blooprint.image pixel location intended by user bloop action
+		 * sets Color.RED,BLUE,GREEN according to user intension
+		 * */
+		
 		System.out.println("writing......");
 
 
@@ -275,12 +273,11 @@ public class Bloop{
 		}
 	}//END write()
 
-	/**
-	 * erase the area found inside the outer border of marker line drawn
-	 * */
 	public static void erase(boolean[][] eraseArea) {
-
-
+		/**
+		 * erase the area found inside the outer border of marker line drawn
+		 * */
+		
 		System.out.println("erasing......");
 
 
@@ -311,14 +308,12 @@ public class Bloop{
 
 	}//END erase()
 
-
-
-	/*
-	 * TODO: this method could come in handy for a gui to learn the blooprint system and all its components
-	 * this method exists to display that we're examining the correct AREA OF INTEREST in sketch image	 *
-	 * */
 	public static void printAOI(boolean[][] isHit, String action) throws IOException {
-
+		/*
+		 * TODO: this method could come in handy for a gui to learn the blooprint system and all its components
+		 * this method exists to display that we're examining the correct AREA OF INTEREST in sketch image	 *
+		 * */
+		
 		InputStream stream = Bloop.class.getClass().getResourceAsStream("/sketches/calibrate.jpg");
 		BufferedImage ghostBorder = ImageIO.read(stream);
 
@@ -364,13 +359,11 @@ public class Bloop{
 
 	}//END printAOI()
 
-
-
-	/*
-	 * get client side selected points just outside lit corners
-	 * */
 	public static void getClientUnitClicks() throws Exception{
-
+		/*
+		 * get client side selected points just outside lit corners
+		 * */
+		
 		JSONParser parser = new JSONParser();
 		InputStream stream = null;
 		JSONObject unitObject = null;
@@ -398,13 +391,12 @@ public class Bloop{
 
 	}//END getClientUnitClicks()
 
-
-	/*
-	creates a scan area around the box drawn by user in sketch
-	returns xMIN, xMAX, yMIN, yMAX in sketch
-	*/
 	public static int[] zoomToBox() {
-
+		/*
+		creates a scan area around the box drawn by user in sketch
+		returns xMIN, xMAX, yMIN, yMAX in sketch
+		*/
+		
 		/**
 		 * these value's starting points are backwards in order for the boolean comparisons below to initiate properly
 		 * */
@@ -496,13 +488,11 @@ public class Bloop{
 		return some;
 	}//END zoomToBox()
 
-	/**
-	 * finds user defined projector corners (xy-coordinates) on whiteboard
-	 * */
 	public static int[] getScanBoxCorners(int ymin, int ymax, int xmin, int xmax) {
-		/*
-		 * action occurs on the input camera image
+		/**
+		 * finds user defined projector corners (xy-coordinates) on whiteboard
 		 *
+		 * action occurs on the input camera image
 		 *
 		 * returns int[8] - corner order UL, UR, LL, LR in x,y sequence
 		 * */
@@ -641,11 +631,11 @@ public class Bloop{
 
 	}//END getScanBoxCorners()
 
-	/*
-	returns Rectangle to  -> x,y,width,height
-	*/
 	public static float[] setUnitTextbox(int[] corners) {
-
+		/*
+		returns Rectangle to  -> x,y,width,height
+		*/
+		
 		Rectangle rect = new Rectangle();
 		int x = corners[0];
 		int y = corners[1];
@@ -700,12 +690,10 @@ public class Bloop{
 		return unit;
 	}//END setUnitTextbox()
 
-	/*
-	Sets calibration values to DB
-	*/
 	public static void calibrate() throws Exception{
-
-		/**
+		/*
+		 * Sets calibration values to DB
+		 * 
 		 * TODO
 		 * replace getClientUnitClicks() with auto corner blob scan
 		 *
@@ -782,12 +770,10 @@ public class Bloop{
 		saveCalibration();
 	}//END calibrate()
 
-	/*
-	*	calibration data is to be used every write/erase
-	*/
 	public static void loadCalibration() throws Exception{
-
-
+		/*
+		 *	calibration data is to be used every write/erase
+		 */
 
 		JSONParser parser = new JSONParser();
 		JSONObject obj = null;
@@ -847,10 +833,10 @@ public class Bloop{
 
 	}//END loadCalibration()
 
-	/**
-	 * User convenience calibration information saved for load next program start
-	 * */
 	public static void saveCalibration() throws Exception {
+		/**
+		 * User convenience calibration information saved for load next program start
+		 * */
 
 		System.out.println("saveCalibration()...");
 		JSONObject obj = new JSONObject();
@@ -909,13 +895,13 @@ public class Bloop{
 
 	}//END saveCalibration()
 
-	/**
-	*	sets -> ax,ay,bx,by,cx,cy,dx,dy
-	*	gets corner values user draws on whiteboard (corners of lit projection area)
-	*
-	*	TODO:
-	 * */
 	public static void setCorners() {
+		/**
+		 *	sets -> ax,ay,bx,by,cx,cy,dx,dy
+		 *	gets corner values user draws on whiteboard (corners of lit projection area)
+		 *
+		 *	TODO:
+		 * */
 
 		boolean hit = false;
 		int rowStart = 0;
@@ -1053,11 +1039,11 @@ public class Bloop{
         }
 	}//END setCorners()
 
-	/**
-	 * Find center of the input image.
-	 * Only considering location of light projector lit area on whiteboard.
-	 * */
 	public static void setCenters() throws Exception{
+		/**
+		 * Find center of the input image.
+		 * Only considering location of light projector lit area on whiteboard.
+		 * */
 		Stretch.mA = (double)(Stretch.by - Stretch.ay) / (double)(Stretch.bx - Stretch.ax);
 		Stretch.mB = (double)(Stretch.cy - Stretch.dy) / (double)(Stretch.cx - Stretch.dx);
 		Stretch.mC = (double)(Stretch.fy - Stretch.ey) / (double)(Stretch.fx - Stretch.ex);
@@ -1068,12 +1054,12 @@ public class Bloop{
 		Stretch.yCenterOUT = (double)(Stretch.mC * (Stretch.xCenterOUT - Stretch.ex)) + (double)Stretch.ey;
 	}//END setCenters()
 
-	/**
-	 * load image from DB table - either an input sketch or a compiled blooprint image
-	 *	sketch arg = "null"
-	 * BLOB object to binary stream to BufferedImage object
-	 * */
 	public static BufferedImage loadBlooprint() throws IOException {
+		/**
+		 * load image from DB table - either an input sketch or a compiled blooprint image
+		 *	sketch arg = "null"
+		 * BLOB object to binary stream to BufferedImage object
+		 * */
 		System.out.println("loadBlooprint() from " + blooprintFile);
 		InputStream stream = null;
 		try{
@@ -1096,13 +1082,12 @@ public class Bloop{
 		return some;
 	}//END loadBlooprint()
 
-
-	/**
-	 * load image from DB table - either an input sketch or a compiled blooprint image
-	 *	sketch arg = "null"
-	 * BLOB object to binary stream to BufferedImage object
-	 * */
 	public static BufferedImage loadSketch() throws Exception {
+		/**
+		 * load image from DB table - either an input sketch or a compiled blooprint image
+		 *	sketch arg = "null"
+		 * BLOB object to binary stream to BufferedImage object
+		 * */
 		System.out.println("loadSketch() from " + sketchFile);
 		InputStream stream = null;
 		try{
@@ -1130,10 +1115,10 @@ public class Bloop{
 		return some;
 	}//END loadSketch()
 
-	/**
-	 * DB table is updated with added image of latest blooprint image state
-	 * */
 	public static void saveBlooprint() throws IOException {
+		/**
+		 * DB table is updated with added image of latest blooprint image state
+		 * */
 
 		System.out.println("saveBlooprint()...");
 
@@ -1150,11 +1135,11 @@ public class Bloop{
 		}
 	}//END saveBlooprint()
 
-	/**
-	 * dealing with lit projector area on whiteboard
-	 * sets binary border for future use in floodBorder() method
-	 * */
 	public static boolean[][] getLightBorder() {
+		/**
+		 * dealing with lit projector area on whiteboard
+		 * sets binary border for future use in floodBorder() method
+		 * */
 
 		boolean[][] border = new boolean[sketch.getHeight()][sketch.getWidth()];
 
@@ -1199,11 +1184,11 @@ public class Bloop{
 		return border;
 	}//END getLightBorder()
 
-	/**
-	 * dealing with lit projector area on whiteboard
-	 * sets binary border for future use in floodBorder() method
-	 * */
 	public static boolean[][] getAreaOfInterestBorder() {
+		/**
+		 * dealing with lit projector area on whiteboard
+		 * sets binary border for future use in floodBorder() method
+		 * */
 
 		boolean[][] border = new boolean[sketch.getHeight()][sketch.getWidth()];
 
@@ -1247,13 +1232,13 @@ public class Bloop{
 		return border;
 	}//END getAreaOfInterestBorder()
 
-	/**
-	 * checking if instantaneous pixel is ANY color or not
-	 * returns true or false
-	 *
-	 * TODO: for now the only color use case is black.  need to incorporate red, green, and blue user options
-	 * */
 	public static boolean isMarker(Color x) {
+		/**
+		 * checking if instantaneous pixel is ANY color or not
+		 * returns true or false
+		 *
+		 * TODO: for now the only color use case is black.  need to incorporate red, green, and blue user options
+		 * */
 		if((x.getRed() > mark & x.getGreen() < 100 & x.getBlue() < 100)
 				|| (x.getRed() < 100 & x.getGreen() > mark & x.getBlue() < 100)
 				|| (x.getRed() < 100 & x.getGreen() < 100 & x.getBlue() > mark)
