@@ -6,6 +6,7 @@
 .DS_store
 dependencies/**/*.jar
 tests/
+*Blooprint.java
 
 .metadata
 bin/
