@@ -113,10 +113,15 @@ public class Bloop{
 	public static String blooprintFile = "";
 	public static String sketchLoc = "/sketches/";
 	public static String sketchFile = "";
+	public static String test_sketch = "";
+	public static String test_image = "";
 
 	public static void main(String[] args) throws Exception{
 
 		title = args[0];
+		
+		test_sketch = "./tests/" + args[0] + ".jpg";
+		test_image = "./tests/blooprints/" + args[1] + ".jpg";
 
 		sketchFile = sketchLoc + title + ".jpg";
 
@@ -155,75 +160,80 @@ public class Bloop{
 
 			case "write":
 
-				loadCalibration();
-
-				areaOfInterest = getLightBorder();
-
-//				printAOI(areaOfInterest, "border");
-
+//				loadCalibration();
 				/*
-				 * start flooding right below center of topSlope
+				 * TODO:
+				 * will place calibrate() here (same with erase)
 				 * */
-				tx = (Stretch.ax+Stretch.cx)/2;
-				ty = (Stretch.ay+Stretch.cy)/2;
+				Area.getCornerBlobs();
 
-				try {
-					areaOfInterest = Area.floodBorder(areaOfInterest, tx, ty+5);
-//					printAOI(areaOfInterest, "fill");
-
-				}
-				catch(Exception e) {
-					System.out.println("ERROR floodBorder():" + e.getMessage());
-				}
-
-				write();
-				saveBlooprint();
+//				areaOfInterest = getLightBorder();
+//
+////				printAOI(areaOfInterest, "border");
+//
+//				/*
+//				 * start flooding right below center of topSlope
+//				 * */
+//				tx = (Stretch.ax+Stretch.cx)/2;
+//				ty = (Stretch.ay+Stretch.cy)/2;
+//
+//				try {
+//					areaOfInterest = Area.floodBorder(null, areaOfInterest, tx, ty+5);
+////					printAOI(areaOfInterest, "fill");
+//
+//				}
+//				catch(Exception e) {
+//					System.out.println("ERROR floodBorder():" + e.getMessage());
+//				}
+//
+//				write();
+//				saveBlooprint();
 				break;
-
-			case "erase":
-				/**
-				*	purpose: save updated blooprint image to DB
-				**/
-				loadCalibration();
-
-				areaOfInterest = getLightBorder();
-
-				/*
-				 * start flooding right below center of topSlope
-				 * */
-				tx = (Stretch.ax+Stretch.cx)/2;
-				ty = (Stretch.ay+Stretch.cy)/2;
-
-				try {
-					areaOfInterest = Area.floodBorder(areaOfInterest, tx, ty+5);
-//					printAOI(areaOfInterest, "fill");
-				}
-				catch(Exception e) {
-					System.out.println("ERROR floodBorder():" + e.getMessage());
-				}
-				
-				Color pxColor = null;
-				
-				for (int row = 0; row < sketch.getHeight(); row++){
-					for(int col = 0; col < sketch.getWidth(); col++){
-						
-						pxColor = new Color(sketch.getRGB(col,row));
-						
-						if(areaOfInterest[row][col] && isMarker(pxColor) && !totalErase[row][col]){
-							
-							eraseAreas.add(new Area(col,row));
-							
-						}
-						
-					}
-				}
-				
-				for (Area some : eraseAreas) {	
-					erase(some.area);
-				}
-				
-				saveBlooprint();
-				break;
+//
+//			case "erase":
+//				/**
+//				*	purpose: save updated blooprint image to DB
+//				**/
+//				loadCalibration();
+//
+//				areaOfInterest = getLightBorder();
+//
+//				/*
+//				 * start flooding right below center of topSlope
+//				 * */
+//				tx = (Stretch.ax+Stretch.cx)/2;
+//				ty = (Stretch.ay+Stretch.cy)/2;
+//
+//				try {
+//					areaOfInterest = Area.floodBorder(null, areaOfInterest, tx, ty+5);
+////					printAOI(areaOfInterest, "fill");
+//				}
+//				catch(Exception e) {
+//					System.out.println("ERROR floodBorder():" + e.getMessage());
+//				}
+//				
+//				Color pxColor = null;
+//				
+//				for (int row = 0; row < sketch.getHeight(); row++){
+//					for(int col = 0; col < sketch.getWidth(); col++){
+//						
+//						pxColor = new Color(sketch.getRGB(col,row));
+//						
+//						if(areaOfInterest[row][col] && isMarker(pxColor) && !totalErase[row][col]){
+//							
+//							eraseAreas.add(new Area(col,row));
+//							
+//						}
+//						
+//					}
+//				}
+//				
+//				for (Area some : eraseAreas) {	
+//					erase(some.area);
+//				}
+//				
+//				saveBlooprint();
+//				break;
 
 
 			default:
@@ -759,7 +769,7 @@ public class Bloop{
 		 *
 		 * areaOfInterest = floodBorder(areaOfInterest, X, Y);
 		 * */
-		areaOfInterest = Area.floodBorder(areaOfInterest, tx, ty+5);
+		areaOfInterest = Area.floodBorder(null, areaOfInterest, tx, ty+5);
 
 		setCorners();
 		setCenters();
@@ -1062,19 +1072,24 @@ public class Bloop{
 		 * */
 		System.out.println("loadBlooprint() from " + blooprintFile);
 		InputStream stream = null;
+		BufferedImage some = null;
 		try{
 			/**
 			 * http://stackoverflow.com/questions/39081215/access-a-resource-outside-a-jar-from-the-jar
 			 * */
-			stream = Bloop.class.getClass().getResourceAsStream(blooprintFile);
+//			stream = Bloop.class.getClass().getResourceAsStream(blooprintFile);
+			if ( stream == null ) { 
+				some = ImageIO.read(new File(test_image));
+				return some;
+			}
 
 			System.out.println("blooprint stream = "+ stream );
 		}
 		catch(Exception e) {
 			System.out.println("error blooprint to stream: " + e.getMessage());
 		}
-		BufferedImage some = null;
 		try{
+			
 			some = ImageIO.read(stream);
 		}catch(Exception exc){
 			exc.getMessage();
@@ -1090,18 +1105,22 @@ public class Bloop{
 		 * */
 		System.out.println("loadSketch() from " + sketchFile);
 		InputStream stream = null;
+		BufferedImage some = null;
 		try{
 			/**
 			 * http://stackoverflow.com/questions/39081215/access-a-resource-outside-a-jar-from-the-jar
 			 * */
-			stream = Bloop.class.getClass().getResourceAsStream(sketchFile);
+//			stream = Bloop.class.getClass().getResourceAsStream(sketchFile);
+			if ( stream == null ) { 
+				some = ImageIO.read(new File(test_sketch));
+				return some;
+			}
 			System.out.println("sketch stream = "+ stream );
 		}
 		catch(Exception e) {
 			System.out.print("error sketch to stream: ");
 			System.out.println(e.getMessage());
 		}
-		BufferedImage some = null;
 		try{
 			some = ImageIO.read(stream);
 			Stretch.fx = some.getWidth()-1;
