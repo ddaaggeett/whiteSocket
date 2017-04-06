@@ -42,8 +42,7 @@ public class Area {
 
 	int startX, startY, pxCount, minX, maxX, minY, maxY;
 	boolean[][] area;
-	static int lastBorderPx = 5;
-
+	
 	static boolean[][] hasBeenHit;
 
 	public Area(int x, int y) {
@@ -95,7 +94,7 @@ public class Area {
 						// 2dArray[y][x]
 						hasBeenHit[inCoord[1]][inCoord[0]] = true;
 
-						inCoord = getNextBorderPixel(inCoord);
+						inCoord = Border.getNextBorderPixel(inCoord);
 						
 						if ((inCoord[0] == xIN) && (inCoord[1] == yIN)) {
 							System.out.println("found whole corner blob");
@@ -135,7 +134,7 @@ public class Area {
 						// 2dArray[y][x]
 						hasBeenHit[inCoord[1]][inCoord[0]] = true;
 
-						inCoord = getNextBorderPixel(inCoord);
+						inCoord = Border.getNextBorderPixel(inCoord);
 						
 						if ((inCoord[0] == xIN) && (inCoord[1] == yIN)) {
 							System.out.println("found whole corner blob");
@@ -160,30 +159,34 @@ public class Area {
 				pxColor = new Color(Bloop.sketch.getRGB(xIN, yIN));
 				if (Bloop.isMarker(pxColor) && !hasBeenHit[yIN][xIN]) {
 					
-					System.out.println("found a blob");
+					new Border(xIN,yIN);
 					
-////						_1.add(new Area(xIN,yIN));
-//						Area some = new Area(xIN,yIN);
+//					System.out.println("found a blob");
+//					
+//////						_1.add(new Area(xIN,yIN));
+////						Area some = new Area(xIN,yIN);
+//					
+//
+//					int[] inCoord = new int[2];
+//					inCoord[0] = xIN;
+//					inCoord[1] = yIN;
+//					boolean flag = true;
+//					while (flag) {
+//
+//						// 2dArray[y][x]
+//						hasBeenHit[inCoord[1]][inCoord[0]] = true;
+//
+//						inCoord = getNextBorderPixel(inCoord);
+//						
+//						if ((inCoord[0] == xIN) && (inCoord[1] == yIN)) {
+//							System.out.println("found whole corner blob");
+//
+//							flag = false;
+//							break here3;
+//						}
+//					}
 					
-
-					int[] inCoord = new int[2];
-					inCoord[0] = xIN;
-					inCoord[1] = yIN;
-					boolean flag = true;
-					while (flag) {
-
-						// 2dArray[y][x]
-						hasBeenHit[inCoord[1]][inCoord[0]] = true;
-
-						inCoord = getNextBorderPixel(inCoord);
-						
-						if ((inCoord[0] == xIN) && (inCoord[1] == yIN)) {
-							System.out.println("found whole corner blob");
-
-							flag = false;
-							break here3;
-						}
-					}
+					break here3;
 				}
 			}
 		}
@@ -215,7 +218,7 @@ public class Area {
 						// 2dArray[y][x]
 						hasBeenHit[inCoord[1]][inCoord[0]] = true;
 
-						inCoord = getNextBorderPixel(inCoord);
+						inCoord = Border.getNextBorderPixel(inCoord);
 						
 						if ((inCoord[0] == xIN) && (inCoord[1] == yIN)) {
 							System.out.println("found whole corner blob");
@@ -262,7 +265,7 @@ public class Area {
 			// 2dArray[y][x]
 			border[inCoord[1]][inCoord[0]] = true;
 			
-			inCoord = getNextBorderPixel(inCoord);
+			inCoord = Border.getNextBorderPixel(inCoord);
 			
 			if ((inCoord[0] == area.startX) && (inCoord[1] == area.startY)) {
 				
@@ -275,370 +278,6 @@ public class Area {
 		return border;
 	}// END getBorder()
 
-	public static int[] getNextBorderPixel(int[] coord) {
-		/**
-		 * locate pixel after last found pixel until entire border is lined
-		 */
-
-		int[] next = new int[2];
-
-		/*
-		 * all 8 surrounding pixels need to be checked clockwise
-		 */
-		Color a = new Color(Bloop.sketch.getRGB(coord[0] + 1, coord[1])); // R
-		Color b = new Color(Bloop.sketch.getRGB(coord[0] + 1, coord[1] + 1)); // RD
-		Color c = new Color(Bloop.sketch.getRGB(coord[0], coord[1] + 1)); // D
-		Color d = new Color(Bloop.sketch.getRGB(coord[0] - 1, coord[1] + 1)); // LD
-		Color e = new Color(Bloop.sketch.getRGB(coord[0] - 1, coord[1])); // L
-		Color f = new Color(Bloop.sketch.getRGB(coord[0] - 1, coord[1] - 1)); // LU
-		Color g = new Color(Bloop.sketch.getRGB(coord[0], coord[1] - 1)); // U
-		Color h = new Color(Bloop.sketch.getRGB(coord[0] + 1, coord[1] - 1)); // RU
-		
-		switch(lastBorderPx) {
-		case 1:
-			if (comparePixels(c,b)) {
-				next[0] = coord[0]; // D
-				next[1] = coord[1] + 1;
-				lastBorderPx = 7;
-			}
-			else if (comparePixels(d,c)) {
-				next[0] = coord[0] - 1; // LD
-				next[1] = coord[1] + 1;
-				lastBorderPx = 8;
-			}
-			else if (comparePixels(e,d)) {
-				next[0] = coord[0] - 1; // L
-				next[1] = coord[1];
-				lastBorderPx = 1;
-			}
-			else if (comparePixels(f,e)) {
-				next[0] = coord[0] - 1; // LU
-				next[1] = coord[1] - 1;
-				lastBorderPx = 2;
-			}
-			else if (comparePixels(g,f)) {
-				next[0] = coord[0]; // U
-				next[1] = coord[1] - 1;
-				lastBorderPx = 3;
-			}
-			else if (comparePixels(h,g)) {
-				next[0] = coord[0] + 1; // RU
-				next[1] = coord[1] - 1;
-				lastBorderPx = 4;
-			}
-			else if (comparePixels(a,h)) {
-				next[0] = coord[0] + 1; // R
-				next[1] = coord[1];
-				lastBorderPx = 5;
-			}
-			else if (comparePixels(b,a)) {
-				next[0] = coord[0] + 1; // RD
-				next[1] = coord[1] + 1;
-				lastBorderPx = 6;
-			}
-			break;
-		case 2:
-			if (comparePixels(d,c)) {
-				next[0] = coord[0] - 1; // LD
-				next[1] = coord[1] + 1;
-				lastBorderPx = 8;
-			}
-			else if (comparePixels(e,d)) {
-				next[0] = coord[0] - 1; // L
-				next[1] = coord[1];
-				lastBorderPx = 1;
-			}
-			else if (comparePixels(f,e)) {
-				next[0] = coord[0] - 1; // LU
-				next[1] = coord[1] - 1;
-				lastBorderPx = 2;
-			}
-			else if (comparePixels(g,f)) {
-				next[0] = coord[0]; // U
-				next[1] = coord[1] - 1;
-				lastBorderPx = 3;
-			}
-			else if (comparePixels(h,g)) {
-				next[0] = coord[0] + 1; // RU
-				next[1] = coord[1] - 1;
-				lastBorderPx = 4;
-			}
-			else if (comparePixels(a,h)) {
-				next[0] = coord[0] + 1; // R
-				next[1] = coord[1];
-				lastBorderPx = 5;
-			}
-			else if (comparePixels(b,a)) {
-				next[0] = coord[0] + 1; // RD
-				next[1] = coord[1] + 1;
-				lastBorderPx = 6;
-			}
-			else if (comparePixels(c,b)) {
-				next[0] = coord[0]; // D
-				next[1] = coord[1] + 1;
-				lastBorderPx = 7;
-			}
-			break;
-		case 3:
-			if (comparePixels(e,d)) {
-				next[0] = coord[0] - 1; // L
-				next[1] = coord[1];
-				lastBorderPx = 1;
-			}
-			else if (comparePixels(f,e)) {
-				next[0] = coord[0] - 1; // LU
-				next[1] = coord[1] - 1;
-				lastBorderPx = 2;
-			}
-			else if (comparePixels(g,f)) {
-				next[0] = coord[0]; // U
-				next[1] = coord[1] - 1;
-				lastBorderPx = 3;
-			}
-			else if (comparePixels(h,g)) {
-				next[0] = coord[0] + 1; // RU
-				next[1] = coord[1] - 1;
-				lastBorderPx = 4;
-			}
-			else if (comparePixels(a,h)) {
-				next[0] = coord[0] + 1; // R
-				next[1] = coord[1];
-				lastBorderPx = 5;
-			}
-			else if (comparePixels(b,a)) {
-				next[0] = coord[0] + 1; // RD
-				next[1] = coord[1] + 1;
-				lastBorderPx = 6;
-			}
-			else if (comparePixels(c,b)) {
-				next[0] = coord[0]; // D
-				next[1] = coord[1] + 1;
-				lastBorderPx = 7;
-			}
-			else if (comparePixels(d,c)) {
-				next[0] = coord[0] - 1; // LD
-				next[1] = coord[1] + 1;
-				lastBorderPx = 8;
-			}
-			break;
-		case 4:
-			if (comparePixels(f,e)) {
-				next[0] = coord[0] - 1; // LU
-				next[1] = coord[1] - 1;
-				lastBorderPx = 2;
-			}
-			else if (comparePixels(g,f)) {
-				next[0] = coord[0]; // U
-				next[1] = coord[1] - 1;
-				lastBorderPx = 3;
-			}
-			else if (comparePixels(h,g)) {
-				next[0] = coord[0] + 1; // RU
-				next[1] = coord[1] - 1;
-				lastBorderPx = 4;
-			}
-			else if (comparePixels(a,h)) {
-				next[0] = coord[0] + 1; // R
-				next[1] = coord[1];
-				lastBorderPx = 5;
-			}
-			else if (comparePixels(b,a)) {
-				next[0] = coord[0] + 1; // RD
-				next[1] = coord[1] + 1;
-				lastBorderPx = 6;
-			}
-			else if (comparePixels(c,b)) {
-				next[0] = coord[0]; // D
-				next[1] = coord[1] + 1;
-				lastBorderPx = 7;
-			}
-			else if (comparePixels(d,c)) {
-				next[0] = coord[0] - 1; // LD
-				next[1] = coord[1] + 1;
-				lastBorderPx = 8;
-			}
-			else if (comparePixels(e,d)) {
-				next[0] = coord[0] - 1; // L
-				next[1] = coord[1];
-				lastBorderPx = 1;
-			}
-			break;
-		case 5:
-			if (comparePixels(g,f)) {
-				next[0] = coord[0]; // U
-				next[1] = coord[1] - 1;
-				lastBorderPx = 3;
-			}
-			else if (comparePixels(h,g)) {
-				next[0] = coord[0] + 1; // RU
-				next[1] = coord[1] - 1;
-				lastBorderPx = 4;
-			}
-			else if (comparePixels(a,h)) {
-				next[0] = coord[0] + 1; // R
-				next[1] = coord[1];
-				lastBorderPx = 5;
-			}
-			else if (comparePixels(b,a)) {
-				next[0] = coord[0] + 1; // RD
-				next[1] = coord[1] + 1;
-				lastBorderPx = 6;
-			}
-			else if (comparePixels(c,b)) {
-				next[0] = coord[0]; // D
-				next[1] = coord[1] + 1;
-				lastBorderPx = 7;
-			}
-			else if (comparePixels(d,c)) {
-				next[0] = coord[0] - 1; // LD
-				next[1] = coord[1] + 1;
-				lastBorderPx = 8;
-			}
-			else if (comparePixels(e,d)) {
-				next[0] = coord[0] - 1; // L
-				next[1] = coord[1];
-				lastBorderPx = 1;
-			}
-			else if (comparePixels(f,e)) {
-				next[0] = coord[0] - 1; // LU
-				next[1] = coord[1] - 1;
-				lastBorderPx = 2;
-			}
-			break;
-		case 6:
-			if (comparePixels(h,g)) {
-				next[0] = coord[0] + 1; // RU
-				next[1] = coord[1] - 1;
-				lastBorderPx = 4;
-			}
-			else if (comparePixels(a,h)) {
-				next[0] = coord[0] + 1; // R
-				next[1] = coord[1];
-				lastBorderPx = 5;
-			}
-			else if (comparePixels(b,a)) {
-				next[0] = coord[0] + 1; // RD
-				next[1] = coord[1] + 1;
-				lastBorderPx = 6;
-			}
-			else if (comparePixels(c,b)) {
-				next[0] = coord[0]; // D
-				next[1] = coord[1] + 1;
-				lastBorderPx = 7;
-			}
-			else if (comparePixels(d,c)) {
-				next[0] = coord[0] - 1; // LD
-				next[1] = coord[1] + 1;
-				lastBorderPx = 8;
-			}
-			else if (comparePixels(e,d)) {
-				next[0] = coord[0] - 1; // L
-				next[1] = coord[1];
-				lastBorderPx = 1;
-			}
-			else if (comparePixels(f,e)) {
-				next[0] = coord[0] - 1; // LU
-				next[1] = coord[1] - 1;
-				lastBorderPx = 2;
-			}
-			else if (comparePixels(g,f)) {
-				next[0] = coord[0]; // U
-				next[1] = coord[1] - 1;
-				lastBorderPx = 3;
-			}
-			break;
-		case 7:
-			if (comparePixels(a,h)) {
-				next[0] = coord[0] + 1; // R
-				next[1] = coord[1];
-				lastBorderPx = 5;
-			}
-			else if (comparePixels(b,a)) {
-				next[0] = coord[0] + 1; // RD
-				next[1] = coord[1] + 1;
-				lastBorderPx = 6;
-			}
-			else if (comparePixels(c,b)) {
-				next[0] = coord[0]; // D
-				next[1] = coord[1] + 1;
-				lastBorderPx = 7;
-			}
-			else if (comparePixels(d,c)) {
-				next[0] = coord[0] - 1; // LD
-				next[1] = coord[1] + 1;
-				lastBorderPx = 8;
-			}
-			else if (comparePixels(e,d)) {
-				next[0] = coord[0] - 1; // L
-				next[1] = coord[1];
-				lastBorderPx = 1;
-			}
-			else if (comparePixels(f,e)) {
-				next[0] = coord[0] - 1; // LU
-				next[1] = coord[1] - 1;
-				lastBorderPx = 2;
-			}
-			else if (comparePixels(g,f)) {
-				next[0] = coord[0]; // U
-				next[1] = coord[1] - 1;
-				lastBorderPx = 3;
-			}
-			else if (comparePixels(h,g)) {
-				next[0] = coord[0] + 1; // RU
-				next[1] = coord[1] - 1;
-				lastBorderPx = 4;
-			}
-			break;
-		case 8:
-			if (comparePixels(b,a)) {
-				next[0] = coord[0] + 1; // RD
-				next[1] = coord[1] + 1;
-				lastBorderPx = 6;
-			}
-			else if (comparePixels(c,b)) {
-				next[0] = coord[0]; // D
-				next[1] = coord[1] + 1;
-				lastBorderPx = 7;
-			}
-			else if (comparePixels(d,c)) {
-				next[0] = coord[0] - 1; // LD
-				next[1] = coord[1] + 1;
-				lastBorderPx = 8;
-			}
-			else if (comparePixels(e,d)) {
-				next[0] = coord[0] - 1; // L
-				next[1] = coord[1];
-				lastBorderPx = 1;
-			}
-			else if (comparePixels(f,e)) {
-				next[0] = coord[0] - 1; // LU
-				next[1] = coord[1] - 1;
-				lastBorderPx = 2;
-			}
-			else if (comparePixels(g,f)) {
-				next[0] = coord[0]; // U
-				next[1] = coord[1] - 1;
-				lastBorderPx = 3;
-			}
-			else if (comparePixels(h,g)) {
-				next[0] = coord[0] + 1; // RU
-				next[1] = coord[1] - 1;
-				lastBorderPx = 4;
-			}
-			else if (comparePixels(a,h)) {
-				next[0] = coord[0] + 1; // R
-				next[1] = coord[1];
-				lastBorderPx = 5;
-			}
-			break;
-		default:
-			System.err.println("something wrong with setting next border pixel!!!");
-			break;
-		}
-		
-		return next;
-	}// END getNextBorderPixel()
-	
 	public static boolean[][] floodBorder(Area area, boolean[][] floodArea, int x, int y) {
 		/**
 		 * paint bucket-like algorithm to fill binary map border this filled
@@ -677,7 +316,10 @@ public class Area {
 
 		return floodArea;
 	}// END floodBorder()
-
+	
+	/**
+	 * TESTS: borders/areas
+	 * */
 	static BufferedImage testOut = new BufferedImage(Bloop.sketch.getWidth(), Bloop.sketch.getHeight(), BufferedImage.TYPE_INT_RGB);
 	public static void createWhiteImage(){ 
 		Graphics2D    graphics = testOut.createGraphics();	
@@ -705,13 +347,5 @@ public class Area {
 			System.out.println("ERROR saveBlooprint(): " + ex.getMessage());
 		}
 	}// END saveImg()
-	
-	private static boolean comparePixels(Color a, Color b) {
-		if (Bloop.isMarker(a) && !Bloop.isMarker(b)) {
-			return true;
-		}
-		return false;
-	}//END comparePixels()
-	
 	
 }

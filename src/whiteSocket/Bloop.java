@@ -293,6 +293,13 @@ public class Bloop{
 
 	}//END erase()
 
+	public static boolean comparePixels(Color a, Color b) {
+		if (Bloop.isMarker(a) && !Bloop.isMarker(b)) {
+			return true;
+		}
+		return false;
+	}//END comparePixels()
+
 	public static void printAOI(boolean[][] isHit, String action) throws IOException {
 		/*
 		 * TODO: this method could come in handy for a gui to learn the blooprint system and all its components
@@ -427,7 +434,7 @@ public class Bloop{
 								//	2dArray[y][x]
 //								some[inCoord[1]][inCoord[0]] = true;
 
-								inCoord = Area.getNextBorderPixel(inCoord);
+								inCoord = Border.getNextBorderPixel(inCoord);
 								/*
 								 * set square boundaries of user input area
 								 * */
