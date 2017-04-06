@@ -28,8 +28,7 @@
 
 package whiteSocket;
 
-import whiteSocket.Stretch;
-import whiteSocket.Area;
+import whiteSocket.*;
 
 import java.awt.Color;
 import java.awt.Point;
@@ -136,36 +135,12 @@ public class Bloop{
 
 	    switch(inMode){
 
-			case "calibrate":
-				/*
-				 * WEB DEV NOTE:
-				 *
-				 * user must have option to calibrate at any time.
-				 *
-				 * PROCESS
-				 * Image is captured, image is immediately displayed to client full screen.
-				 * Image will contain image of surface behind whiteboard - this is the raw
-				 * camera capture which includes area beyond what is a writable surface to the user.
-				 * The user then clicks at points just beyond the corners shown in the image.
-				 * The user points must be ON the whiteboard shown in the image.
-				 * USER REQUIREMENT:
-				 * Each point should be able to make a line draw to the
-				 * adjacent 2 points that is undisturbed by the writable area.
-				 * ie - the diagonal is not an undisturbed line because
-				 * you have to pass through the writable area
-				 * */
-
-			    calibrate();
-			    break;
-
 			case "write":
 
 //				loadCalibration();
-				/*
-				 * TODO:
-				 * will place calibrate() here (same with erase)
-				 * */
-				Area.getCornerBlobs();
+				calibrate();
+				
+				
 
 //				areaOfInterest = getLightBorder();
 //
@@ -701,83 +676,109 @@ public class Bloop{
 	}//END setUnitTextbox()
 
 	public static void calibrate() throws Exception{
-		/*
-		 * Sets calibration values to DB
-		 * 
-		 * TODO
-		 * replace getClientUnitClicks() with auto corner blob scan
-		 *
-		 * loads user click data from main application
-		 *
-		 * unit_aax,unit_aay,unit_bbx,unit_bby,unit_ccx,unit_ccy,unit_ddx,unit_ddy
+//		/*
+//		 * Sets calibration values to DB
+//		 * 
+//		 * TODO
+//		 * replace getClientUnitClicks() with auto corner blob scan
+//		 *
+//		 * loads user click data from main application
+//		 *
+//		 * unit_aax,unit_aay,unit_bbx,unit_bby,unit_ccx,unit_ccy,unit_ddx,unit_ddy
+//		 * */
+//		getClientUnitClicks(); // used to get corner points user click
+//
+//
+//		/**
+//		 * these are the user corner clicks translated from the client browser locations
+//		 * to the location on the input sketch - they could be different sizes
+//		 * */
+//		aax = (int)Math.round(unit_aax * (double)sketch.getWidth());
+//		aay = (int)Math.round(unit_aay * (double)sketch.getHeight());
+//		bbx = (int)Math.round(unit_bbx * (double)sketch.getWidth());
+//		bby = (int)Math.round(unit_bby * (double)sketch.getHeight());
+//		ccx = (int)Math.round(unit_ccx * (double)sketch.getWidth());
+//		ccy = (int)Math.round(unit_ccy * (double)sketch.getHeight());
+//		ddx = (int)Math.round(unit_ddx * (double)sketch.getWidth());
+//		ddy = (int)Math.round(unit_ddy * (double)sketch.getHeight());
+//
+//		System.out.println("aax = " + aax);
+//		System.out.println("aay = " + aay);
+//		System.out.println("bbx = " + bbx);
+//		System.out.println("bby = " + bby);
+//		System.out.println("ccx = " + ccx);
+//		System.out.println("ccy = " + ccy);
+//		System.out.println("ddx = " + ddx);
+//		System.out.println("sketch width = " + sketch.getWidth());
+//		System.out.println("sketch height = " + sketch.getHeight());
+//
+//
+//		/*
+//		 * if slopes will equal 0 or INFINITY : move one of the pixels off by 1 just to give it some slope
+//		 * */
+//		if(bbx == ddx) ddx = ddx + 1;
+//		if(ccx == aax) aax = aax - 1;
+//		if(bby == aay) aay = aay - 1;
+//		if(ccy == ddy) ddy = ddy + 1;
+//
+//
+//
+//		topSlope = ((double)bby-(double)aay)/((double)bbx-(double)aax);
+//		bottomSlope = ((double)ddy-(double)ccy)/((double)ddx-(double)ccx);
+//		leftSlope = ((double)ccy-(double)aay)/((double)ccx-(double)aax);
+//		rightSlope 	= ((double)ddy-(double)bby)/((double)ddx-(double)bbx);
+//
+//
+//
+//		/**
+//		 * calibration object uses boolean[][] where true values represent
+//		 * lit projection area on whiteboard
+//		 * */
+//		areaOfInterest = getAreaOfInterestBorder();
+//
+//		int tx = (bbx+aax)/2;
+//		int ty = (bby+aay)/2;
+//		/*
+//		 * TODO: set flood starting point to just below the center point
+//		 * of the top line spanning a and b
+//		 *
+//		 * areaOfInterest = floodBorder(areaOfInterest, X, Y);
+//		 * */
+//		areaOfInterest = Area.floodBorder(null, areaOfInterest, tx, ty+5);
+//
+//		setCorners();
+//		setCenters();
+//
+//		/* TODO
+//		 * saveCalibration() may be deleted since calibration and bloop action will run together
+//		 * */
+//		saveCalibration();
+		
+		
+		
+		/* above: old
+		 * below: keep
 		 * */
-		getClientUnitClicks(); // used to get corner points user click
+		Area.getCornerBlobs(); 
+//		/**
+//		 * calibration object uses boolean[][] where true values represent
+//		 * lit projection area on whiteboard
+//		 * */
+//		areaOfInterest = getAreaOfInterestBorder();
+//
+//		int tx = (bbx+aax)/2;
+//		int ty = (bby+aay)/2;
+//		/*
+//		 * TODO: set flood starting point to just below the center point
+//		 * of the top line spanning a and b
+//		 *
+//		 * areaOfInterest = floodBorder(areaOfInterest, X, Y);
+//		 * */
+//		areaOfInterest = Area.floodBorder(null, areaOfInterest, tx, ty+5);
+//
+//		setCorners();
+//		setCenters();
 
-
-		/**
-		 * these are the user corner clicks translated from the client browser locations
-		 * to the location on the input sketch - they could be different sizes
-		 * */
-		aax = (int)Math.round(unit_aax * (double)sketch.getWidth());
-		aay = (int)Math.round(unit_aay * (double)sketch.getHeight());
-		bbx = (int)Math.round(unit_bbx * (double)sketch.getWidth());
-		bby = (int)Math.round(unit_bby * (double)sketch.getHeight());
-		ccx = (int)Math.round(unit_ccx * (double)sketch.getWidth());
-		ccy = (int)Math.round(unit_ccy * (double)sketch.getHeight());
-		ddx = (int)Math.round(unit_ddx * (double)sketch.getWidth());
-		ddy = (int)Math.round(unit_ddy * (double)sketch.getHeight());
-
-		System.out.println("aax = " + aax);
-		System.out.println("aay = " + aay);
-		System.out.println("bbx = " + bbx);
-		System.out.println("bby = " + bby);
-		System.out.println("ccx = " + ccx);
-		System.out.println("ccy = " + ccy);
-		System.out.println("ddx = " + ddx);
-		System.out.println("sketch width = " + sketch.getWidth());
-		System.out.println("sketch height = " + sketch.getHeight());
-
-
-		/*
-		 * if slopes will equal 0 or INFINITY : move one of the pixels off by 1 just to give it some slope
-		 * */
-		if(bbx == ddx) ddx = ddx + 1;
-		if(ccx == aax) aax = aax - 1;
-		if(bby == aay) aay = aay - 1;
-		if(ccy == ddy) ddy = ddy + 1;
-
-
-
-		topSlope = ((double)bby-(double)aay)/((double)bbx-(double)aax);
-		bottomSlope = ((double)ddy-(double)ccy)/((double)ddx-(double)ccx);
-		leftSlope = ((double)ccy-(double)aay)/((double)ccx-(double)aax);
-		rightSlope 	= ((double)ddy-(double)bby)/((double)ddx-(double)bbx);
-
-
-
-		/**
-		 * calibration object uses boolean[][] where true values represent
-		 * lit projection area on whiteboard
-		 * */
-		areaOfInterest = getAreaOfInterestBorder();
-
-		int tx = (bbx+aax)/2;
-		int ty = (bby+aay)/2;
-		/*
-		 * TODO: set flood starting point to just below the center point
-		 * of the top line spanning a and b
-		 *
-		 * areaOfInterest = floodBorder(areaOfInterest, X, Y);
-		 * */
-		areaOfInterest = Area.floodBorder(null, areaOfInterest, tx, ty+5);
-
-		setCorners();
-		setCenters();
-
-		/* TODO
-		 * saveCalibration() may be deleted since calibration and bloop action will run together
-		 * */
-		saveCalibration();
 	}//END calibrate()
 
 	public static void loadCalibration() throws Exception{

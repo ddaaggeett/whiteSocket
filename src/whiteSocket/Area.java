@@ -67,10 +67,9 @@ public class Area {
 
 		Color pxColor = null;
 
-		here:
-
-		for (int row = 0; row < Bloop.sketch.getHeight(); row++) {
-			for (int col = 0; col < Bloop.sketch.getWidth(); col++) {
+		here1:
+		for (int row = 0; row < Bloop.sketch.getHeight()/2; row++) {
+			for (int col = 0; col < Bloop.sketch.getWidth()/2; col++) {
 				/*
 				 * QUAD #1 - UL
 				 */
@@ -83,8 +82,8 @@ public class Area {
 					
 					System.out.println("found a blob");
 					
-////					_1.add(new Area(xIN,yIN));
-//					Area some = new Area(xIN,yIN);
+////						_1.add(new Area(xIN,yIN));
+//						Area some = new Area(xIN,yIN);
 					
 
 					int[] inCoord = new int[2];
@@ -102,15 +101,133 @@ public class Area {
 							System.out.println("found whole corner blob");
 
 							flag = false;
-							break here;
+							break here1;
 						}
-
 					}
-
 				}
 			}
 		}
 		
+		here2:
+		for (int row = 0; row < Bloop.sketch.getHeight()/2; row++) {
+			for (int col = Bloop.sketch.getWidth()-1; col > Bloop.sketch.getWidth()/2; col--) {
+				/*
+				 * QUAD #2 - UR
+				 */
+				int xIN = col;
+				int yIN = row;
+
+				pxColor = new Color(Bloop.sketch.getRGB(xIN, yIN));
+				if (Bloop.isMarker(pxColor) && !hasBeenHit[yIN][xIN]) {
+					
+					System.out.println("found a blob");
+					
+////						_1.add(new Area(xIN,yIN));
+//						Area some = new Area(xIN,yIN);
+					
+
+					int[] inCoord = new int[2];
+					inCoord[0] = xIN;
+					inCoord[1] = yIN;
+					boolean flag = true;
+					while (flag) {
+
+						// 2dArray[y][x]
+						hasBeenHit[inCoord[1]][inCoord[0]] = true;
+
+						inCoord = getNextBorderPixel(inCoord);
+						
+						if ((inCoord[0] == xIN) && (inCoord[1] == yIN)) {
+							System.out.println("found whole corner blob");
+
+							flag = false;
+							break here2;
+						}
+					}
+				}
+			}
+		}
+		
+		here3:
+		for (int row = Bloop.sketch.getHeight()-1; row > Bloop.sketch.getHeight()/2; row--) {
+			for (int col = 0; col < Bloop.sketch.getWidth()/2; col++) {
+				/*
+				 * QUAD #2 - UR
+				 */
+				int xIN = col;
+				int yIN = row;
+
+				pxColor = new Color(Bloop.sketch.getRGB(xIN, yIN));
+				if (Bloop.isMarker(pxColor) && !hasBeenHit[yIN][xIN]) {
+					
+					System.out.println("found a blob");
+					
+////						_1.add(new Area(xIN,yIN));
+//						Area some = new Area(xIN,yIN);
+					
+
+					int[] inCoord = new int[2];
+					inCoord[0] = xIN;
+					inCoord[1] = yIN;
+					boolean flag = true;
+					while (flag) {
+
+						// 2dArray[y][x]
+						hasBeenHit[inCoord[1]][inCoord[0]] = true;
+
+						inCoord = getNextBorderPixel(inCoord);
+						
+						if ((inCoord[0] == xIN) && (inCoord[1] == yIN)) {
+							System.out.println("found whole corner blob");
+
+							flag = false;
+							break here3;
+						}
+					}
+				}
+			}
+		}
+		
+		here4:
+		for (int row = Bloop.sketch.getHeight()-1; row > Bloop.sketch.getHeight()/2; row--) {
+			for (int col = Bloop.sketch.getWidth()-1; col > Bloop.sketch.getWidth()/2; col--) {
+				/*
+				 * QUAD #2 - UR
+				 */
+				int xIN = col;
+				int yIN = row;
+
+				pxColor = new Color(Bloop.sketch.getRGB(xIN, yIN));
+				if (Bloop.isMarker(pxColor) && !hasBeenHit[yIN][xIN]) {
+					
+					System.out.println("found a blob");
+					
+////						_1.add(new Area(xIN,yIN));
+//						Area some = new Area(xIN,yIN);
+					
+
+					int[] inCoord = new int[2];
+					inCoord[0] = xIN;
+					inCoord[1] = yIN;
+					boolean flag = true;
+					while (flag) {
+
+						// 2dArray[y][x]
+						hasBeenHit[inCoord[1]][inCoord[0]] = true;
+
+						inCoord = getNextBorderPixel(inCoord);
+						
+						if ((inCoord[0] == xIN) && (inCoord[1] == yIN)) {
+							System.out.println("found whole corner blob");
+
+							flag = false;
+							break here4;
+						}
+					}
+				}
+			}
+		}
+			
 		printImgBool(hasBeenHit);
 
 	}// END getCornerBlobs()
