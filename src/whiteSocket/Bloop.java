@@ -602,109 +602,25 @@ public class Bloop{
 	}//END setUnitTextbox()
 
 	public static void calibrate() throws Exception{
-//		/*
-//		 * Sets calibration values to DB
-//		 * 
-//		 * TODO
-//		 * replace getClientUnitClicks() with auto corner blob scan
-//		 *
-//		 * loads user click data from main application
-//		 *
-//		 * unit_aax,unit_aay,unit_bbx,unit_bby,unit_ccx,unit_ccy,unit_ddx,unit_ddy
-//		 * */
-//		getClientUnitClicks(); // used to get corner points user click
-//
-//
-//		/**
-//		 * these are the user corner clicks translated from the client browser locations
-//		 * to the location on the input sketch - they could be different sizes
-//		 * */
-//		aax = (int)Math.round(unit_aax * (double)sketch.getWidth());
-//		aay = (int)Math.round(unit_aay * (double)sketch.getHeight());
-//		bbx = (int)Math.round(unit_bbx * (double)sketch.getWidth());
-//		bby = (int)Math.round(unit_bby * (double)sketch.getHeight());
-//		ccx = (int)Math.round(unit_ccx * (double)sketch.getWidth());
-//		ccy = (int)Math.round(unit_ccy * (double)sketch.getHeight());
-//		ddx = (int)Math.round(unit_ddx * (double)sketch.getWidth());
-//		ddy = (int)Math.round(unit_ddy * (double)sketch.getHeight());
-//
-//		System.out.println("aax = " + aax);
-//		System.out.println("aay = " + aay);
-//		System.out.println("bbx = " + bbx);
-//		System.out.println("bby = " + bby);
-//		System.out.println("ccx = " + ccx);
-//		System.out.println("ccy = " + ccy);
-//		System.out.println("ddx = " + ddx);
-//		System.out.println("sketch width = " + sketch.getWidth());
-//		System.out.println("sketch height = " + sketch.getHeight());
-//
-//
-//		/*
-//		 * if slopes will equal 0 or INFINITY : move one of the pixels off by 1 just to give it some slope
-//		 * */
-//		if(bbx == ddx) ddx = ddx + 1;
-//		if(ccx == aax) aax = aax - 1;
-//		if(bby == aay) aay = aay - 1;
-//		if(ccy == ddy) ddy = ddy + 1;
-//
-//
-//
-//		topSlope = ((double)bby-(double)aay)/((double)bbx-(double)aax);
-//		bottomSlope = ((double)ddy-(double)ccy)/((double)ddx-(double)ccx);
-//		leftSlope = ((double)ccy-(double)aay)/((double)ccx-(double)aax);
-//		rightSlope 	= ((double)ddy-(double)bby)/((double)ddx-(double)bbx);
-//
-//
-//
-//		/**
-//		 * calibration object uses boolean[][] where true values represent
-//		 * lit projection area on whiteboard
-//		 * */
-//		areaOfInterest = getAreaOfInterestBorder();
-//
-//		int tx = (bbx+aax)/2;
-//		int ty = (bby+aay)/2;
-//		/*
-//		 * TODO: set flood starting point to just below the center point
-//		 * of the top line spanning a and b
-//		 *
-//		 * areaOfInterest = floodBorder(areaOfInterest, X, Y);
-//		 * */
-//		areaOfInterest = Area.floodBorder(null, areaOfInterest, tx, ty+5);
-//
-//		setCorners();
-//		setCenters();
-//
-//		/* TODO
-//		 * saveCalibration() may be deleted since calibration and bloop action will run together
-//		 * */
-//		saveCalibration();
-		
-		
-		
-		/* above: old
-		 * below: keep
-		 * */
+		System.out.println("init calibration ...");
 		Area.getLightBounds();
 		
-		areaOfInterest = getLightBorder();
+		areaOfInterest = getAreaOfInterestBorder();
 		Area.printImgBool(areaOfInterest, "AOI");
-//		
-//		System.out.println();
-//
-////		printAOI(areaOfInterest, "border");
-//
-//		/*
-//		 * start flooding right below center of topSlope
-//		 * */
-//		tx = (Stretch.ax+Stretch.cx)/2;
-//		ty = (Stretch.ay+Stretch.cy)/2;
-//
-//		areaOfInterest = Area.floodBorder(null, areaOfInterest, tx, ty+5);
-////		printAOI(areaOfInterest, "fill");
-//
+		
+//		printAOI(areaOfInterest, "border");
+
+		/*
+		 * start flooding right below center of topSlope
+		 * */
+		tx = (Stretch.ax+Stretch.cx)/2;
+		ty = (Stretch.ay+Stretch.cy)/2;
+
+		areaOfInterest = Area.floodBorder(null, areaOfInterest, tx, ty+5);
+//		printAOI(areaOfInterest, "fill");
+
 //		setCorners();
-//		setCenters();
+		setCenters();
 
 	}//END calibrate()
 
@@ -1081,53 +997,6 @@ public class Bloop{
 			System.out.println("ERROR saveBlooprint(): " + ex.getMessage());
 		}
 	}//END saveBlooprint()
-
-	public static boolean[][] getLightBorder() {
-		/**
-		 * dealing with lit projector area on whiteboard
-		 * sets binary border for future use in floodBorder() method
-		 * */
-		boolean[][] border = new boolean[sketch.getHeight()][sketch.getWidth()];
-
-		for(int x = Stretch.ax; x <= Stretch.cx; x++){//left
-
-			double intersect_double = Stretch.cy - (topSlope*Stretch.cx);
-			int intersect = (int) Math.round(intersect_double);
-			double y_double = (topSlope * x) + intersect;
-			int y = (int) Math.round(y_double);
-			border[y][x] = true;
-
-		}
-		for(int x = Stretch.dx; x <= Stretch.bx; x++){//right
-
-			double intersect_double = Stretch.by - (bottomSlope*Stretch.bx);
-			int intersect = (int) Math.round(intersect_double);
-			double y_double = (bottomSlope * x) + intersect;
-			int y = (int) Math.round(y_double);
-			border[y][x] = true;
-
-		}
-		for(int y = Stretch.ay; y <= Stretch.dy; y++){//left
-
-			double intersect_double = Stretch.dy - (leftSlope*Stretch.dx);
-			int intersect = (int) Math.round(intersect_double);
-			double x_double = (y-intersect)/leftSlope;
-			int x = (int) Math.round(x_double);
-			border[y][x] = true;
-
-		}
-		for(int y = Stretch.cy; y <= Stretch.by; y++){//right
-
-			double intersect_double = Stretch.by - (rightSlope*Stretch.bx);
-			int intersect = (int) Math.round(intersect_double);
-			double x_double = (y-intersect)/rightSlope;
-			int x = (int) Math.round(x_double);
-			border[y][x] = true;
-
-		}
-
-		return border;
-	}//END getLightBorder()
 
 	public static boolean[][] getAreaOfInterestBorder() {
 		/**
