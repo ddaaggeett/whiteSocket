@@ -54,17 +54,23 @@ public class Area {
 //		getBorder(this);
 
 	}// END constructor
-
 	
-	public static void getCornerBlobs() throws IOException {
+	public static void getLightBounds() throws IOException {
+		/*
+		 * sets ax, ay, bx, by, cx, cy, dx, dy
+		 * */
 		
 //		ArrayList<Area> _1 = new ArrayList<Area>();
 
-		System.out.println("getCornerBlobs() ...");
+		System.out.println("getLightBounds() ...");
 
 		hasBeenHit = new boolean[Bloop.sketch.getHeight()][Bloop.sketch.getWidth()];
 
 		Color pxColor = null;
+		Border b1 = null;
+		Border b2 = null;
+		Border b3 = null;
+		Border b4 = null;
 
 		here1:
 		for (int row = 0; row < Bloop.sketch.getHeight()/2; row++) {
@@ -72,37 +78,13 @@ public class Area {
 				/*
 				 * QUAD #1 - UL
 				 */
-
 				int xIN = col;
 				int yIN = row;
 
 				pxColor = new Color(Bloop.sketch.getRGB(xIN, yIN));
-				if (Bloop.isMarker(pxColor) && !hasBeenHit[yIN][xIN]) {
-					
-					System.out.println("found a blob");
-					
-////						_1.add(new Area(xIN,yIN));
-//						Area some = new Area(xIN,yIN);
-					
-
-					int[] inCoord = new int[2];
-					inCoord[0] = xIN;
-					inCoord[1] = yIN;
-					boolean flag = true;
-					while (flag) {
-
-						// 2dArray[y][x]
-						hasBeenHit[inCoord[1]][inCoord[0]] = true;
-
-						inCoord = Border.getNextBorderPixel(inCoord);
-						
-						if ((inCoord[0] == xIN) && (inCoord[1] == yIN)) {
-							System.out.println("found whole corner blob");
-
-							flag = false;
-							break here1;
-						}
-					}
+				if (Bloop.isMarker(pxColor) && !hasBeenHit[yIN][xIN]) {					
+					b1 = new Border(xIN,yIN);					
+					break here1;
 				}
 			}
 		}
@@ -117,32 +99,9 @@ public class Area {
 				int yIN = row;
 
 				pxColor = new Color(Bloop.sketch.getRGB(xIN, yIN));
-				if (Bloop.isMarker(pxColor) && !hasBeenHit[yIN][xIN]) {
-					
-					System.out.println("found a blob");
-					
-////						_1.add(new Area(xIN,yIN));
-//						Area some = new Area(xIN,yIN);
-					
-
-					int[] inCoord = new int[2];
-					inCoord[0] = xIN;
-					inCoord[1] = yIN;
-					boolean flag = true;
-					while (flag) {
-
-						// 2dArray[y][x]
-						hasBeenHit[inCoord[1]][inCoord[0]] = true;
-
-						inCoord = Border.getNextBorderPixel(inCoord);
-						
-						if ((inCoord[0] == xIN) && (inCoord[1] == yIN)) {
-							System.out.println("found whole corner blob");
-
-							flag = false;
-							break here2;
-						}
-					}
+				if (Bloop.isMarker(pxColor) && !hasBeenHit[yIN][xIN]) {					
+					b2 = new Border(xIN,yIN);					
+					break here2;
 				}
 			}
 		}
@@ -151,41 +110,14 @@ public class Area {
 		for (int row = Bloop.sketch.getHeight()-1; row > Bloop.sketch.getHeight()/2; row--) {
 			for (int col = 0; col < Bloop.sketch.getWidth()/2; col++) {
 				/*
-				 * QUAD #2 - UR
+				 * QUAD #3 - LL
 				 */
 				int xIN = col;
 				int yIN = row;
 
 				pxColor = new Color(Bloop.sketch.getRGB(xIN, yIN));
-				if (Bloop.isMarker(pxColor) && !hasBeenHit[yIN][xIN]) {
-					
-					new Border(xIN,yIN);
-					
-//					System.out.println("found a blob");
-//					
-//////						_1.add(new Area(xIN,yIN));
-////						Area some = new Area(xIN,yIN);
-//					
-//
-//					int[] inCoord = new int[2];
-//					inCoord[0] = xIN;
-//					inCoord[1] = yIN;
-//					boolean flag = true;
-//					while (flag) {
-//
-//						// 2dArray[y][x]
-//						hasBeenHit[inCoord[1]][inCoord[0]] = true;
-//
-//						inCoord = getNextBorderPixel(inCoord);
-//						
-//						if ((inCoord[0] == xIN) && (inCoord[1] == yIN)) {
-//							System.out.println("found whole corner blob");
-//
-//							flag = false;
-//							break here3;
-//						}
-//					}
-					
+				if (Bloop.isMarker(pxColor) && !hasBeenHit[yIN][xIN]) {					
+					b3 = new Border(xIN,yIN);					
 					break here3;
 				}
 			}
@@ -195,48 +127,39 @@ public class Area {
 		for (int row = Bloop.sketch.getHeight()-1; row > Bloop.sketch.getHeight()/2; row--) {
 			for (int col = Bloop.sketch.getWidth()-1; col > Bloop.sketch.getWidth()/2; col--) {
 				/*
-				 * QUAD #2 - UR
+				 * QUAD #4 - LR
 				 */
 				int xIN = col;
 				int yIN = row;
 
 				pxColor = new Color(Bloop.sketch.getRGB(xIN, yIN));
-				if (Bloop.isMarker(pxColor) && !hasBeenHit[yIN][xIN]) {
-					
-					System.out.println("found a blob");
-					
-////						_1.add(new Area(xIN,yIN));
-//						Area some = new Area(xIN,yIN);
-					
-
-					int[] inCoord = new int[2];
-					inCoord[0] = xIN;
-					inCoord[1] = yIN;
-					boolean flag = true;
-					while (flag) {
-
-						// 2dArray[y][x]
-						hasBeenHit[inCoord[1]][inCoord[0]] = true;
-
-						inCoord = Border.getNextBorderPixel(inCoord);
-						
-						if ((inCoord[0] == xIN) && (inCoord[1] == yIN)) {
-							System.out.println("found whole corner blob");
-
-							flag = false;
-							break here4;
-						}
-					}
+				if (Bloop.isMarker(pxColor) && !hasBeenHit[yIN][xIN]) {					
+					b4 = new Border(xIN,yIN);					
+					break here4;
 				}
 			}
 		}
-			
-		printImgBool(hasBeenHit);
-
-	}// END getCornerBlobs()
-
-	public static boolean[][] getBorder(Area area) {
 		
+		Stretch.ax = b1.xMax;
+		Stretch.ay = b1.yMax;
+		Stretch.bx = b2.xMin;
+		Stretch.by = b2.yMax;
+		Stretch.cx = b3.xMax;
+		Stretch.cy = b3.yMin;
+		Stretch.dx = b4.xMin;
+		Stretch.dy = b4.yMin;
+		
+		Bloop.topSlope = ((double)Stretch.by-(double)Stretch.ay)/((double)Stretch.bx-(double)Stretch.ax);
+		Bloop.bottomSlope = ((double)Stretch.dy-(double)Stretch.cy)/((double)Stretch.dx-(double)Stretch.cx);
+		Bloop.leftSlope = ((double)Stretch.cy-(double)Stretch.ay)/((double)Stretch.cx-(double)Stretch.ax);
+		Bloop.rightSlope = ((double)Stretch.dy-(double)Stretch.by)/((double)Stretch.dx-(double)Stretch.bx);
+		
+		printBorderValues();		
+		printImgBool(hasBeenHit, "border");
+
+	}// END getLightBounds()
+	
+	public static boolean[][] getBorder(Area area) {		
 		System.out.println("getting border ...");
 		/**
 		 * dealing with area drawn by user to erase sets binary map single pixel
@@ -302,8 +225,8 @@ public class Area {
 
 //					Bloop.totalErase[p.y][p.x] = true;
 					hasBeenHit[p.y][p.x] = true;
-					area.area[p.y][p.x] = true;
-					area.pxCount++;
+//					area.area[p.y][p.x] = true;
+//					area.pxCount++;
 
 					queue.add(new Point(p.x + 1, p.y));
 					queue.add(new Point(p.x - 1, p.y));
@@ -320,15 +243,16 @@ public class Area {
 	/**
 	 * TESTS: borders/areas
 	 * */
-	static BufferedImage testOut = new BufferedImage(Bloop.sketch.getWidth(), Bloop.sketch.getHeight(), BufferedImage.TYPE_INT_RGB);
-	public static void createWhiteImage(){ 
+	public static BufferedImage createWhiteImage(){ 
+		BufferedImage testOut = new BufferedImage(Bloop.sketch.getWidth(), Bloop.sketch.getHeight(), BufferedImage.TYPE_INT_RGB);
 		Graphics2D    graphics = testOut.createGraphics();	
 		graphics.setPaint ( Color.white );
-		graphics.fillRect ( 0, 0, testOut.getWidth(), testOut.getHeight() );		
+		graphics.fillRect ( 0, 0, testOut.getWidth(), testOut.getHeight() );
+		return testOut;
 	}//END createWhiteImage
 	
-	public static void printImgBool(boolean[][] some) throws IOException {
-		createWhiteImage();
+	public static void printImgBool(boolean[][] some, String name) throws IOException {
+		BufferedImage testOut = createWhiteImage();
 		for (int row = 0; row < Bloop.sketch.getHeight(); row++) {
 			for (int col = 0; col < Bloop.sketch.getWidth(); col++) {
 				if(some[row][col]) {
@@ -336,16 +260,33 @@ public class Area {
 				}
 			}
 		}
-		saveImg(testOut);
+		saveImg(testOut, name);
 	}//END printImgBool()
 	
-	public static void saveImg(BufferedImage some) throws IOException {
+	public static void saveImg(BufferedImage some, String name) throws IOException {
 		try {
-			File outputfile = new File("./tests/border");
+			File outputfile = new File("./tests/" + name);
 			ImageIO.write(some, "bmp", outputfile);
 		} catch (Exception ex) {
 			System.out.println("ERROR saveBlooprint(): " + ex.getMessage());
 		}
 	}// END saveImg()
+	
+	public static void printBorderValues() {
+		System.out.println("ax = " + Stretch.ax);
+		System.out.println("ay = " + Stretch.ay);
+		System.out.println("bx = " + Stretch.bx);
+		System.out.println("by = " + Stretch.by);
+		System.out.println("cx = " + Stretch.cx);
+		System.out.println("cy = " + Stretch.cy);
+		System.out.println("dx = " + Stretch.dx);
+		System.out.println("dy = " + Stretch.dy);		
+		System.out.println("topSlope = " + Bloop.topSlope);
+		System.out.println("bottomSlope = " + Bloop.bottomSlope);
+		System.out.println("rightSlope = " + Bloop.rightSlope);
+		System.out.println("leftSlope = " + Bloop.leftSlope);
+	}//END printBorderValues()
+
+
 	
 }

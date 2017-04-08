@@ -7,13 +7,13 @@ public class Border {
 	int xMin, xMax, yMin, yMax;
 	static int lastBorderPx = 5;
 	
-	public Border(int xIN, int yIN) {
+	public Border(int xIN, int yIN) {		
+		System.out.println("init border ...");
 		
-		System.out.println("found a blob");
-		
-		////	_1.add(new Area(xIN,yIN));
-		//	Area some = new Area(xIN,yIN);
-		
+		this.xMin = Bloop.sketch.getWidth()-1;
+		this.xMax = 0;
+		this.yMin = Bloop.sketch.getHeight()-1;
+		this.yMax = 0;
 		
 		int[] inCoord = new int[2];
 		inCoord[0] = xIN;
@@ -25,6 +25,11 @@ public class Border {
 			Area.hasBeenHit[inCoord[1]][inCoord[0]] = true;
 		
 			inCoord = getNextBorderPixel(inCoord);
+			
+			if(inCoord[0] > this.xMax) this.xMax = inCoord[0];
+			if(inCoord[0] < this.xMin) this.xMin = inCoord[0];
+			if(inCoord[1] > this.yMax) this.yMax = inCoord[1];
+			if(inCoord[1] < this.yMin) this.yMin = inCoord[1];
 			
 			if ((inCoord[0] == xIN) && (inCoord[1] == yIN)) {
 				System.out.println("found whole corner blob");

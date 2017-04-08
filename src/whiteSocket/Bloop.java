@@ -142,24 +142,6 @@ public class Bloop{
 				
 				
 
-//				areaOfInterest = getLightBorder();
-//
-////				printAOI(areaOfInterest, "border");
-//
-//				/*
-//				 * start flooding right below center of topSlope
-//				 * */
-//				tx = (Stretch.ax+Stretch.cx)/2;
-//				ty = (Stretch.ay+Stretch.cy)/2;
-//
-//				try {
-//					areaOfInterest = Area.floodBorder(null, areaOfInterest, tx, ty+5);
-////					printAOI(areaOfInterest, "fill");
-//
-//				}
-//				catch(Exception e) {
-//					System.out.println("ERROR floodBorder():" + e.getMessage());
-//				}
 //
 //				write();
 //				saveBlooprint();
@@ -307,7 +289,13 @@ public class Bloop{
 		 * */
 		
 		InputStream stream = Bloop.class.getClass().getResourceAsStream("/sketches/calibrate.jpg");
-		BufferedImage ghostBorder = ImageIO.read(stream);
+		BufferedImage ghostBorder = null;
+		if(stream == null) {
+//			ghostBorder = ImageIO.read(new File());
+		}
+		else {
+			ghostBorder = ImageIO.read(stream);
+		}
 
 		try{
 
@@ -329,7 +317,7 @@ public class Bloop{
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				ImageIO.write(ghostBorder, "jpg", baos);
 				InputStream stream2 = new ByteArrayInputStream(baos.toByteArray());
-				File outputfile = new File("./api/calibration/areaOfInterest_filled.jpg");
+				File outputfile = new File("./tests/areaOfInterest_filled.jpg");
 				FileUtils.copyInputStreamToFile(stream2, outputfile);
 			}
 			else if (action == "border"){
@@ -338,7 +326,7 @@ public class Bloop{
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				ImageIO.write(ghostBorder, "jpg", baos);
 				InputStream stream2 = new ByteArrayInputStream(baos.toByteArray());
-				File outputfile = new File("./api/calibration/areaOfInterest.jpg");
+				File outputfile = new File("./tests/areaOfInterest.jpg");
 				FileUtils.copyInputStreamToFile(stream2, outputfile);
 
 			}
@@ -385,99 +373,30 @@ public class Bloop{
 
 	public static int[] zoomToBox() {
 		/*
-		creates a scan area around the box drawn by user in sketch
-		returns xMIN, xMAX, yMIN, yMAX in sketch
-		*/
-		
-		/**
-		 * these value's starting points are backwards in order for the boolean comparisons below to initiate properly
+		 * returns box coordinates wrapping a border
 		 * */
-		int[] some = new int[4];
-		int xmax = 0;
-		int xmin = sketch.getWidth();
-		int ymax = 0;
-		int ymin = sketch.getHeight();
+		Border border = null;
+		int[] box = new int[4];
 
 		here:
+		for(int row = 0; row < sketch.getHeight(); row++){
+			for(int col = 0; col < sketch.getWidth(); col++){
+				int xIN = col;
+				int yIN = row;
+				Color pixel = new Color(sketch.getRGB(xIN,yIN));
+	            if(areaOfInterest[yIN][xIN] && isMarker(pixel)){
+	            	border = new Border(xIN, yIN);
+	            	break here;
+		        }
+			}
+		}
+		
+		box[0] = border.yMin-2;
+		box[1] = border.yMax+2;
+		box[2] = border.xMin-2;
+		box[3] = border.xMax+2;
 
-			for(int row = 0; row < sketch.getHeight(); row++){
-				for(int col = 0; col < sketch.getWidth(); col++){
-
-
-					int xIN = col;
-					int yIN = row;
-
-					/*
-					 * dealing with pixels input by user - sketch
-					 * */
-					Color pixel = new Color(sketch.getRGB(xIN,yIN));
-
-
-		            if(areaOfInterest[yIN][xIN]){
-		            	if(isMarker(pixel)){
-
-			            	System.out.println("xIN = " + xIN);
-			            	System.out.println("yIN = " + yIN);
-
-							System.out.println("\nfound user-drawn border!!!\n");
-
-							/*
-							 * encapsulate eraser area
-							 * */
-							int[] inCoord = new int[2];
-							inCoord[0] = xIN;
-							inCoord[1] = yIN;
-							boolean flag = true;
-							while(flag){
-
-
-								//	2dArray[y][x]
-//								some[inCoord[1]][inCoord[0]] = true;
-
-								inCoord = Border.getNextBorderPixel(inCoord);
-								/*
-								 * set square boundaries of user input area
-								 * */
-								if(inCoord[0] > xmax){
-									xmax = inCoord[0];
-								}
-								if(inCoord[0] < xmin){
-									xmin = inCoord[0];
-								}
-								if(inCoord[1] > ymax){
-									ymax = inCoord[1];
-								}
-								if(inCoord[1] < ymin){
-									ymin = inCoord[1];
-								}
-
-								if((inCoord[0] == xIN) && (inCoord[1] == yIN)){
-									System.out.println("made it all the way around the border");
-
-									flag = false;
-									break here;
-								}
-
-
-							}
-
-
-
-						}
-						else{
-							continue;
-						}
-		            }
-				}
-			}//END outer loop
-
-
-		some[0] = ymin-2;//could be 1 - lol
-		some[1] = ymax+2;
-		some[2] = xmin-2;
-		some[3] = xmax+2;
-
-		return some;
+		return box;
 	}//END zoomToBox()
 
 	public static int[] getScanBoxCorners(int ymin, int ymax, int xmin, int xmax) {
@@ -766,22 +685,23 @@ public class Bloop{
 		/* above: old
 		 * below: keep
 		 * */
-		Area.getCornerBlobs(); 
-//		/**
-//		 * calibration object uses boolean[][] where true values represent
-//		 * lit projection area on whiteboard
-//		 * */
-//		areaOfInterest = getAreaOfInterestBorder();
+		Area.getLightBounds();
+		
+		areaOfInterest = getLightBorder();
+		Area.printImgBool(areaOfInterest, "AOI");
+//		
+//		System.out.println();
 //
-//		int tx = (bbx+aax)/2;
-//		int ty = (bby+aay)/2;
+////		printAOI(areaOfInterest, "border");
+//
 //		/*
-//		 * TODO: set flood starting point to just below the center point
-//		 * of the top line spanning a and b
-//		 *
-//		 * areaOfInterest = floodBorder(areaOfInterest, X, Y);
+//		 * start flooding right below center of topSlope
 //		 * */
+//		tx = (Stretch.ax+Stretch.cx)/2;
+//		ty = (Stretch.ay+Stretch.cy)/2;
+//
 //		areaOfInterest = Area.floodBorder(null, areaOfInterest, tx, ty+5);
+////		printAOI(areaOfInterest, "fill");
 //
 //		setCorners();
 //		setCenters();
@@ -1167,11 +1087,9 @@ public class Bloop{
 		 * dealing with lit projector area on whiteboard
 		 * sets binary border for future use in floodBorder() method
 		 * */
-
 		boolean[][] border = new boolean[sketch.getHeight()][sketch.getWidth()];
 
-
-		for(int x = Stretch.ax; x <= Stretch.cx; x++){//top
+		for(int x = Stretch.ax; x <= Stretch.cx; x++){//left
 
 			double intersect_double = Stretch.cy - (topSlope*Stretch.cx);
 			int intersect = (int) Math.round(intersect_double);
@@ -1180,7 +1098,7 @@ public class Bloop{
 			border[y][x] = true;
 
 		}
-		for(int x = Stretch.dx; x <= Stretch.bx; x++){//bottom
+		for(int x = Stretch.dx; x <= Stretch.bx; x++){//right
 
 			double intersect_double = Stretch.by - (bottomSlope*Stretch.bx);
 			int intersect = (int) Math.round(intersect_double);
@@ -1219,36 +1137,36 @@ public class Bloop{
 
 		boolean[][] border = new boolean[sketch.getHeight()][sketch.getWidth()];
 
-		for(int x = aax; x <= bbx; x++){//top
+		for(int x = Stretch.ax; x <= Stretch.bx; x++){//top
 
-			double intersect_double = bby - (topSlope*bbx);
+			double intersect_double = Stretch.by - (topSlope*Stretch.bx);
 			int intersect = (int) Math.round(intersect_double);
 			double y_double = (topSlope * x) + intersect;
 			int y = (int) Math.round(y_double);
 			border[y][x] = true;
 
 		}
-		for(int x = ccx; x <= ddx; x++){//bottom
+		for(int x = Stretch.cx; x <= Stretch.dx; x++){//bottom
 
-			double intersect_double = ddy - (bottomSlope*ddx);
+			double intersect_double = Stretch.dy - (bottomSlope*Stretch.dx);
 			int intersect = (int) Math.round(intersect_double);
 			double y_double = (bottomSlope * x) + intersect;
 			int y = (int) Math.round(y_double);
 			border[y][x] = true;
 
 		}
-		for(int y = aay; y <= ccy; y++){//left
+		for(int y = Stretch.ay; y <= Stretch.cy; y++){//left
 
-			double intersect_double = ccy - (leftSlope*ccx);
+			double intersect_double = Stretch.cy - (leftSlope*Stretch.cx);
 			int intersect = (int) Math.round(intersect_double);
 			double x_double = (y-intersect)/leftSlope;
 			int x = (int) Math.round(x_double);
 			border[y][x] = true;
 
 		}
-		for(int y = bby; y <= ddy; y++){//right
+		for(int y = Stretch.by; y <= Stretch.dy; y++){//right
 
-			double intersect_double = ddy - (rightSlope*ddx);
+			double intersect_double = Stretch.dy - (rightSlope*Stretch.dx);
 			int intersect = (int) Math.round(intersect_double);
 			double x_double = (y-intersect)/rightSlope;
 			int x = (int) Math.round(x_double);
