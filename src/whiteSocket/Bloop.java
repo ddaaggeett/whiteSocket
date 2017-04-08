@@ -608,18 +608,15 @@ public class Bloop{
 		areaOfInterest = getAreaOfInterestBorder();
 		Area.printImgBool(areaOfInterest, "AOI");
 		
-//		printAOI(areaOfInterest, "border");
-
 		/*
 		 * start flooding right below center of topSlope
 		 * */
-		tx = (Stretch.ax+Stretch.cx)/2;
-		ty = (Stretch.ay+Stretch.cy)/2;
+		tx = (Stretch.ax+Stretch.bx)/2;
+		ty = (Stretch.ay+Stretch.by)/2+5;
+		areaOfInterest = Area.floodBorder(null, areaOfInterest, tx, ty);
 
-		areaOfInterest = Area.floodBorder(null, areaOfInterest, tx, ty+5);
-//		printAOI(areaOfInterest, "fill");
-
-//		setCorners();
+		Area.printImgBool(areaOfInterest, "filled");
+		
 		setCenters();
 
 	}//END calibrate()
@@ -1006,36 +1003,36 @@ public class Bloop{
 
 		boolean[][] border = new boolean[sketch.getHeight()][sketch.getWidth()];
 
-		for(int x = Stretch.ax; x <= Stretch.bx; x++){//top
+		for(int x = Stretch.ax; x <= Stretch.cx; x++){//top
 
-			double intersect_double = Stretch.by - (topSlope*Stretch.bx);
+			double intersect_double = Stretch.cy - (topSlope*Stretch.cx);
 			int intersect = (int) Math.round(intersect_double);
 			double y_double = (topSlope * x) + intersect;
 			int y = (int) Math.round(y_double);
 			border[y][x] = true;
 
 		}
-		for(int x = Stretch.cx; x <= Stretch.dx; x++){//bottom
+		for(int x = Stretch.dx; x <= Stretch.bx; x++){//bottom
 
-			double intersect_double = Stretch.dy - (bottomSlope*Stretch.dx);
+			double intersect_double = Stretch.by - (bottomSlope*Stretch.bx);
 			int intersect = (int) Math.round(intersect_double);
 			double y_double = (bottomSlope * x) + intersect;
 			int y = (int) Math.round(y_double);
 			border[y][x] = true;
 
 		}
-		for(int y = Stretch.ay; y <= Stretch.cy; y++){//left
+		for(int y = Stretch.ay; y <= Stretch.dy; y++){//left
 
-			double intersect_double = Stretch.cy - (leftSlope*Stretch.cx);
+			double intersect_double = Stretch.dy - (leftSlope*Stretch.dx);
 			int intersect = (int) Math.round(intersect_double);
 			double x_double = (y-intersect)/leftSlope;
 			int x = (int) Math.round(x_double);
 			border[y][x] = true;
 
 		}
-		for(int y = Stretch.by; y <= Stretch.dy; y++){//right
+		for(int y = Stretch.cy; y <= Stretch.by; y++){//right
 
-			double intersect_double = Stretch.dy - (rightSlope*Stretch.dx);
+			double intersect_double = Stretch.by - (rightSlope*Stretch.bx);
 			int intersect = (int) Math.round(intersect_double);
 			double x_double = (y-intersect)/rightSlope;
 			int x = (int) Math.round(x_double);

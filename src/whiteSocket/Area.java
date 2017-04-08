@@ -142,17 +142,17 @@ public class Area {
 		
 		Stretch.ax = b1.xMax;
 		Stretch.ay = b1.yMax;
-		Stretch.bx = b2.xMin;
-		Stretch.by = b2.yMax;
-		Stretch.cx = b3.xMax;
-		Stretch.cy = b3.yMin;
-		Stretch.dx = b4.xMin;
-		Stretch.dy = b4.yMin;
+		Stretch.cx = b2.xMin;
+		Stretch.cy = b2.yMax;
+		Stretch.dx = b3.xMax;
+		Stretch.dy = b3.yMin;
+		Stretch.bx = b4.xMin;
+		Stretch.by = b4.yMin;
 		
-		Bloop.topSlope = ((double)Stretch.by-(double)Stretch.ay)/((double)Stretch.bx-(double)Stretch.ax);
-		Bloop.bottomSlope = ((double)Stretch.dy-(double)Stretch.cy)/((double)Stretch.dx-(double)Stretch.cx);
-		Bloop.leftSlope = ((double)Stretch.cy-(double)Stretch.ay)/((double)Stretch.cx-(double)Stretch.ax);
-		Bloop.rightSlope = ((double)Stretch.dy-(double)Stretch.by)/((double)Stretch.dx-(double)Stretch.bx);
+		Bloop.topSlope = ((double)Stretch.cy-(double)Stretch.ay)/((double)Stretch.cx-(double)Stretch.ax);
+		Bloop.bottomSlope = ((double)Stretch.dy-(double)Stretch.by)/((double)Stretch.dx-(double)Stretch.bx);
+		Bloop.leftSlope = ((double)Stretch.dy-(double)Stretch.ay)/((double)Stretch.dx-(double)Stretch.ax);
+		Bloop.rightSlope = ((double)Stretch.cy-(double)Stretch.by)/((double)Stretch.cx-(double)Stretch.bx);
 		
 		printBorderValues();		
 		printImgBool(hasBeenHit, "border");
@@ -211,30 +211,25 @@ public class Area {
 		 */
 
 		if (!floodArea[y][x]) {
+			
+		    Queue<Point> queue = new LinkedList<Point>();
+		    queue.add(new Point(x, y));
 
-			Queue<Point> queue = new LinkedList<Point>();
-			queue.add(new Point(x, y));
+		    while (!queue.isEmpty()) {
 
-			while (!queue.isEmpty()) {
+		    	Point p = queue.remove();
 
-				Point p = queue.remove();
+	        	if (!floodArea[p.y][p.x]) {
 
-				if (!floodArea[p.y][p.x]) {
+	            	floodArea[p.y][p.x] = true;
 
-					floodArea[p.y][p.x] = true;
+	                queue.add(new Point(p.x + 1, p.y));
+	                queue.add(new Point(p.x - 1, p.y));
+	                queue.add(new Point(p.x, p.y + 1));
+	                queue.add(new Point(p.x, p.y - 1));
 
-//					Bloop.totalErase[p.y][p.x] = true;
-					hasBeenHit[p.y][p.x] = true;
-//					area.area[p.y][p.x] = true;
-//					area.pxCount++;
-
-					queue.add(new Point(p.x + 1, p.y));
-					queue.add(new Point(p.x - 1, p.y));
-					queue.add(new Point(p.x, p.y + 1));
-					queue.add(new Point(p.x, p.y - 1));
-
-				}
-			}
+	            }
+		    }
 		}
 
 		return floodArea;
