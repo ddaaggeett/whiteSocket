@@ -136,61 +136,40 @@ public class Bloop{
 	    switch(inMode){
 
 			case "write":
+				calibrate();
+				write();
+				saveBlooprint();
+				break;
 
-//				loadCalibration();
+			case "erase":
 				calibrate();
 				
+				Color pxColor = null;
 				
-
-//
-//				write();
-//				saveBlooprint();
+				for (int row = 0; row < sketch.getHeight(); row++){
+					for(int col = 0; col < sketch.getWidth(); col++){
+						
+						pxColor = new Color(sketch.getRGB(col,row));
+						
+						/*
+						 * TODO:
+						 * !totalErase[][] - to make sure the pixel isn't yet considered as an eraser pixel 
+						 * */
+						if(areaOfInterest[row][col] && isMarker(pxColor) && !totalErase[row][col]){
+							
+							eraseAreas.add(new Area(col,row));
+							
+						}
+						
+					}
+				}
+				
+				for (Area some : eraseAreas) {	
+					erase(some.area);
+				}
+				
+				saveBlooprint();
 				break;
-//
-//			case "erase":
-//				/**
-//				*	purpose: save updated blooprint image to DB
-//				**/
-//				loadCalibration();
-//
-//				areaOfInterest = getLightBorder();
-//
-//				/*
-//				 * start flooding right below center of topSlope
-//				 * */
-//				tx = (Stretch.ax+Stretch.cx)/2;
-//				ty = (Stretch.ay+Stretch.cy)/2;
-//
-//				try {
-//					areaOfInterest = Area.floodBorder(null, areaOfInterest, tx, ty+5);
-////					printAOI(areaOfInterest, "fill");
-//				}
-//				catch(Exception e) {
-//					System.out.println("ERROR floodBorder():" + e.getMessage());
-//				}
-//				
-//				Color pxColor = null;
-//				
-//				for (int row = 0; row < sketch.getHeight(); row++){
-//					for(int col = 0; col < sketch.getWidth(); col++){
-//						
-//						pxColor = new Color(sketch.getRGB(col,row));
-//						
-//						if(areaOfInterest[row][col] && isMarker(pxColor) && !totalErase[row][col]){
-//							
-//							eraseAreas.add(new Area(col,row));
-//							
-//						}
-//						
-//					}
-//				}
-//				
-//				for (Area some : eraseAreas) {	
-//					erase(some.area);
-//				}
-//				
-//				saveBlooprint();
-//				break;
 
 
 			default:
