@@ -42,16 +42,18 @@ public class Area {
 
 	int startX, startY, pxCount, minX, maxX, minY, maxY;
 	boolean[][] area;
+	public static boolean[][] totalErase = null;// = new boolean[Bloop.sketch.getHeight()][Bloop.sketch.getWidth()];
 	
 	static boolean[][] hasBeenHit;
 
-	public Area(int x, int y) {
+	public Area(int x, int y) throws IOException {
 
 		this.startX = x;
 		this.startY = y;
 		this.area = new boolean[Bloop.sketch.getHeight()][Bloop.sketch.getWidth()];
 		this.area = floodBorder(this, getBorder(this), this.startX, this.startY + 2);
-//		getBorder(this);
+		
+		printImgBool(this.area, "butt");
 
 	}// END constructor
 	
@@ -140,26 +142,26 @@ public class Area {
 			}
 		}
 		
-		Stretch.ax = b1.xMax;
-		Stretch.ay = b1.yMax;
-		Stretch.cx = b2.xMin;
-		Stretch.cy = b2.yMax;
-		Stretch.dx = b3.xMax;
-		Stretch.dy = b3.yMin;
-		Stretch.bx = b4.xMin;
-		Stretch.by = b4.yMin;
+		Stretch.ax = b1.xMax + 1;
+		Stretch.ay = b1.yMax + 1;
+		Stretch.cx = b2.xMin - 1;
+		Stretch.cy = b2.yMax + 1;
+		Stretch.dx = b3.xMax + 1;
+		Stretch.dy = b3.yMin - 1;
+		Stretch.bx = b4.xMin - 1;
+		Stretch.by = b4.yMin - 1;
 		
 		Bloop.topSlope = ((double)Stretch.cy-(double)Stretch.ay)/((double)Stretch.cx-(double)Stretch.ax);
 		Bloop.bottomSlope = ((double)Stretch.dy-(double)Stretch.by)/((double)Stretch.dx-(double)Stretch.bx);
 		Bloop.leftSlope = ((double)Stretch.dy-(double)Stretch.ay)/((double)Stretch.dx-(double)Stretch.ax);
 		Bloop.rightSlope = ((double)Stretch.cy-(double)Stretch.by)/((double)Stretch.cx-(double)Stretch.bx);
 		
-		printBorderValues();		
-		printImgBool(hasBeenHit, "border");
+//		printBorderValues();		
+		printImgBool(hasBeenHit, "corners");
 
 	}// END getLightBounds()
 	
-	public static boolean[][] getBorder(Area area) {		
+	public static boolean[][] getBorder(Area area) throws IOException {		
 		System.out.println("getting border ...");
 		/**
 		 * dealing with area drawn by user to erase sets binary map single pixel
@@ -183,7 +185,7 @@ public class Area {
 			
 			hasBeenHit[inCoord[1]][inCoord[0]] = true;
 			
-//			Bloop.totalErase[inCoord[1]][inCoord[0]] = true;
+			totalErase[inCoord[1]][inCoord[0]] = true;
 			
 			// 2dArray[y][x]
 			border[inCoord[1]][inCoord[0]] = true;
@@ -222,6 +224,9 @@ public class Area {
 	        	if (!floodArea[p.y][p.x]) {
 
 	            	floodArea[p.y][p.x] = true;
+	            	
+//	            	System.out.println("totalErase = " + totalErase);
+	            	if (totalErase != null) totalErase[p.y][p.x] = true;
 
 	                queue.add(new Point(p.x + 1, p.y));
 	                queue.add(new Point(p.x - 1, p.y));
@@ -251,7 +256,7 @@ public class Area {
 		for (int row = 0; row < Bloop.sketch.getHeight(); row++) {
 			for (int col = 0; col < Bloop.sketch.getWidth(); col++) {
 				if(some[row][col]) {
-					testOut.setRGB(col, row, 0x000000);
+					testOut.setRGB(col, row, 0);
 				}
 			}
 		}

@@ -71,14 +71,15 @@ import java.io.FileReader;
 import org.apache.commons.io.FileUtils;
 
 public class Bloop{
-	
+
+	private static boolean debug = true;
 	
 	public static ArrayList<Area> eraseAreas = null;
 	/* TODO
 	 * little redundant, but can fix later
 	 * */
 	public static boolean[][] totalErase = null;
-	
+
 	public static String title = "";	//	sketch image name (timestamp)
 	public static String inMode = "";	//	write/erase/calibrate
 	public static String writeColor = "black";  //	default black
@@ -87,7 +88,6 @@ public class Bloop{
 	public static BufferedImage blooprint;
 
 	public static double topSlope,bottomSlope,leftSlope,rightSlope;
-
 
 	public static int aax,aay,bbx,bby,ccx,ccy,ddx,ddy;
 
@@ -109,8 +109,10 @@ public class Bloop{
 	public static String calibrationFile = "/calibration/calibration.json";
 	public static String unitClicksFile = "/calibration/unitClicks.json";
 	public static String blooprintLoc = "/blooprints/";
+//	public static String blooprintLoc = "/tests/blooprints/";
 	public static String blooprintFile = "";
-	public static String sketchLoc = "/sketches/";
+//	public static String sketchLoc = "/sketches/";
+	public static String sketchLoc = "/tests/";
 	public static String sketchFile = "";
 	public static String test_sketch = "";
 	public static String test_image = "";
@@ -118,19 +120,20 @@ public class Bloop{
 	public static void main(String[] args) throws Exception{
 
 		title = args[0];
-		
+
 		test_sketch = "./tests/" + args[0] + ".jpg";
 		test_image = "./tests/blooprints/" + args[1] + ".jpg";
 
 		sketchFile = sketchLoc + title + ".jpg";
 
 		blooprintFile = blooprintLoc + args[1] + ".jpg";
-
+		
 		inMode = args[2];
 
 		markerHex = Integer.parseInt(args[3],16);
+		System.out.println("marker decimal value = " + markerHex);
 
-		if(args[1] != "null") blooprint = loadBlooprint();
+		if(args[1] != null) blooprint = loadBlooprint();
 		sketch = loadSketch();
 
 	    switch(inMode){
@@ -144,36 +147,33 @@ public class Bloop{
 			case "erase":
 				calibrate();
 				
+				eraseAreas = new ArrayList<Area>();
+				Area.totalErase = new boolean[sketch.getHeight()][sketch.getWidth()];
+
 				Color pxColor = null;
-				
 				for (int row = 0; row < sketch.getHeight(); row++){
 					for(int col = 0; col < sketch.getWidth(); col++){
-						
+
 						pxColor = new Color(sketch.getRGB(col,row));
-						
 						/*
 						 * TODO:
-						 * !totalErase[][] - to make sure the pixel isn't yet considered as an eraser pixel 
+						 * !totalErase[][] - to make sure the pixel isn't yet considered as an eraser pixel
 						 * */
-						if(areaOfInterest[row][col] && isMarker(pxColor) && !totalErase[row][col]){
-							
+						if(areaOfInterest[row][col] && isMarker(pxColor) && !Area.totalErase[row][col]){
 							eraseAreas.add(new Area(col,row));
-							
 						}
-						
 					}
 				}
-				
-				for (Area some : eraseAreas) {	
+
+				for (Area some : eraseAreas) {
 					erase(some.area);
 				}
-				
+
 				saveBlooprint();
 				break;
 
-
 			default:
-				return;
+				break;
 		}
 
 
@@ -184,7 +184,7 @@ public class Bloop{
 		 * bloop blooprint.image pixel location intended by user bloop action
 		 * sets Color.RED,BLUE,GREEN according to user intension
 		 * */
-		
+
 		System.out.println("writing......");
 
 
@@ -223,7 +223,7 @@ public class Bloop{
 		/**
 		 * erase the area found inside the outer border of marker line drawn
 		 * */
-		
+
 		System.out.println("erasing......");
 
 
@@ -261,68 +261,11 @@ public class Bloop{
 		return false;
 	}//END comparePixels()
 
-	public static void printAOI(boolean[][] isHit, String action) throws IOException {
-		/*
-		 * TODO: this method could come in handy for a gui to learn the blooprint system and all its components
-		 * this method exists to display that we're examining the correct AREA OF INTEREST in sketch image	 *
-		 * */
-		
-		InputStream stream = Bloop.class.getClass().getResourceAsStream("/sketches/calibrate.jpg");
-		BufferedImage ghostBorder = null;
-		if(stream == null) {
-//			ghostBorder = ImageIO.read(new File());
-		}
-		else {
-			ghostBorder = ImageIO.read(stream);
-		}
-
-		try{
-
-//			BufferedImage ghostBorder = ImageIO.read(Bloop.class.getClass().getResourceAsStream("/sketches/calibrate.jpg"));
-
-			for (int row = 0; row < ghostBorder.getHeight(); row ++){
-				for (int col = 0; col < ghostBorder.getWidth(); col++){
-
-					if(isHit[row][col]){
-						ghostBorder.setRGB(col, row, 0x000000);//turn black
-					}
-
-				}
-			}
-
-			if(action == "fill"){
-//				ImageIO.write(ghostBorder, "jpg", new File("/blooprints/areaOfInterest_filled.jpg"));
-
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				ImageIO.write(ghostBorder, "jpg", baos);
-				InputStream stream2 = new ByteArrayInputStream(baos.toByteArray());
-				File outputfile = new File("./tests/areaOfInterest_filled.jpg");
-				FileUtils.copyInputStreamToFile(stream2, outputfile);
-			}
-			else if (action == "border"){
-//				ImageIO.write(ghostBorder, "jpg", new File("/blooprints/areaOfInterest.jpg"));
-
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				ImageIO.write(ghostBorder, "jpg", baos);
-				InputStream stream2 = new ByteArrayInputStream(baos.toByteArray());
-				File outputfile = new File("./tests/areaOfInterest.jpg");
-				FileUtils.copyInputStreamToFile(stream2, outputfile);
-
-			}
-
-
-		}
-		catch(Exception e){
-			System.out.println(e);
-		}
-
-	}//END printAOI()
-
 	public static void getClientUnitClicks() throws Exception{
 		/*
 		 * get client side selected points just outside lit corners
 		 * */
-		
+
 		JSONParser parser = new JSONParser();
 		InputStream stream = null;
 		JSONObject unitObject = null;
@@ -369,7 +312,7 @@ public class Bloop{
 		        }
 			}
 		}
-		
+
 		box[0] = border.yMin-2;
 		box[1] = border.yMax+2;
 		box[2] = border.xMin-2;
@@ -525,7 +468,7 @@ public class Bloop{
 		/*
 		returns Rectangle to  -> x,y,width,height
 		*/
-		
+
 		Rectangle rect = new Rectangle();
 		int x = corners[0];
 		int y = corners[1];
@@ -583,10 +526,10 @@ public class Bloop{
 	public static void calibrate() throws Exception{
 		System.out.println("init calibration ...");
 		Area.getLightBounds();
-		
+
 		areaOfInterest = getAreaOfInterestBorder();
-		Area.printImgBool(areaOfInterest, "AOI");
-		
+		Area.printImgBool(areaOfInterest, "aoi-border");
+
 		/*
 		 * start flooding right below center of topSlope
 		 * */
@@ -594,8 +537,8 @@ public class Bloop{
 		ty = (Stretch.ay+Stretch.by)/2+5;
 		areaOfInterest = Area.floodBorder(null, areaOfInterest, tx, ty);
 
-		Area.printImgBool(areaOfInterest, "filled");
-		
+		Area.printImgBool(areaOfInterest, "aoi-fill");
+
 		setCenters();
 
 	}//END calibrate()
@@ -887,7 +830,7 @@ public class Bloop{
 	public static BufferedImage loadBlooprint() throws IOException {
 		/**
 		 * load image from DB table - either an input sketch or a compiled blooprint image
-		 *	sketch arg = "null"
+		 *	sketch areg = "null"
 		 * BLOB object to binary stream to BufferedImage object
 		 * */
 		System.out.println("loadBlooprint() from " + blooprintFile);
@@ -898,7 +841,9 @@ public class Bloop{
 			 * http://stackoverflow.com/questions/39081215/access-a-resource-outside-a-jar-from-the-jar
 			 * */
 //			stream = Bloop.class.getClass().getResourceAsStream(blooprintFile);
-			if ( stream == null ) { 
+			stream = null;
+			if ( stream == null ) {
+				System.out.println("loading blooprint as test image");
 				some = ImageIO.read(new File(test_image));
 				return some;
 			}
@@ -909,7 +854,7 @@ public class Bloop{
 			System.out.println("error blooprint to stream: " + e.getMessage());
 		}
 		try{
-			
+
 			some = ImageIO.read(stream);
 		}catch(Exception exc){
 			exc.getMessage();
@@ -931,8 +876,13 @@ public class Bloop{
 			 * http://stackoverflow.com/questions/39081215/access-a-resource-outside-a-jar-from-the-jar
 			 * */
 //			stream = Bloop.class.getClass().getResourceAsStream(sketchFile);
-			if ( stream == null ) { 
+			stream = null;
+			if ( stream == null ) {
 				some = ImageIO.read(new File(test_sketch));
+				Stretch.fx = some.getWidth()-1;
+				Stretch.gx = some.getWidth()-1;
+				Stretch.fy = some.getHeight()-1;
+				Stretch.hy = some.getHeight()-1;
 				return some;
 			}
 			System.out.println("sketch stream = "+ stream );
@@ -955,17 +905,18 @@ public class Bloop{
 	}//END loadSketch()
 
 	public static void saveBlooprint() throws IOException {
-		/**
-		 * DB table is updated with added image of latest blooprint image state
-		 * */
-
 		System.out.println("saveBlooprint()...");
 
 		try{
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ImageIO.write(blooprint, "jpg", baos);
 			InputStream stream = new ByteArrayInputStream(baos.toByteArray());
-			File outputfile = new File("./api/blooprints/"+title+".jpg");
+			File outputfile = null;
+			if(debug) {
+				outputfile = new File("./tests/blooprints/"+title+".jpg");
+			} else {				
+				outputfile = new File("./api/blooprints/"+title+".jpg");
+			}
 			FileUtils.copyInputStreamToFile(stream, outputfile);
 //		    ImageIO.write(blooprint, "jpg", outputfile);
 
@@ -1039,4 +990,5 @@ public class Bloop{
 		return false;
 	}//END isMarker()
 
+	
 }
