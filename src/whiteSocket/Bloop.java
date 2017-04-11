@@ -58,13 +58,6 @@ import java.util.Queue;
 
 import javax.imageio.ImageIO;
 
-
-import org.json.simple.JSONObject;
-import org.json.simple.JSONArray;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-
 import java.io.FileReader;
 //import java.util.Iterator;
 
@@ -260,38 +253,6 @@ public class Bloop{
 		}
 		return false;
 	}//END comparePixels()
-
-	public static void getClientUnitClicks() throws Exception{
-		/*
-		 * get client side selected points just outside lit corners
-		 * */
-
-		JSONParser parser = new JSONParser();
-		InputStream stream = null;
-		JSONObject unitObject = null;
-
-
-		try {
-
-			stream = Bloop.class.getClass().getResourceAsStream(unitClicksFile);
-			unitObject = (JSONObject)parser.parse(new InputStreamReader(stream, "UTF-8"));
-			System.out.println("unitClicks stream = "+ stream );
-
-			unit_aax = (Double) unitObject.get("unit_ulx");
-			unit_aay = (Double) unitObject.get("unit_uly");
-			unit_bbx = (Double) unitObject.get("unit_urx");
-			unit_bby = (Double) unitObject.get("unit_ury");
-			unit_ccx = (Double) unitObject.get("unit_llx");
-			unit_ccy = (Double) unitObject.get("unit_lly");
-			unit_ddx = (Double) unitObject.get("unit_lrx");
-			unit_ddy = (Double) unitObject.get("unit_lry");
-
-
-        } catch (Exception e) {
-        	System.out.println("ERROR getUnitClientClick(): " + e.getMessage());
-        }
-
-	}//END getClientUnitClicks()
 
 	public static int[] zoomToBox() {
 		/*
@@ -542,131 +503,6 @@ public class Bloop{
 		setCenters();
 
 	}//END calibrate()
-
-	public static void loadCalibration() throws Exception{
-		/*
-		 *	calibration data is to be used every write/erase
-		 */
-
-		JSONParser parser = new JSONParser();
-		JSONObject obj = null;
-		InputStream stream = null;
-
-        try {
-
-        	stream = Bloop.class.getClass().getResourceAsStream(calibrationFile);
-			obj = (JSONObject)parser.parse(new InputStreamReader(stream, "UTF-8"));
-			System.out.println("load calibration stream = "+ stream );
-
-			Stretch.ax = (int)(long) obj.get("ax");
-			Stretch.ay = (int)(long) obj.get("ay");
-			Stretch.bx = (int)(long) obj.get("bx");
-			Stretch.by = (int)(long) obj.get("by");
-			Stretch.cx = (int)(long) obj.get("cx");
-			Stretch.cy = (int)(long) obj.get("cy");
-			Stretch.dx = (int)(long) obj.get("dx");
-			Stretch.dy = (int)(long) obj.get("dy");
-			Stretch.fx = (int)(long) obj.get("fx");
-			Stretch.fy = (int)(long) obj.get("fy");
-			Stretch.gx = (int)(long) obj.get("gx");
-			Stretch.hy = (int)(long) obj.get("hy");
-			aax = (int)(long) obj.get("aax");
-			aay = (int)(long) obj.get("aay");
-			bbx = (int)(long) obj.get("bbx");
-			bby = (int)(long) obj.get("bby");
-			ccx = (int)(long) obj.get("ccx");
-			ccy = (int)(long) obj.get("ccy");
-			ddx = (int)(long) obj.get("ddx");
-			ddy = (int)(long) obj.get("ddy");
-			Stretch.mA = (Double) obj.get("mA");
-			Stretch.mB = (Double) obj.get("mB");
-			Stretch.mC = (Double) obj.get("mC");
-			Stretch.mD = (Double) obj.get("mD");
-			Stretch.xCenterIN = (Double) obj.get("xCenterIN");
-			Stretch.yCenterIN = (Double) obj.get("yCenterIN");
-			Stretch.xCenterOUT = (Double) obj.get("xCenterOUT");
-			Stretch.yCenterOUT = (Double) obj.get("yCenterOUT");
-			unit_aax = (Double) obj.get("unit_aax");
-			unit_aay = (Double) obj.get("unit_aay");
-			unit_bbx = (Double) obj.get("unit_bbx");
-			unit_bby = (Double) obj.get("unit_bby");
-			unit_ccx = (Double) obj.get("unit_ccx");
-			unit_ccy = (Double) obj.get("unit_ccy");
-			unit_ddx = (Double) obj.get("unit_ddx");
-			unit_ddy = (Double) obj.get("unit_ddy");
-
-        } catch (Exception e) {
-            System.out.println("ERROR loadCalibration(): " + e.getMessage());
-        }
-
-		topSlope 	= ((double)Stretch.cy-(double)Stretch.ay)/((double)Stretch.cx-(double)Stretch.ax);
-		bottomSlope = ((double)Stretch.dy-(double)Stretch.by)/((double)Stretch.dx-(double)Stretch.bx);
-		leftSlope 	= ((double)Stretch.ay-(double)Stretch.dy)/((double)Stretch.ax-(double)Stretch.dx);
-		rightSlope 	= ((double)Stretch.cy-(double)Stretch.by)/((double)Stretch.cx-(double)Stretch.bx);
-
-	}//END loadCalibration()
-
-	public static void saveCalibration() throws Exception {
-		/**
-		 * User convenience calibration information saved for load next program start
-		 * */
-
-		System.out.println("saveCalibration()...");
-		JSONObject obj = new JSONObject();
-//		FileWriter file = null;
-
-		try{
-
-			obj.put("ax", Stretch.ax);
-			obj.put("ay", Stretch.ay);
-			obj.put("bx", Stretch.bx);
-			obj.put("cx", Stretch.cx);
-			obj.put("by", Stretch.by);
-			obj.put("cy", Stretch.cy);
-			obj.put("dx", Stretch.dx);
-			obj.put("dy", Stretch.dy);
-			obj.put("fx", Stretch.fx);
-			obj.put("fy", Stretch.fy);
-			obj.put("gx", Stretch.gx);
-			obj.put("hy", Stretch.hy);
-			obj.put("aax", aax);
-			obj.put("aay", aay);
-			obj.put("bbx", bbx);
-			obj.put("bby", bby);
-			obj.put("ccx", ccx);
-			obj.put("ccy", ccy);
-			obj.put("ddx", ddx);
-			obj.put("ddy", ddy);
-			obj.put("unit_aax", unit_aax);
-			obj.put("unit_aay", unit_aay);
-			obj.put("unit_bbx", unit_bbx);
-			obj.put("unit_bby", unit_bby);
-			obj.put("unit_ccx", unit_ccx);
-			obj.put("unit_ccy", unit_ccy);
-			obj.put("unit_ddx", unit_ddx);
-			obj.put("unit_ddy", unit_ddy);
-			obj.put("mA", Stretch.mA);
-			obj.put("mB", Stretch.mB);
-			obj.put("mC", Stretch.mC);
-			obj.put("mD", Stretch.mD);
-			obj.put("xCenterIN", Stretch.xCenterIN);
-			obj.put("yCenterIN", Stretch.yCenterIN);
-			obj.put("xCenterOUT", Stretch.xCenterOUT);
-			obj.put("yCenterOUT", Stretch.yCenterOUT);
-
-		}catch(Exception ex){
-			System.out.println("ERROR assembling calibration JSON Object: " + ex.getMessage());
-		}
-
-		try {
-			System.out.println("writing calibration to file");
-			FileUtils.writeStringToFile(new File("./api/calibration/calibration.json"),obj.toJSONString(),"UTF-8");
-		}
-		catch(Exception e){
-			System.out.println("ERROR saveCalibration() - writing JSON to file: " + e.getMessage());
-		}
-
-	}//END saveCalibration()
 
 	public static void setCorners() {
 		/**

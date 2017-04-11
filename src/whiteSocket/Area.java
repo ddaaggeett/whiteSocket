@@ -52,8 +52,6 @@ public class Area {
 		this.startY = y;
 		this.area = new boolean[Bloop.sketch.getHeight()][Bloop.sketch.getWidth()];
 		this.area = floodBorder(this, getBorder(this), this.startX, this.startY + 2);
-		
-		printImgBool(this.area, "butt");
 
 	}// END constructor
 	
