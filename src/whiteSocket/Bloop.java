@@ -111,6 +111,8 @@ public class Bloop{
 	public static String test_image = "";
 
 	public static void main(String[] args) throws Exception{
+		
+		System.out.println("****************\nYou are using Blooprint software.\nPlease refer to our whiteSocket license here:\nhttp://github.com/blooprint/whiteSocket/blob/master/LICENSE\n****************");
 
 		title = args[0];
 
