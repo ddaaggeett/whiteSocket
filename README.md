@@ -2,32 +2,24 @@ non-technical page [**here**](https://github.com/blooprint/blooprint/wiki)
 
 whiteSocket is an executable jar file which generates an image diff upon execution. A single diff's record consists of either added or erased pixels of displayed whiteboard content. The output image is the printed copy of the applied diff to the previous version.
 
-    java -jar whiteSocket.jar <output/timestamp> <input image> <mode> <color>
+    java -jar whiteSocket.jar <timestamp> <branching image> <mode> <color>
 
-## timestamp - output image title
+## timestamp - output image id
 `2017019234910931`
 
-## input branching image title
+## branching image id
 `2016010753850931` image file to process (2016010753850931.bmp or jpg). This image is the current version about to be archived by completion on this jar executable. Output saves to same directory.
 
 ## mode
 
 #### write
 
-User adds marker and executes **write**.
-
-	java -jar whiteSocket.jar <timestamp> <input> write <color>
-
-Returns output image.
+User adds marker and executes `**write**`. Returns output image.
 
 #### erase
 
-User draws encapsulating areas and executes **erase**.
+User draws encapsulating areas and executes `**erase**`. Returns output image.
 
-	java -jar whiteSocket.jar <timestamp> <input> erase null
-	
-Returns output image.
-    
 ## color
 if red, then `FF0000`
 
