@@ -105,7 +105,7 @@ public class Bloop{
 //	public static String blooprintLoc = "/tests/blooprints/";
 	public static String blooprintFile = "";
 //	public static String sketchLoc = "/sketches/";
-	public static String sketchLoc = "/tests/";
+	public static String sketchLoc = "/";
 	public static String sketchFile = "";
 	public static String test_sketch = "";
 	public static String test_image = "";
@@ -678,8 +678,10 @@ public class Bloop{
 			/**
 			 * http://stackoverflow.com/questions/39081215/access-a-resource-outside-a-jar-from-the-jar
 			 * */
-//			stream = Bloop.class.getClass().getResourceAsStream(blooprintFile);
-			stream = null;
+			
+			stream = Bloop.class.getClass().getResourceAsStream(blooprintFile);
+//			stream = null;
+			
 			if ( stream == null ) {
 				System.out.println("loading blooprint as test image");
 				some = ImageIO.read(new File(test_image));
@@ -713,8 +715,10 @@ public class Bloop{
 			/**
 			 * http://stackoverflow.com/questions/39081215/access-a-resource-outside-a-jar-from-the-jar
 			 * */
-//			stream = Bloop.class.getClass().getResourceAsStream(sketchFile);
-			stream = null;
+			
+			stream = Bloop.class.getClass().getResourceAsStream(sketchFile);
+//			stream = null;
+			
 			if ( stream == null ) {
 				some = ImageIO.read(new File(test_sketch));
 				Stretch.fx = some.getWidth()-1;
@@ -751,7 +755,8 @@ public class Bloop{
 			InputStream stream = new ByteArrayInputStream(baos.toByteArray());
 			File outputfile = null;
 			if(debug) {
-				outputfile = new File("./tests/blooprints/"+title+".jpg");
+				outputfile = new File("./blooprints/"+title+".jpg");
+				System.out.println("\naccess output image in ./blooprints/\noutput image title is name of java args[0]\n");
 			} else {				
 				outputfile = new File("./api/blooprints/"+title+".jpg");
 			}

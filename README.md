@@ -1,30 +1,48 @@
 non-technical page [**here**](https://github.com/blooprint/whiteSocket/wiki)
 
-whiteSocket is an executable jar file which generates an image diff upon execution. A single diff's record consists of either added or erased pixels of displayed whiteboard content. The output image is the printed copy of the applied diff to the previous version.
+**whiteSocket** is an executable jar file which generates an image diff upon execution. A single diff's record consists of either added or erased pixels of displayed whiteboard content. The output image is the printed copy of the applied diff to the previous version.
 
-whiteSocketing for the first time? see [here](https://github.com/blooprint/whiteSocket/tree/master/tests) to download some pre-fab test images.
-write test - execute: - `java -jar whiteSocket.jar write blank write 000000`
-erase test - execute: - `java -jar whiteSocket.jar erase toerase erase null`
+### to start
+
+whiteSocketing for the first time? **[download](https://www.dropbox.com/sh/372p9m1oxi8sxvd/AAD1lzsmTGpnBXTevenzgjrna?dl=0)** some pre-fab example/test images and place image contents in following manner.
+
+open $terminal in directory containing the following structure:
+
+	dir/
+		[whiteSocket.jar](https://github.com/blooprint/whiteSocket/releases)
+		blooprints/
+		write image
+		erase image
+
+write test - execute: `$ java -jar whiteSocket.jar write blank write 000000`
+
+erase test - execute: `$ java -jar whiteSocket.jar erase toerase erase 000000`
+
 ______________________________________________________________________
+
 #### executable file
 
-    java -jar whiteSocket.jar <timestamp> <branching image> <mode> <color>
+    $ java -jar whiteSocket.jar <timestamp> <branching image> <mode> <color>
+
+Output image here: `./blooprints/<timestamp>`
 
 ## timestamp - output image id
+
 `2017019234910931`
 
 ## branching image id
-`2016015803141428` image file to process (2016015803141428.bmp or jpg). This image is the current version about to be archived by completion on this jar executable. Output saves to same directory.
+
+`2016015803141428` image file to process (2016015803141428.bmp or jpg). This image is the current version about to be archived by completion of this jar executable.
 
 ## mode
 
 `write`
 
-User adds marker and executes **write**. Returns output image.
+User adds marker and executes **write**.
 
 `erase`
 
-User draws encapsulating areas and executes **erase**. Returns output image.
+User draws encapsulating areas and executes **erase**.
 
 ## color
 hex: if red, then `FF0000`
