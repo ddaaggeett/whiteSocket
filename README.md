@@ -4,12 +4,12 @@ non-technical page [**here**](https://github.com/blooprint/whiteSocket/wiki)
 
 ### to start
 
-whiteSocketing for the first time? **[download](https://www.dropbox.com/sh/372p9m1oxi8sxvd/AAD1lzsmTGpnBXTevenzgjrna?dl=0)** some pre-fab example/test images and place image contents in following manner.
+whiteSocketing for the first time? get the **[whiteSocket.jar](https://github.com/blooprint/whiteSocket/releases)**, and **[download](https://www.dropbox.com/sh/372p9m1oxi8sxvd/AAD1lzsmTGpnBXTevenzgjrna?dl=0)** some pre-fab example/test images and place image contents in following manner.
 
 open $terminal in directory containing the following structure:
 
 	dir/
-		[whiteSocket.jar](https://github.com/blooprint/whiteSocket/releases)
+		whiteSocket.jar
 		blooprints/
 		write image
 		erase image
