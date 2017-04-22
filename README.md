@@ -8,8 +8,10 @@ whiteSocketing for the first time? get the **[whiteSocket.jar](https://github.co
 
 	dir/
 		whiteSocket.jar
-		write.bmp
-		erase.bmp
+		writeTest.bmp
+		blank.bmp
+		eraseTest.bmp
+		toerase.bmp
 
 write test - execute: `$ java -jar whiteSocket.jar writeTest blank write 000000`
 
