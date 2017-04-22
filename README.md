@@ -4,47 +4,40 @@ non-technical page [**here**](https://github.com/blooprint/whiteSocket/wiki)
 
 ### to start
 
-whiteSocketing for the first time? get the **[whiteSocket.jar](https://github.com/blooprint/whiteSocket/releases)**, and **[download](https://www.dropbox.com/sh/372p9m1oxi8sxvd/AAD1lzsmTGpnBXTevenzgjrna?dl=0)** some pre-fab example/test images and place image contents in following manner.
-
-open $terminal in directory containing the following structure:
+whiteSocketing for the first time? get the **[whiteSocket.jar](https://github.com/blooprint/whiteSocket/releases)**, and **[download](https://www.dropbox.com/sh/372p9m1oxi8sxvd/AAD1lzsmTGpnBXTevenzgjrna?dl=0)** some pre-fab example/test images and place image contents in following manner and open $terminal.
 
 	dir/
 		whiteSocket.jar
-		blooprints/
-		write image
-		erase image
+		write.bmp
+		erase.bmp
 
-write test - execute: `$ java -jar whiteSocket.jar write blank write 000000`
+write test - execute: `$ java -jar whiteSocket.jar writeTest blank write 000000`
 
-erase test - execute: `$ java -jar whiteSocket.jar erase toerase erase 000000`
+erase test - execute: `$ java -jar whiteSocket.jar eraseTest toerase erase 000000`
 
+Note: output images overwrite the input
 ______________________________________________________________________
 
 #### executable file
 
     $ java -jar whiteSocket.jar <timestamp> <branching image> <mode> <color>
 
-Output image here: `./blooprints/<timestamp>`
-
 ## timestamp - output image id
 
-`2017019234910931`
+`2017019234910931` - becomes whiteSocket output save image title
 
 ## branching image id
 
-`2016015803141428` image file to process (2016015803141428.bmp or jpg). This image is the current version about to be archived by completion of this jar executable.
+`2016015803141428` - current image version about to be archived by completion of this jar executable
 
 ## mode
 
-`write`
+`write` - user draws marker and executes **write**
 
-User adds marker and executes **write**.
-
-`erase`
-
-User draws encapsulating areas and executes **erase**.
+`erase` - user draws encapsulating areas and executes **erase**
 
 ## color
+
 hex: if red, then `FF0000`
 ______________________________________________________________________
 

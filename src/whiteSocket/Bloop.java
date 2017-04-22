@@ -101,7 +101,7 @@ public class Bloop{
 
 	public static String calibrationFile = "/calibration/calibration.json";
 	public static String unitClicksFile = "/calibration/unitClicks.json";
-	public static String blooprintLoc = "/blooprints/";
+	public static String blooprintLoc = "/";
 //	public static String blooprintLoc = "/tests/blooprints/";
 	public static String blooprintFile = "";
 //	public static String sketchLoc = "/sketches/";
@@ -119,9 +119,9 @@ public class Bloop{
 		test_sketch = "./tests/" + args[0] + ".jpg";
 		test_image = "./tests/blooprints/" + args[1] + ".jpg";
 
-		sketchFile = sketchLoc + title + ".jpg";
+		sketchFile = sketchLoc + title + ".bmp";
 
-		blooprintFile = blooprintLoc + args[1] + ".jpg";
+		blooprintFile = blooprintLoc + args[1] + ".bmp";
 		
 		inMode = args[2];
 
@@ -751,11 +751,11 @@ public class Bloop{
 
 		try{
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ImageIO.write(blooprint, "jpg", baos);
+			ImageIO.write(blooprint, "bmp", baos);
 			InputStream stream = new ByteArrayInputStream(baos.toByteArray());
 			File outputfile = null;
 			if(debug) {
-				outputfile = new File("./blooprints/"+title+".jpg");
+				outputfile = new File("./"+title+".bmp");
 				System.out.println("\naccess output image in ./blooprints/\noutput image title is name of java args[0]\n");
 			} else {				
 				outputfile = new File("./api/blooprints/"+title+".jpg");
