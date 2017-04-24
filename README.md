@@ -7,30 +7,26 @@ non-technical page [**here**](https://github.com/blooprint/whiteSocket/wiki)
 whiteSocketing for the first time? get the **[whiteSocket.jar](https://github.com/blooprint/whiteSocket/releases)**, and **[download](https://www.dropbox.com/sh/372p9m1oxi8sxvd/AAD1lzsmTGpnBXTevenzgjrna?dl=0)** some pre-fab example/test images and place image contents in following manner and open $terminal.
 
 	dir/
+		input/
 		whiteSocket.jar
-		writeTest.bmp
-		blank.bmp
-		eraseTest.bmp
-		toerase.bmp
+		output/
 
-write test - execute: `$ java -jar whiteSocket.jar writeTest blank write 000000`
+write test - execute: `$ java -jar whiteSocket.jar writeTest white write 000000`
 
-erase test - execute: `$ java -jar whiteSocket.jar eraseTest toerase erase 000000`
-
-Note: output images overwrite the input
+erase test - execute: `$ java -jar whiteSocket.jar eraseTest black erase 000000`
 ______________________________________________________________________
 
 #### executable file
 
     $ java -jar whiteSocket.jar <timestamp> <branching image> <mode> <color>
 
-## timestamp - output image id
+## timestamp image id - input
 
 `2017019234910931` - becomes whiteSocket output save image title
 
-## branching image id
+## branching image id - output
 
-`2016015803141428` - current image version about to be archived by completion of this jar executable
+`2016015803141428` - current image version being updated
 
 ## mode
 
@@ -40,7 +36,7 @@ ______________________________________________________________________
 
 ## color
 
-hex: if red, then `FF0000`
+hex: ie - if red, then `FF0000`
 ______________________________________________________________________
 
 ### Copyright: Dave Daggett : [personal website](http://ddaaggeett.xyz)
