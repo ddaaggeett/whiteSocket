@@ -65,8 +65,6 @@ import org.apache.commons.io.FileUtils;
 
 public class Bloop{
 
-	private static boolean debug = true;
-	
 	public static ArrayList<Area> eraseAreas = null;
 	/* TODO
 	 * little redundant, but can fix later
@@ -99,13 +97,7 @@ public class Bloop{
 	 * */
 	public static int mark = 150;
 
-	public static String calibrationFile = "/calibration/calibration.json";
-	public static String unitClicksFile = "/calibration/unitClicks.json";
-	public static String blooprintLoc = "/";
-//	public static String blooprintLoc = "/tests/blooprints/";
 	public static String blooprintFile = "";
-//	public static String sketchLoc = "/sketches/";
-	public static String sketchLoc = "/";
 	public static String sketchFile = "";
 	public static String test_sketch = "";
 	public static String test_image = "";
@@ -116,12 +108,9 @@ public class Bloop{
 
 		title = args[0];
 
-		test_sketch = "./tests/" + args[0] + ".jpg";
-		test_image = "./tests/blooprints/" + args[1] + ".jpg";
+		sketchFile = "/input/" + args[0] + ".bmp";
 
-		sketchFile = sketchLoc + title + ".bmp";
-
-		blooprintFile = blooprintLoc + args[1] + ".bmp";
+		blooprintFile = "/output/" + args[1] + ".bmp";
 		
 		inMode = args[2];
 
@@ -754,14 +743,8 @@ public class Bloop{
 			ImageIO.write(blooprint, "bmp", baos);
 			InputStream stream = new ByteArrayInputStream(baos.toByteArray());
 			File outputfile = null;
-			if(debug) {
-				outputfile = new File("./"+title+".bmp");
-				System.out.println("\naccess output image in ./blooprints/\noutput image title is name of java args[0]\n");
-			} else {				
-				outputfile = new File("./api/blooprints/"+title+".jpg");
-			}
+			outputfile = new File("./output/"+title+".bmp");
 			FileUtils.copyInputStreamToFile(stream, outputfile);
-//		    ImageIO.write(blooprint, "jpg", outputfile);
 
 		}catch(Exception ex){
 			System.out.println("ERROR saveBlooprint(): " + ex.getMessage());
