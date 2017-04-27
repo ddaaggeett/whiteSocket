@@ -65,6 +65,8 @@ import org.apache.commons.io.FileUtils;
 
 public class Bloop{
 
+	private static boolean devMode = false;
+
 	public static ArrayList<Area> eraseAreas = null;
 	/* TODO
 	 * little redundant, but can fix later
@@ -101,17 +103,17 @@ public class Bloop{
 	public static String sketchFile = "";
 	public static String test_sketch = "";
 	public static String test_image = "";
-
+	
 	public static void main(String[] args) throws Exception{
-		
-		System.out.println("****************\nYou are using Blooprint software.\nPlease refer to our whiteSocket license here:\nhttp://github.com/blooprint/whiteSocket/blob/master/LICENSE\n****************");
 
+		System.out.println("****************\nYou are using Blooprint software.\nPlease refer to our whiteSocket license here:\nhttp://github.com/blooprint/whiteSocket/blob/master/LICENSE\n****************");
+		
 		title = args[0];
 
 		sketchFile = "/input/" + args[0] + ".bmp";
 
 		blooprintFile = "/output/" + args[1] + ".bmp";
-		
+
 		inMode = args[2];
 
 		markerHex = Integer.parseInt(args[3],16);
@@ -130,7 +132,7 @@ public class Bloop{
 
 			case "erase":
 				calibrate();
-				
+
 				eraseAreas = new ArrayList<Area>();
 				Area.totalErase = new boolean[sketch.getHeight()][sketch.getWidth()];
 
@@ -667,10 +669,10 @@ public class Bloop{
 			/**
 			 * http://stackoverflow.com/questions/39081215/access-a-resource-outside-a-jar-from-the-jar
 			 * */
-			
+
 			stream = Bloop.class.getClass().getResourceAsStream(blooprintFile);
 //			stream = null;
-			
+
 			if ( stream == null ) {
 				System.out.println("loading blooprint as test image");
 				some = ImageIO.read(new File(test_image));
@@ -704,10 +706,10 @@ public class Bloop{
 			/**
 			 * http://stackoverflow.com/questions/39081215/access-a-resource-outside-a-jar-from-the-jar
 			 * */
-			
+
 			stream = Bloop.class.getClass().getResourceAsStream(sketchFile);
 //			stream = null;
-			
+
 			if ( stream == null ) {
 				some = ImageIO.read(new File(test_sketch));
 				Stretch.fx = some.getWidth()-1;
@@ -743,7 +745,10 @@ public class Bloop{
 			ImageIO.write(blooprint, "bmp", baos);
 			InputStream stream = new ByteArrayInputStream(baos.toByteArray());
 			File outputfile = null;
-			outputfile = new File("./output/"+title+".bmp");
+			
+			if(devMode) outputfile = new File("./src/output/"+title+".bmp");
+			else outputfile = new File("./whiteSocket/output/"+title+".bmp");
+
 			FileUtils.copyInputStreamToFile(stream, outputfile);
 
 		}catch(Exception ex){
@@ -816,5 +821,5 @@ public class Bloop{
 		return false;
 	}//END isMarker()
 
-	
+
 }

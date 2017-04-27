@@ -6,7 +6,8 @@
 .DS_store
 dependencies/**/*.jar
 *Blooprint.java
-./output/
+*.bmp
+*.BMP
 
 .metadata
 bin/

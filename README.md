@@ -1,12 +1,12 @@
-non-technical page [**here**](https://github.com/blooprint/whiteSocket/wiki)
+non-technical page **[here](https://github.com/blooprint/whiteSocket/wiki)**
 
-**whiteSocket** is an executable jar file which generates an image diff upon execution. A single diff's record consists of either added or erased pixels of displayed whiteboard content. The output image is the printed copy of the applied diff to the previous version.
+**whiteSocket** is an executable jar file which generates an image [diff](https://en.wikipedia.org/wiki/Diff_utility) upon execution. A single diff's record consists of either added or erased pixels of physical whiteboard image content. The whiteSocket output image is the printed copy of the applied diff to the previous version. Hopefully it's obvious, but as a precaution - the whiteSocket input image is an arbitrary camera capture of a well-lit whiteboard surface.
 
 ### to start
 
-whiteSocketing for the first time? get the **[whiteSocket.jar](https://github.com/blooprint/whiteSocket/releases)**, and **[download](https://www.dropbox.com/sh/372p9m1oxi8sxvd/AAD1lzsmTGpnBXTevenzgjrna?dl=0)** some pre-fab example/test images and place image contents in following manner and open $terminal.
+whiteSocketing for the first time? get the **[whiteSocket.jar](https://github.com/blooprint/whiteSocket/releases)**, and **[download](https://www.dropbox.com/sh/372p9m1oxi8sxvd/AAD1lzsmTGpnBXTevenzgjrna?dl=0)** some pre-fab example/test images and place image contents in following manner and open directory `whiteSocket/` in $terminal.
 
-	dir/
+	whiteSocket/
 		input/
 		whiteSocket.jar
 		output/
@@ -20,15 +20,15 @@ ______________________________________________________________________
 
     $ java -jar whiteSocket.jar <timestamp> <branching image> <mode> <color>
 
-## timestamp image id - input
+## timestamp - incoming diff image id
 
-`2017019234910931` - becomes whiteSocket output save image title
+ie - `2017019234910931` - becomes whiteSocket output save image title
 
-## branching image id - output
+## branching image id
 
-`2016015803141428` - current image version being updated
+ie - `2016015803141428` - current image version being updated
 
-## mode
+## mode: write|erase
 
 `write` - user draws marker and executes **write**
 
@@ -36,9 +36,18 @@ ______________________________________________________________________
 
 ## color
 
-hex: ie - if red, then `FF0000`
+hexadecimal: ie - if red, then `FF0000`
+______________________________________________________________________
+
+### Further
+
+@blooprint has initiated the development of its standardized application of the whiteSocket module here: **[blooprint/output](https://github.com/blooprint/output)**.
+
+We welcome new attempts to build better applications of the `blooprint/whiteSocket` module that surpasses our default **`blooprint/output`** app.
+
+So please, join the @blooprint team and crack open an awesome opportunity!
 ______________________________________________________________________
 
 ### Copyright: Dave Daggett : [personal website](http://ddaaggeett.xyz)
 
-### Licence:	**[GPL-3.0](https://github.com/blooprint/blooprint-api/blob/master/LICENSE)**
+### Licence:	**[GPL-3.0](https://github.com/blooprint/whiteSocket/blob/master/LICENSE)**
