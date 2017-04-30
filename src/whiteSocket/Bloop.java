@@ -65,7 +65,7 @@ import org.apache.commons.io.FileUtils;
 
 public class Bloop{
 
-	private static boolean devMode = false;
+	private static boolean jarMode = false;
 
 	public static ArrayList<Area> eraseAreas = null;
 	/* TODO
@@ -106,18 +106,29 @@ public class Bloop{
 	
 	public static void main(String[] args) throws Exception{
 
-		System.out.println("****************\nYou are using Blooprint software.\nPlease refer to our whiteSocket license here:\nhttp://github.com/blooprint/whiteSocket/blob/master/LICENSE\n****************");
+		System.out.println("****************\n****************\n\nYou are using Blooprint \u00ae software.\n\nPlease refer to our license here:\nhttp://github.com/blooprint/whiteSocket/blob/master/LICENSE\n\n****************\n****************");
 		
 		title = args[0];
 
-		sketchFile = "/input/" + args[0] + ".bmp";
+		jarMode = (args[4].toLowerCase().equals("true") ? true : false);
 
-		blooprintFile = "/output/" + args[1] + ".bmp";
+		if (jarMode) {
+			System.out.println("\nwhiteSocket: PRODUCTION EXECUTABLE/JAR MODE\n");
+			sketchFile = "/input/" + args[0] + ".bmp";
+			blooprintFile = "/output/" + args[1] + ".bmp";
+		}
+		else {
+			System.out.println("\nwhiteSocket: DEVELOPMENT MODE\n");
+			sketchFile = "./io/input/" + args[0] + ".bmp";
+			blooprintFile = "./io/output/" + args[1] + ".bmp";
+		}
+		
 
 		inMode = args[2];
 
 		markerHex = Integer.parseInt(args[3],16);
 		System.out.println("marker decimal value = " + markerHex);
+		
 
 		if(args[1] != null) blooprint = loadBlooprint();
 		sketch = loadSketch();
@@ -673,9 +684,9 @@ public class Bloop{
 			stream = Bloop.class.getClass().getResourceAsStream(blooprintFile);
 //			stream = null;
 
-			if ( stream == null ) {
+			if ( !jarMode ) {
 				System.out.println("loading blooprint as test image");
-				some = ImageIO.read(new File(test_image));
+				some = ImageIO.read(new File(blooprintFile));
 				return some;
 			}
 
@@ -710,8 +721,8 @@ public class Bloop{
 			stream = Bloop.class.getClass().getResourceAsStream(sketchFile);
 //			stream = null;
 
-			if ( stream == null ) {
-				some = ImageIO.read(new File(test_sketch));
+			if ( !jarMode ) {
+				some = ImageIO.read(new File(sketchFile));
 				Stretch.fx = some.getWidth()-1;
 				Stretch.gx = some.getWidth()-1;
 				Stretch.fy = some.getHeight()-1;
@@ -746,8 +757,8 @@ public class Bloop{
 			InputStream stream = new ByteArrayInputStream(baos.toByteArray());
 			File outputfile = null;
 			
-			if(devMode) outputfile = new File("./src/output/"+title+".bmp");
-			else outputfile = new File("./whiteSocket/output/"+title+".bmp");
+			if(jarMode) outputfile = new File("./output/"+title+".bmp");
+			else outputfile = new File("./io/output/"+title+".bmp");
 
 			FileUtils.copyInputStreamToFile(stream, outputfile);
 

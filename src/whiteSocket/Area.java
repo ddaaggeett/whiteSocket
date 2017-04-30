@@ -155,7 +155,7 @@ public class Area {
 		Bloop.rightSlope = ((double)Stretch.cy-(double)Stretch.by)/((double)Stretch.cx-(double)Stretch.bx);
 		
 //		printBorderValues();		
-		printImgBool(hasBeenHit, "corners");
+//		printImgBool(hasBeenHit, "corners");
 
 	}// END getLightBounds()
 	

@@ -11,14 +11,14 @@ whiteSocketing for the first time? get the **[whiteSocket.jar](https://github.co
 		whiteSocket.jar
 		output/
 
-write test - execute: `$ java -jar whiteSocket.jar writeTest white write 000000`
+write test - execute: `$ java -jar whiteSocket.jar writeTest white write 000000 true`
 
-erase test - execute: `$ java -jar whiteSocket.jar eraseTest black erase 000000`
+erase test - execute: `$ java -jar whiteSocket.jar eraseTest black erase 000000 true`
 ______________________________________________________________________
 
 #### executable file
 
-    $ java -jar whiteSocket.jar <timestamp> <branching image> <mode> <color>
+    $ java -jar whiteSocket.jar <timestamp> <branching image> <mode> <color> <jarMode>
 
 ## timestamp - incoming diff image id
 
@@ -37,15 +37,21 @@ ie - `2016015803141428` - current image version being updated
 ## color
 
 hexadecimal: ie - if red, then `FF0000`
+
+## jarMode: boolean
+
+`true` - if running as executable jar file
+
+`false` - if running in dev mode
 ______________________________________________________________________
 
 ### Further
 
-@blooprint has initiated the development of its standardized application of the whiteSocket module here: **[blooprint/output](https://github.com/blooprint/output)**.
+[Blooprint](https://github.com/blooprint) has initiated the development of standardized application of the whiteSocket module here: **[`blooprint/output`](https://github.com/blooprint/output)**.
 
-We welcome new attempts to build better applications of the `blooprint/whiteSocket` module that surpasses our default **`blooprint/output`** app.
+We welcome new attempts to build better applications of the **`blooprint/whiteSocket`** module that surpass our default **`blooprint/output`** app.
 
-So please, join the @blooprint team and crack open an awesome opportunity!
+So, please - join the [Blooprint](https://github.com/blooprint) team and crack open an awesome opportunity!
 ______________________________________________________________________
 
 ### Copyright: Dave Daggett : [personal website](http://ddaaggeett.xyz)
