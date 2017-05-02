@@ -5,7 +5,7 @@ non-technical page **[here](https://github.com/blooprint/whiteSocket/wiki)**
 ### executable tutorial video
 
 <a href="https://www.youtube.com/watch?v=lcRxnL7shbY
-" target="_blank"><img src="http://img.youtube.com/vi/lcRxnL7shbY/100.jpg"
+" target="_blank"><img src="http://img.youtube.com/vi/lcRxnL7shbY/0.jpg"
 alt="IMAGE ALT TEXT HERE" width="512" height="288" border="1" /></a>
 
 whiteSocketing for the first time? get the **[whiteSocket.jar](https://github.com/blooprint/whiteSocket/releases)**, and **[download](https://www.dropbox.com/sh/372p9m1oxi8sxvd/AAD1lzsmTGpnBXTevenzgjrna?dl=0)** some pre-fab example/test images and place image contents in following manner and open directory `whiteSocket/` in $terminal.
