@@ -2,10 +2,10 @@ non-technical page **[here](https://github.com/blooprint/whiteSocket/wiki)**
 
 **whiteSocket** is an executable jar file which generates an image [diff](https://en.wikipedia.org/wiki/Diff_utility) upon execution. A single diff's record consists of either added or erased pixels of physical whiteboard image content. The whiteSocket output image is the printed copy of the applied diff to the previous version. Hopefully it's obvious, but as a precaution - the whiteSocket input image is an arbitrary camera capture of a well-lit whiteboard surface.
 
-### intro video
+### executable tutorial video
 
-<a href="https://www.youtube.com/watch?v=Tdi8CmNnNdo
-" target="_blank"><img src="http://img.youtube.com/vi/Tdi8CmNnNdo/0.jpg"
+<a href="https://www.youtube.com/watch?v=lcRxnL7shbY
+" target="_blank"><img src="http://img.youtube.com/vi/lcRxnL7shbY/100.jpg"
 alt="IMAGE ALT TEXT HERE" width="512" height="288" border="1" /></a>
 
 whiteSocketing for the first time? get the **[whiteSocket.jar](https://github.com/blooprint/whiteSocket/releases)**, and **[download](https://www.dropbox.com/sh/372p9m1oxi8sxvd/AAD1lzsmTGpnBXTevenzgjrna?dl=0)** some pre-fab example/test images and place image contents in following manner and open directory `whiteSocket/` in $terminal.
