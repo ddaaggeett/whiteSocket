@@ -8,7 +8,7 @@ target/
 *.jpeg
 *.JPEG
 .DS_store
-dependencies/**/*.jar
+dependencies/
 *Blooprint.java
 *.bmp
 *.BMP
