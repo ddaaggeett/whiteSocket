@@ -26,9 +26,9 @@
 *	for now, it's recommended the input image aspect ratio EQUALS the output image aspect ratio
 */
 
-package whiteSocket;
+package main.java.whiteSocket;
 
-import whiteSocket.*;
+import main.java.whiteSocket.*;
 
 import java.awt.Color;
 import java.awt.Point;
