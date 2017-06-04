@@ -69,14 +69,33 @@ public class Border {
 		/*
 		 * all 8 surrounding pixels need to be checked clockwise
 		 */
-		Color a = new Color(Bloop.sketch.getRGB(coord[0] + 1, coord[1])); // R
-		Color b = new Color(Bloop.sketch.getRGB(coord[0] + 1, coord[1] + 1)); // RD
-		Color c = new Color(Bloop.sketch.getRGB(coord[0], coord[1] + 1)); // D
-		Color d = new Color(Bloop.sketch.getRGB(coord[0] - 1, coord[1] + 1)); // LD
-		Color e = new Color(Bloop.sketch.getRGB(coord[0] - 1, coord[1])); // L
-		Color f = new Color(Bloop.sketch.getRGB(coord[0] - 1, coord[1] - 1)); // LU
-		Color g = new Color(Bloop.sketch.getRGB(coord[0], coord[1] - 1)); // U
-		Color h = new Color(Bloop.sketch.getRGB(coord[0] + 1, coord[1] - 1)); // RU
+		Color a = null;
+		Color b = null;
+		Color c = null;
+		Color d = null;
+		Color e = null;
+		Color f = null;
+		Color g = null;
+		Color h = null;
+		
+		try{
+			a = new Color(Bloop.sketch.getRGB(coord[0] + 1, coord[1])); // R
+			b = new Color(Bloop.sketch.getRGB(coord[0] + 1, coord[1] + 1)); // RD
+			c = new Color(Bloop.sketch.getRGB(coord[0], coord[1] + 1)); // D
+			d = new Color(Bloop.sketch.getRGB(coord[0] - 1, coord[1] + 1)); // LD
+			e = new Color(Bloop.sketch.getRGB(coord[0] - 1, coord[1])); // L
+			f = new Color(Bloop.sketch.getRGB(coord[0] - 1, coord[1] - 1)); // LU
+			g = new Color(Bloop.sketch.getRGB(coord[0], coord[1] - 1)); // U
+			h = new Color(Bloop.sketch.getRGB(coord[0] + 1, coord[1] - 1)); // RU
+			
+		}
+		catch(Exception er) {
+			System.out.println("ERROR: getNextBorderPixel:\n" + er.getMessage());
+			System.out.println("x = "+coord[0]+"\ty = "+coord[1]);
+			System.out.println("r = "+(new Color(Bloop.sketch.getRGB(coord[0], coord[1])).getRed()));
+			System.out.println("g = "+(new Color(Bloop.sketch.getRGB(coord[0], coord[1])).getGreen()));
+			System.out.println("b = "+(new Color(Bloop.sketch.getRGB(coord[0], coord[1])).getBlue()));
+		}
 		
 		switch(lastBorderPx) {
 		case 1:

@@ -94,10 +94,10 @@ public class Bloop{
 	public static int tx, ty;
 
 	/*
-	 * MARK = fixed RGB value for input drawing recognition
-	 * SEE -> isMarker()
+	 * brightThreshold = value at white any value less must be marker pixel
+	 * TODO: tinker with proper value or better method -> see getBrightnessThreshold()
 	 * */
-	public static int mark = 150;
+	public static int brightThreshold;
 
 	public static String blooprintFile = "";
 	public static String sketchFile = "";
@@ -132,6 +132,8 @@ public class Bloop{
 
 		if(args[1] != null) blooprint = loadBlooprint();
 		sketch = loadSketch();
+		
+		brightThreshold = getBrightnessThreshold();
 
 	    switch(inMode){
 
@@ -493,7 +495,7 @@ public class Bloop{
 		Area.getLightBounds();
 
 		areaOfInterest = getAreaOfInterestBorder();
-		Area.printImgBool(areaOfInterest, "aoi-border");
+//		Area.printImgBool(areaOfInterest, "aoi-border");
 
 		/*
 		 * start flooding right below center of topSlope
@@ -502,7 +504,7 @@ public class Bloop{
 		ty = (Stretch.ay+Stretch.by)/2+5;
 		areaOfInterest = Area.floodBorder(null, areaOfInterest, tx, ty);
 
-		Area.printImgBool(areaOfInterest, "aoi-fill");
+//		Area.printImgBool(areaOfInterest, "aoi-fill");
 
 		setCenters();
 
@@ -816,21 +818,94 @@ public class Bloop{
 	}//END getAreaOfInterestBorder()
 
 	public static boolean isMarker(Color x) {
-		/**
-		 * checking if instantaneous pixel is ANY color or not
-		 * returns true or false
-		 *
-		 * TODO: for now the only color use case is black.  need to incorporate red, green, and blue user options
-		 * */
-		if((x.getRed() > mark & x.getGreen() < 100 & x.getBlue() < 100)
-				|| (x.getRed() < 100 & x.getGreen() > mark & x.getBlue() < 100)
-				|| (x.getRed() < 100 & x.getGreen() < 100 & x.getBlue() > mark)
-				|| (x.getRed() < 100 & x.getGreen() < 100 & x.getBlue() < 100)){
-
-			return true;
-		}
-		return false;
+		
+		int brightness = (int) (0.2126*x.getRed() + 0.7152*x.getGreen() + 0.0722*x.getBlue());
+		
+		if( brightness < brightThreshold) return true;
+		else return false;
+		
 	}//END isMarker()
 
-
+	private static int getBrightnessThreshold() {
+		/**
+		 * get average pixel brightness of white pixels whiteboard input image
+		 * NOTE: lower brightness value = darker the pixel
+		 * using relative luminance
+		 * https://en.wikipedia.org/wiki/Relative_luminance
+		 * 
+		 * rough threshold value = 30% less than average of darkest corner
+		 * assumes average corner spans 60% brightness (+/-30%)
+		 */
+		
+		Color color = null;
+		float brightness = 0;
+		int r,g,b;
+		int count = 0;
+		int avg_UL,avg_UR,avg_LL,avg_LR;
+		float totalBrightness = 0;
+		
+		for (int row = 0; row < 10; row++){	//	UL
+			for(int col = 0; col < 10; col++){
+				count++;
+				color = new Color(sketch.getRGB(col,row));
+				r = color.getRed();
+				g = color.getGreen();
+				b = color.getBlue();
+				brightness = (float) (0.2126*r + 0.7152*g + 0.0722*b);
+				totalBrightness += brightness;
+			}
+		}
+		avg_UL = (int) (totalBrightness/count);
+		
+		totalBrightness = 0;
+		count = 0;
+		for (int row = 0; row < 10; row++){	//  UR
+			for(int col = sketch.getWidth()-10; col < sketch.getWidth(); col++){
+				count++;
+				color = new Color(sketch.getRGB(col,row));
+				r = color.getRed();
+				g = color.getGreen();
+				b = color.getBlue();
+				brightness = (float) (0.2126*r + 0.7152*g + 0.0722*b);
+				totalBrightness += brightness;
+			}
+		}
+		avg_UR = (int) (totalBrightness/count);
+		
+		totalBrightness = 0;
+		count = 0;
+		for (int row = sketch.getHeight()-10; row < sketch.getHeight(); row++){	//	LL
+			for(int col = 0; col < 10; col++){
+				count++;
+				color = new Color(sketch.getRGB(col,row));
+				r = color.getRed();
+				g = color.getGreen();
+				b = color.getBlue();
+				brightness = (float) (0.2126*r + 0.7152*g + 0.0722*b);
+				totalBrightness += brightness;
+			}
+		}
+		avg_LL = (int) (totalBrightness/count);
+		
+		totalBrightness = 0;
+		count = 0;
+		for (int row = sketch.getHeight()-10; row < sketch.getHeight(); row++){	//	LR
+			for(int col = sketch.getWidth()-10; col < sketch.getWidth(); col++){
+				count++;
+				color = new Color(sketch.getRGB(col,row));
+				r = color.getRed();
+				g = color.getGreen();
+				b = color.getBlue();
+				brightness = (float) (0.2126*r + 0.7152*g + 0.0722*b);
+				totalBrightness += brightness;
+			}
+		}
+		avg_LR = (int) (totalBrightness/count);
+		
+		int threshold = (int) (0.7*Math.min(Math.min(avg_LL,avg_LR),Math.min(avg_UL,avg_UR)));
+		
+		System.out.println("\nthreshold = "+threshold);
+		
+		return threshold;
+	}
 }
