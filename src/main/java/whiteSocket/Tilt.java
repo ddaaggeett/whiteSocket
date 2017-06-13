@@ -4,6 +4,9 @@ import main.java.whiteSocket.*;
 
 public class Tilt {
 	
+	static int[] vpA;
+	static int[] vpB;
+	
 	public static int[] getIntersection(int[] a, int[] d, int[] c, int[] b) {
 		/*
 		 * returns xy intersection point of 2 arbitrary lines defined by 2 points each
@@ -43,5 +46,27 @@ public class Tilt {
 		return Math.sqrt(Math.pow(a[0]-b[0], 2) + Math.pow(a[1]-b[1], 2));
 		
 	}//	END getDistBetween()	
+
+	public static void setTiltedCalibration() {
+		
+		int[] a = new int[2];
+		a[0] = Stretch.ax;
+		a[1] = Stretch.ay;
+		int[] b = new int[2];
+		b[0] = Stretch.bx;
+		b[1] = Stretch.by;
+		int[] c = new int[2];
+		c[0] = Stretch.cx;
+		c[1] = Stretch.cy;
+		int[] d = new int[2];
+		d[0] = Stretch.dx;
+		d[1] = Stretch.dy;
+		
+		
+		vpA = getIntersection(a,d,c,b);
+		vpB = getIntersection(a,c,d,b);
+		 
+		
+	}//END setTiltedCalibration()
 
 }

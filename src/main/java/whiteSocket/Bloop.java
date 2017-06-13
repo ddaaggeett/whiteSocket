@@ -212,6 +212,8 @@ public class Bloop{
 				}
 				catch(Exception e){
 					System.out.println("ERROR write(): " + e.getMessage());
+					System.out.println("x = " + xyOUT[0] + "\ty = " + xyOUT[1]);
+					System.exit(0);
 				}
 
 
@@ -504,8 +506,13 @@ public class Bloop{
 		tx = (Stretch.ax+Stretch.bx)/2;
 		ty = (Stretch.ay+Stretch.by)/2+5;
 		areaOfInterest = Area.floodBorder(null, areaOfInterest, tx, ty);
-
+		
 //		Area.printImgBool(areaOfInterest, "aoi-fill");
+		
+		Stretch.width = blooprint.getWidth();
+		Stretch.height= blooprint.getHeight();
+
+		Tilt.setTiltedCalibration();
 
 	}//END calibrate()
 
