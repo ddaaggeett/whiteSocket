@@ -115,7 +115,7 @@ public class Bloop{
 		if (jarMode) {
 			System.out.println("\nwhiteSocket: PRODUCTION EXECUTABLE/JAR MODE\n");
 			sketchFile = "/input/" + args[0] + ".bmp";
-			blooprintFile = "/output/" + args[1] + ".bmp";
+			blooprintFile = "/output/" + args[1] + ".bmp";	
 		}
 		else {
 			System.out.println("\nwhiteSocket: DEVELOPMENT MODE\n");
@@ -174,7 +174,8 @@ public class Bloop{
 			default:
 				break;
 		}
-
+	    
+	    System.exit(0);
 
 	}//END main()
 
@@ -506,8 +507,6 @@ public class Bloop{
 
 //		Area.printImgBool(areaOfInterest, "aoi-fill");
 
-		setCenters();
-
 	}//END calibrate()
 
 	public static void setCorners() {
@@ -653,21 +652,6 @@ public class Bloop{
         	e.printStackTrace();
         }
 	}//END setCorners()
-
-	public static void setCenters() throws Exception{
-		/**
-		 * Find center of the input image.
-		 * Only considering location of light projector lit area on whiteboard.
-		 * */
-		Stretch.mA = (double)(Stretch.by - Stretch.ay) / (double)(Stretch.bx - Stretch.ax);
-		Stretch.mB = (double)(Stretch.cy - Stretch.dy) / (double)(Stretch.cx - Stretch.dx);
-		Stretch.mC = (double)(Stretch.fy - Stretch.ey) / (double)(Stretch.fx - Stretch.ex);
-		Stretch.mD = (double)(Stretch.gy - Stretch.hy) / (double)(Stretch.gx - Stretch.hx);
-		Stretch.xCenterIN = (double)(Stretch.dy - Stretch.ay - (Stretch.dx * Stretch.mB) + (Stretch.ax * Stretch.mA)) / (double)(Stretch.mA - Stretch.mB);
-		Stretch.yCenterIN = (double)(Stretch.mA * (Stretch.xCenterIN - Stretch.ax)) + (double)Stretch.ay;
-		Stretch.xCenterOUT = (double)(Stretch.hy - Stretch.ey + (Stretch.ex * Stretch.mC) - (Stretch.hx * Stretch.mD)) / (double)(Stretch.mC - Stretch.mD);
-		Stretch.yCenterOUT = (double)(Stretch.mC * (Stretch.xCenterOUT - Stretch.ex)) + (double)Stretch.ey;
-	}//END setCenters()
 
 	public static BufferedImage loadBlooprint() throws IOException {
 		/**
