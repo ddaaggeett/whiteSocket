@@ -31,6 +31,7 @@ package main.java.whiteSocket;
 import main.java.whiteSocket.*;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -79,6 +80,7 @@ public class Bloop{
 	public static int markerHex = 0x000000;  //	default black
 	public static BufferedImage sketch;
 	public static BufferedImage blooprint;
+	private static BufferedImage statusImg; 
 
 	public static double topSlope,bottomSlope,leftSlope,rightSlope;
 
@@ -106,7 +108,7 @@ public class Bloop{
 	
 	public static void main(String[] args) throws Exception{
 
-		System.out.println("****************\n****************\n\nYou are using Blooprint \u00ae software.\n\nPlease refer to our license here:\nhttp://github.com/blooprint/whiteSocket/blob/master/LICENSE\n\n****************\n****************");
+		System.out.println("****************\n****************\n\nYou are using Blooprint \u00ae software.\n\nPlease refer to our license here:\nhttp://github.com/blooprint/whiteSocket/blob/master/LICENSE\n\n****************");
 		
 		title = args[0];
 
@@ -179,7 +181,7 @@ public class Bloop{
 
 	}//END main()
 
-	public static void write() {
+	public static void write() throws IOException {
 		/**
 		 * bloop blooprint.image pixel location intended by user bloop action
 		 * sets Color.RED,BLUE,GREEN according to user intension
@@ -211,8 +213,12 @@ public class Bloop{
 					}
 				}
 				catch(Exception e){
-					System.out.println("ERROR write(): " + e.getMessage());
-					System.out.println("x = " + xyOUT[0] + "\ty = " + xyOUT[1]);
+					System.out.println("\nERROR write(): xIN = " + xIN + "  yIN = " + yIN);
+					System.out.println("xyOUT " + e.getMessage());
+					System.out.println("xOUT = " + xyOUT[0] + "  yOUT = " + xyOUT[1]);
+					
+					pegBadInput(xIN,yIN);
+					
 					System.exit(0);
 				}
 
@@ -220,7 +226,7 @@ public class Bloop{
 			}
 		}
 	}//END write()
-
+	
 	public static void erase(boolean[][] eraseArea) {
 		/**
 		 * erase the area found inside the outer border of marker line drawn
@@ -498,7 +504,9 @@ public class Bloop{
 		Area.getLightBounds();
 
 		areaOfInterest = getAreaOfInterestBorder();
-//		Area.printImgBool(areaOfInterest, "aoi-border");
+		statusImg = printImgBool(areaOfInterest, "./io/tests/aoi-border");
+		
+		
 
 		/*
 		 * start flooding right below center of topSlope
@@ -895,8 +903,57 @@ public class Bloop{
 		
 		int threshold = (int) (0.7*Math.min(Math.min(avg_LL,avg_LR),Math.min(avg_UL,avg_UR)));
 		
-		System.out.println("\nthreshold = "+threshold);
+//		System.out.println("\nthreshold = "+threshold);
 		
 		return threshold;
 	}
+
+	public static BufferedImage createWhiteImage(){ 
+		BufferedImage testOut = new BufferedImage(Bloop.blooprint.getWidth(), Bloop.blooprint.getHeight(), BufferedImage.TYPE_INT_RGB);
+		Graphics2D    graphics = testOut.createGraphics();	
+		graphics.setPaint ( Color.white );
+		graphics.fillRect ( 0, 0, testOut.getWidth(), testOut.getHeight() );
+		return testOut;
+	}//END createWhiteImage
+	
+	public static BufferedImage printImgBool(boolean[][] some, String path) throws Exception {
+//		BufferedImage testOut = createWhiteImage();
+		BufferedImage testOut = Bloop.loadSketch();
+		for (int row = 0; row < Bloop.sketch.getHeight(); row++) {
+			for (int col = 0; col < Bloop.sketch.getWidth(); col++) {
+				if(some[row][col]) {
+					testOut.setRGB(col, row, 0);
+				}
+			}
+		}
+		saveImg(testOut, path);
+		return testOut;
+	}//END printImgBool()
+	
+	public static void saveImg(BufferedImage some, String path) throws IOException {
+		try {
+			File outputfile = new File(path);
+			ImageIO.write(some, "bmp", outputfile);
+		} catch (Exception ex) {
+			System.out.println("\nERROR: Area.saveImg()");
+			System.out.println(ex.getMessage());
+		}
+	}// END saveImg()
+
+	private static void pegBadInput(int x, int y) throws IOException {
+		/*
+		 * prints yellow highlight of default pixel
+		 * */
+		for(int row = y-10; row <= y+10; row++){
+			for(int col = x-10; col <= x+10; col++){
+				statusImg.setRGB(col, row, 0xffff00);
+				
+			}
+		}
+		
+		saveImg(statusImg, "./io/tests/pegs");
+		
+	}//END peg()
+
+	
 }

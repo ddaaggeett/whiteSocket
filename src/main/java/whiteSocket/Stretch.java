@@ -36,55 +36,60 @@ public class Stretch {
 	 */
 	public static int[] stretch(int x, int y) {
 		
-		int[] in = new int[2];
+		double[] in = new double[2];
 		in[0] = x;
 		in[1] = y;
 		int[] some = new int[2];
 		
-		int[] a = new int[2];
-		int[] b = new int[2];
-		int[] c = new int[2];
-		int[] d = new int[2];
+		double[] a = new double[2];
+		double[] b = new double[2];
+		double[] c = new double[2];
+		double[] d = new double[2];
 		
 		//	TOP
 		a[0] = ax; 
 		a[1] = ay;
 		b[0] = cx; 
 		b[1] = cy;
-		c = Tilt.vpA;
+		c[0] = Tilt.vpA[0];
+		c[1] = Tilt.vpA[1];
 		d[0] = x; 
 		d[1] = y;
-		int[] pT = Tilt.getIntersection(a, b, c, d);
+		double[] pT = Tilt.getIntersection(a, b, c, d);
+//		System.out.println(pT[0] + " " + pT[1]);
 		
 		//	BOTTOM
 		a[0] = dx; 
 		a[1] = dy;
 		b[0] = bx; 
 		b[1] = by;
-		c = Tilt.vpA;
+		c[0] = Tilt.vpA[0];
+		c[1] = Tilt.vpA[1];
 		d[0] = x; 
 		d[1] = y;
-		int[] pB = Tilt.getIntersection(a, b, c, d);
+		double[] pB = Tilt.getIntersection(a, b, c, d);
 		
 		//	LEFT
 		a[0] = ax; 
 		a[1] = ay;
 		b[0] = dx; 
 		b[1] = dy;
-		c = Tilt.vpB;
+		c[0] = Tilt.vpB[0];
+		c[1] = Tilt.vpB[1];
 		d[0] = x; 
 		d[1] = y;
-		int[] pL = Tilt.getIntersection(a, b, c, d);
+		double[] pL = Tilt.getIntersection(a, b, c, d);
 		
 		//	RIGHT
 		a[0] = cx; 
 		a[1] = cy;
-		b[0] = ax; 
-		b[1] = ay;
-		c = Tilt.vpB;
-		d[0] = ax; 
-		d[1] = ay;
-		int[] pR = Tilt.getIntersection(a, b, c, d);
+		b[0] = bx; 
+		b[1] = by;
+		c[0] = Tilt.vpB[0];
+		c[1] = Tilt.vpB[1];
+		d[0] = x; 
+		d[1] = y;
+		double[] pR = Tilt.getIntersection(a, b, c, d);
 		
 		
 		double dL = Tilt.getDistBetween(pL, in);

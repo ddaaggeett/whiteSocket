@@ -27,7 +27,6 @@ public class Border {
 	static int lastBorderPx = 5;
 	
 	public Border(int xIN, int yIN) {		
-		System.out.println("init border ...");
 		
 		this.xMin = Bloop.sketch.getWidth()-1;
 		this.xMax = 0;
@@ -51,8 +50,6 @@ public class Border {
 			if(inCoord[1] < this.yMin) this.yMin = inCoord[1];
 			
 			if ((inCoord[0] == xIN) && (inCoord[1] == yIN)) {
-				System.out.println("found whole corner blob");
-		
 				flag = false;
 			}
 		}

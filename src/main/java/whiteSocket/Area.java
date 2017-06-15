@@ -238,38 +238,6 @@ public class Area {
 		return floodArea;
 	}// END floodBorder()
 	
-	/**
-	 * TESTS: borders/areas
-	 * */
-	public static BufferedImage createWhiteImage(){ 
-		BufferedImage testOut = new BufferedImage(Bloop.sketch.getWidth(), Bloop.sketch.getHeight(), BufferedImage.TYPE_INT_RGB);
-		Graphics2D    graphics = testOut.createGraphics();	
-		graphics.setPaint ( Color.white );
-		graphics.fillRect ( 0, 0, testOut.getWidth(), testOut.getHeight() );
-		return testOut;
-	}//END createWhiteImage
-	
-	public static void printImgBool(boolean[][] some, String name) throws IOException {
-		BufferedImage testOut = createWhiteImage();
-		for (int row = 0; row < Bloop.sketch.getHeight(); row++) {
-			for (int col = 0; col < Bloop.sketch.getWidth(); col++) {
-				if(some[row][col]) {
-					testOut.setRGB(col, row, 0);
-				}
-			}
-		}
-		saveImg(testOut, name);
-	}//END printImgBool()
-	
-	public static void saveImg(BufferedImage some, String name) throws IOException {
-		try {
-			File outputfile = new File("./tests/" + name);
-			ImageIO.write(some, "bmp", outputfile);
-		} catch (Exception ex) {
-			System.out.println("ERROR saveBlooprint(): " + ex.getMessage());
-		}
-	}// END saveImg()
-	
 	public static void printBorderValues() {
 		System.out.println("ax = " + Stretch.ax);
 		System.out.println("ay = " + Stretch.ay);
