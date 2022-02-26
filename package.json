@@ -1,7 +1,7 @@
 {
   "name": "whitesocket",
   "version": "0.2.0",
-  "description": "anologue handwriting i/o",
+  "description": "analog handwriting i/o",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/ddaaggeett/whiteSocket.git"
   },
-  "author": "ddaaggeett - dave daggett",
+  "author": "ddaaggeett - Dave Daggett",
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/ddaaggeett/whiteSocket/issues"

@@ -2,6 +2,8 @@ all further development will be with node.js runtime
 
 # deprecated: below
 
+`$ git checkout 5b3e317`
+
 **whiteSocket** is an executable jar file which generates an image [diff](https://en.wikipedia.org/wiki/Diff_utility) upon execution. A single diff's record consists of either added or erased pixels of physical whiteboard image content. The whiteSocket output image is the printed copy of the applied diff to the previous version. Hopefully it's obvious, but as a precaution - the whiteSocket input image is an arbitrary camera capture of a well-lit whiteboard surface.
 
 ### executable tutorial video
