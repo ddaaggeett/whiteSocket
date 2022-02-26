@@ -1,3 +1,5 @@
+# whitesocket - analog handwriting i/o
+
 all further development will be with node.js runtime
 
 # deprecated: below
