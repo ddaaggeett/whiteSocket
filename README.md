@@ -2,6 +2,9 @@
 
 all further development will be with node.js runtime
 
+	sudo apt update
+	sudo apt install libopencv-dev python3-opencv
+
 # deprecated: below
 
 `$ cd deprecated/`
