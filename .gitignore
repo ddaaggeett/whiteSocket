@@ -1,3 +1,6 @@
 misc
 img
 __pycache__
+node_modules
+config.json
+.Trash-1000

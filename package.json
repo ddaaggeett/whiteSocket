@@ -4,6 +4,7 @@
   "description": "analog handwriting i/o",
   "main": "index.js",
   "scripts": {
+    "start": "nodemon ./src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/ddaaggeett/whiteSocket/issues"
   },
-  "homepage": "https://github.com/ddaaggeett/whiteSocket#readme"
+  "homepage": "https://github.com/ddaaggeett/whiteSocket#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
 }
