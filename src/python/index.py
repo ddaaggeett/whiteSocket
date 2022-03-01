@@ -1,14 +1,8 @@
 import warp
-# TODO: opencv aruco marker implementation for input corner image
+import aruco
 
-inputImg = './img/test.png'
-# a = []
-# b = []
-# c = []
-# d = []
-# inputCorners = [a,b,c,d]
+image = './img/aruco_corners.png'
 
-# zigzag point placement - TL,TR,BL,BR
-inputCorners = [[63, 184],[440, 95],[62, 403],[456, 443]]
-
-warp.warp(inputImg,inputCorners)
+# all corners read in following order - TL,TR,BR,BL
+inputCorners = aruco.getInputCorners(image)
+warp.warp(image,inputCorners)

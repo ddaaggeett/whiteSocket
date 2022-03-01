@@ -1,44 +1,25 @@
 import cv2
 import numpy
 
-image = cv2.imread('./img/aruco.png')
+def getInputCorners(img='./img/aruco_corners.png'):
+	inputCorners = numpy.zeros((4,2))
+	image = cv2.imread(img)
+	arucoDict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_4X4_50)
+	arucoParams = cv2.aruco.DetectorParameters_create()
+	corners, ids, rejected = cv2.aruco.detectMarkers(image, arucoDict, parameters=arucoParams)
 
-arucoDict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_4X4_50)
-arucoParams = cv2.aruco.DetectorParameters_create()
-corners, ids, rejected = cv2.aruco.detectMarkers(image, arucoDict, parameters=arucoParams)
+	if len(ids) == 4:
+		ids = ids.flatten()
+		for (markerCorner, markerID) in zip(corners, ids):
+			corners = markerCorner.reshape((4, 2))
+			(tl, tr, br, bl) = corners
+			tl = [int(tl[0]), int(tl[1])]
+			tr = [int(tr[0]), int(tr[1])]
+			br = [int(br[0]), int(br[1])]
+			bl = [int(bl[0]), int(bl[1])]
+			if markerID == 0: inputCorners[0] = tl
+			if markerID == 1: inputCorners[1] = tr
+			if markerID == 2: inputCorners[2] = br
+			if markerID == 3: inputCorners[3] = bl
 
-print(corners)
-
-if len(corners) > 0:
-	# flatten the ArUco IDs list
-	ids = ids.flatten()
-	# loop over the detected ArUCo corners
-	for (markerCorner, markerID) in zip(corners, ids):
-		# extract the marker corners (which are always returned in
-		# top-left, top-right, bottom-right, and bottom-left order)
-		corners = markerCorner.reshape((4, 2))
-		(topLeft, topRight, bottomRight, bottomLeft) = corners
-		# convert each of the (x, y)-coordinate pairs to integers
-		topRight = (int(topRight[0]), int(topRight[1]))
-		bottomRight = (int(bottomRight[0]), int(bottomRight[1]))
-		bottomLeft = (int(bottomLeft[0]), int(bottomLeft[1]))
-		topLeft = (int(topLeft[0]), int(topLeft[1]))
-
-        # draw the bounding box of the ArUCo detection
-		cv2.line(image, topLeft, topRight, (255,0,0), 1)
-		cv2.line(image, topRight, bottomRight, (255,0,0), 1)
-		cv2.line(image, bottomRight, bottomLeft, (255,0,0), 1)
-		cv2.line(image, bottomLeft, topLeft, (255,0,0), 1)
-		# compute and draw the center (x, y)-coordinates of the ArUco
-		# marker
-		cX = int((topLeft[0] + bottomRight[0]) / 2.0)
-		cY = int((topLeft[1] + bottomRight[1]) / 2.0)
-		cv2.circle(image, (cX, cY), 4, (0, 0, 255), -1)
-		# draw the ArUco marker ID on the image
-		cv2.putText(image, str(markerID),
-			(topLeft[0], topLeft[1] - 15), cv2.FONT_HERSHEY_SIMPLEX,
-			0.5, (0, 255, 0), 2)
-		print("[INFO] ArUco marker ID: {}".format(markerID))
-		# show the output image
-		cv2.imshow("Image", image)
-		cv2.waitKey(0)
+	return inputCorners
