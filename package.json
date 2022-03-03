@@ -2,9 +2,14 @@
   "name": "whitesocket",
   "version": "0.2.0",
   "description": "analog handwriting i/o",
-  "main": "index.js",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "nodemon ./src",
+    "server": "nodemon ./src",
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "eject": "expo eject",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,7 +22,17 @@
     "url": "https://github.com/ddaaggeett/whiteSocket/issues"
   },
   "homepage": "https://github.com/ddaaggeett/whiteSocket#readme",
+  "dependencies": {
+    "expo": "~44.0.0",
+    "expo-status-bar": "~1.2.0",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "react-native": "0.64.3",
+    "react-native-web": "0.17.1"
+  },
   "devDependencies": {
+    "@babel/core": "^7.12.9",
     "nodemon": "^2.0.15"
-  }
+  },
+  "private": true
 }
