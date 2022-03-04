@@ -4,7 +4,10 @@ all further development will be with node.js + python
 
 	npm install
 	pip install opencv-contrib-python
-______________________________________________________________________
+
+- `npm start` - start native app
+- `npm run web` - start web app
+- `npm run server` - start server
 
 deprecated image processing: `cd deprecated/`
 
