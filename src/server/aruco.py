@@ -6,6 +6,7 @@ def getInputCorners(image):
 	arucoDict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_4X4_50)
 	arucoParams = cv2.aruco.DetectorParameters_create()
 	corners, ids, rejected = cv2.aruco.detectMarkers(image, arucoDict, parameters=arucoParams)
+	# cv2.aruco.drawDetectedMarkers(image, corners)
 
 	if len(ids) == 4:
 		ids = ids.flatten()
@@ -16,9 +17,13 @@ def getInputCorners(image):
 			tr = [int(tr[0]), int(tr[1])]
 			br = [int(br[0]), int(br[1])]
 			bl = [int(bl[0]), int(bl[1])]
+			contours = numpy.array([tl,tr,br,bl])
+			cv2.fillPoly(image, pts = [contours], color =(255,255,255))
+
+			# outer-most corner of each arcuro
 			if markerID == 0: inputCorners[0] = tl
 			if markerID == 1: inputCorners[1] = tr
 			if markerID == 2: inputCorners[2] = br
 			if markerID == 3: inputCorners[3] = bl
 
-	return inputCorners
+	return(inputCorners,image)
