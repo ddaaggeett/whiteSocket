@@ -1,9 +1,8 @@
 import cv2
 import numpy
 
-def getInputCorners(img='./img/aruco_corners.png'):
+def getInputCorners(image):
 	inputCorners = numpy.zeros((4,2))
-	image = cv2.imread(img)
 	arucoDict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_4X4_50)
 	arucoParams = cv2.aruco.DetectorParameters_create()
 	corners, ids, rejected = cv2.aruco.detectMarkers(image, arucoDict, parameters=arucoParams)
