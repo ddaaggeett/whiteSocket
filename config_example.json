@@ -1,4 +1,5 @@
 {
+    "imageData": "./img/",
     "outputWidth":1280,
     "outputHeight":720
 }

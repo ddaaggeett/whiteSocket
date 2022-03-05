@@ -2,13 +2,13 @@ import cv2
 import warp
 import filter
 import aruco
+import sys
 
 # # all corners read in following order - TL,TR,BR,BL
-img = './img/input.png'
+img = sys.argv[1]
+outputFile = sys.argv[2]
 image = cv2.imread(img)
 inputCorners, image = aruco.getInputCorners(image)
 warped = warp.warp(image,inputCorners)
-filtered = filter.filter(warped)
-cv2.imwrite('./img/output.png', filtered)
-cv2.imshow('output',filtered)
-cv2.waitKey(0)
+output = filter.filter(warped)
+cv2.imwrite(outputFile, output)

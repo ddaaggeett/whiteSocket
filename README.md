@@ -2,6 +2,8 @@
 
 all further development will be with node.js + python
 
+	git clone https://github.com/ddaaggeett/whiteSocket.git
+	cd whiteSocket
 	npm install
 	pip install opencv-contrib-python
 
