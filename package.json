@@ -14,17 +14,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ddaaggeett/whiteSocket.git"
+    "url": "git+https://github.com/ddaaggeett/whitesocket.git"
   },
   "author": "ddaaggeett - Dave Daggett",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/ddaaggeett/whiteSocket/issues"
+    "url": "https://github.com/ddaaggeett/whitesocket/issues"
   },
-  "homepage": "https://github.com/ddaaggeett/whiteSocket#readme",
+  "homepage": "https://github.com/ddaaggeett/whitesocket#readme",
   "dependencies": {
     "expo": "~44.0.0",
     "expo-status-bar": "~1.2.0",
+    "express": "^4.17.3",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-native": "0.64.3",

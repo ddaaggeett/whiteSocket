@@ -4,6 +4,7 @@ rethinkdb_data
 __pycache__
 config.json
 .Trash-1000
+docs
 
 node_modules/
 .expo/
