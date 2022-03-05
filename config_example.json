@@ -1,5 +1,18 @@
 {
-    "imageData": "./img/",
+    "imageData": "../whitesocket_data/",
+    "socketPort": 8081,
+    "expressPort": 3315,
+    "db": "whitesocket",
+    "tables": {
+        "users": "users",
+        "images": "images"
+    },
+    "dbConnxConfig": {
+        "db": "whitesocket"
+    },
     "outputWidth":1280,
-    "outputHeight":720
+    "outputHeight":720,
+    "appName": "whitesocket",
+    "sourceCodeURL": "https://github.com/ddaaggeett/whitesocket",
+    "serverIP": "192.168.0.1"
 }

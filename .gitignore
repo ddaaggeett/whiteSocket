@@ -1,5 +1,6 @@
 misc
-img
+whitesocket_data
+rethinkdb_data
 __pycache__
 config.json
 .Trash-1000

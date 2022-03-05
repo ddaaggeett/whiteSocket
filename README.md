@@ -7,9 +7,10 @@ all further development will be with node.js + python
 	npm install
 	pip install opencv-contrib-python
 
-- `npm start` - start native app
-- `npm run web` - start web app
+- `rethinkdb` - start database
 - `npm run server` - start server
+- `npm run web` - start web app
+- `npm start` - start native app
 
 deprecated image processing: `cd deprecated/`
 
