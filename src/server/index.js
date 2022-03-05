@@ -4,6 +4,7 @@ const path = require('path')
 
 require('./rethinkDB')
 require('./expressServer')
+require('./sockets')
 
 const timestamp = Date.now().toString()
 const inputImage = path.join(imageData,'input.png')

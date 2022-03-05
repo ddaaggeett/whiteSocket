@@ -11,7 +11,7 @@ app.get('/:frameID', (req, res) => {
     // if (Platform.OS === 'web') Linking.openURL(`http://${serverIP}:${expressPort}/${frameID}`)
     const frameID = res.req.params.frameID
     r.connect(dbConnxConfig).then(connection => {
-        r.table('fames').get(frameID).run(connection).then(response => {
+        r.table('frames').get(frameID).run(connection).then(response => {
         })
     })
 })
