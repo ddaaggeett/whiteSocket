@@ -1,19 +1,4 @@
-const { exec } = require('child_process')
-const { imageData } = require('../../config')
-const path = require('path')
-
 require('./rethinkDB')
 require('./expressServer')
 require('./sockets')
-
-const timestamp = Date.now().toString()
-const inputImage = path.join(imageData,'input.png')
-const outputImage = path.join(imageData,'output.png')
-
-exec(`python ./src/server/index.py ${inputImage} ${outputImage}`, (error, stdout, stderr) => {
-    if(error) {
-        console.log(error)
-        return
-    }
-    console.log(stdout)
-})
+require('./imageData_init')

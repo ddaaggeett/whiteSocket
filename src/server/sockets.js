@@ -3,9 +3,11 @@ var app = express()
 var http = require('http').Server(app)
 var io = require('socket.io')(http, { cors: { origin: "*", methods: ["GET", "POST"] } })
 var { socketPort } = require('../../config')
+const whitesocket = require('./whitesocket')
 
 io.on('connection', (socket) => {
-    socket.on('updateFrame', (object, returnToSender) => {
+    socket.on('inputImage', (object, returnToSender) => {
+        // TODO: whitesocket()
     })
 })
 
