@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
-import HomeScreen from './screens/HomeScreen'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import Camera from './Camera'
 
 const Tab = createBottomTabNavigator()
 
@@ -17,7 +17,7 @@ export default () => {
     return (
         <View style={styles.container}>
             <Tab.Navigator screenOptions={screenOptions}>
-                <Tab.Screen name="Home" component={HomeScreen} />
+                <Tab.Screen name="Home" component={Camera} />
             </Tab.Navigator>
         </View>
     )

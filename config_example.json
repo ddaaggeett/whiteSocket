@@ -1,6 +1,6 @@
 {
     "imageData": "../whitesocket_data/",
-    "socketPort": 8081,
+    "socketPort": 3346,
     "expressPort": 3315,
     "db": "whitesocket",
     "tables": {
