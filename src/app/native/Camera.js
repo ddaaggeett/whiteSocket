@@ -17,10 +17,11 @@ const CameraRN = () => {
 
     const __takePicture = async () => {
         const image = await camera.takePictureAsync({
-            quality: 0.9,
+            quality: 0.5,
             base64: true,
         })
-        socket.emit('inputImage', image)
+        const binaryString = `${image.base64}data:image/jpg;base64,`
+        socket.emit('inputImage', {image:binaryString})
     }
 
     if (hasPermission === null) {

@@ -7,10 +7,10 @@ var { socketPort } = require('../../config')
 const whitesocket = require('./whitesocket')
 
 io.on('connection', (socket) => {
-    socket.on('inputImage', (image, returnToSender) => {
-        const buffer = Buffer.from(image.base64, 'base64');
-        fs.writeFileSync('../whitesocket_data/image.png', buffer)
-        // TODO: not saving to file properly
+    console.log('connected')
+    socket.on('inputImage', (data, returnToSender) => {
+        var buff = Buffer.from(data.image, 'base64')
+        fs.writeFileSync('../whitesocket_data/image.jpg', buff)
         // TODO: whitesocket()
     })
 })
