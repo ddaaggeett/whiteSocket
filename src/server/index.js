@@ -1,7 +1,9 @@
-require('./rethinkDB')
-require('./expressServer')
-require('./sockets')
-const { initImageDataDirectory, settleIPConfig } = require('./configure')
+const { exec } = require ('child_process')
 
-initImageDataDirectory()
-settleIPConfig()
+exec(`cp ./config_example.json ./config.json`, (error, stdout, stderr) => {
+    if(error) console.error(error)
+    require('./rethinkDB')
+    require('./expressServer')
+    require('./sockets')
+    require('./configure')
+})

@@ -1,5 +1,5 @@
 {
-    "imageData": "../whitesocket_data/",
+    "imageData": "./whitesocket_data/",
     "configFile": "./config.json",
     "socketPort": 3346,
     "expressPort": 3315,

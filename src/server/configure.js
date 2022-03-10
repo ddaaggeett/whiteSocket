@@ -24,7 +24,5 @@ const settleIPConfig = () => {
     fs.writeFile(config.configFile, JSON.stringify(config, null, 4), (error) => {})
 }
 
-module.exports = {
-    settleIPConfig,
-    initImageDataDirectory,
-}
+initImageDataDirectory()
+settleIPConfig()
