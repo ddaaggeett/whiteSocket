@@ -9,7 +9,6 @@ read the [documentation](https://github.com/ddaaggeett/whitesocket/wiki)
 	npm install
 	pip install opencv-contrib-python
 
-- `rethinkdb` - start database
 - `npm run server` - start server
 - `npm run web` - start web app
 - `npm start` - start native app
