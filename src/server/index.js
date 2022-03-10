@@ -1,4 +1,7 @@
 require('./rethinkDB')
 require('./expressServer')
 require('./sockets')
-require('./imageData_init')
+const { initImageDataDirectory, settleIPConfig } = require('./configure')
+
+initImageDataDirectory()
+settleIPConfig()
