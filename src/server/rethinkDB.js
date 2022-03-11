@@ -31,5 +31,6 @@ const initDB = () => {
 }
 
 spawn(`rethinkdb`).stdout.on('data', (data) => {
+    console.log(`\n${data}`)
     initDB()
 })

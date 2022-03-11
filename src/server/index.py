@@ -10,5 +10,6 @@ outputFile = sys.argv[2]
 image = cv2.imread(img)
 inputCorners, image = aruco.getInputCorners(image)
 warped = warp.warp(image,inputCorners)
-output = filter.filter(warped)
+ink = filter.inkOnly(warped)
+output = ink
 cv2.imwrite(outputFile, output)

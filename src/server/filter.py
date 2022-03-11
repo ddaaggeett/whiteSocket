@@ -7,7 +7,7 @@ def create_blank(width, height, rgb_color=(255,255,255)):
     image[:] = color
     return image
 
-def filter(image):
+def inkOnly(image):
     height, width, color = image.shape
     blank_image = create_blank(width,height)
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
