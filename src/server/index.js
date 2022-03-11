@@ -1,8 +1,6 @@
-const { exec } = require ('child_process')
+const initConfig = require ('./configure')
 
-exec(`cp ./config_example.json ./config.json`, (error, stdout, stderr) => {
-    if(error) console.error(error)
-    require('./configure')
+initConfig().then(() => {
     require('./rethinkDB')
     require('./sockets')
     require('./expressServer')

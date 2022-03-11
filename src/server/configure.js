@@ -1,6 +1,7 @@
 const fs = require('fs')
+const { copyFile } = require('fs/promises')
 const path = require('path')
-const config = require('../../config')
+const config = require('../../config_example')
 const { networkInterfaces } = require('os')
 const nets = networkInterfaces()
 
@@ -11,18 +12,39 @@ const initImageDataDirectory = () => {
 }
 
 const settleIPConfig = () => {
-    const results = Object.create({})
-    for (const name of Object.keys(nets)) {
-        for (const net of nets[name]) {
-            if (net.family === 'IPv4' && !net.internal) {
-                if (!results[name]) results[name] = []
-                results[name].push(net.address)
+    return new Promise((resolve,reject) => {
+
+        const results = Object.create({})
+        for (const name of Object.keys(nets)) {
+            for (const net of nets[name]) {
+                if (net.family === 'IPv4' && !net.internal) {
+                    if (!results[name]) results[name] = []
+                    results[name].push(net.address)
+                }
             }
         }
-    }
-    config.serverIP = results['wlp2s0'][0]
-    fs.writeFile(config.configFile, JSON.stringify(config, null, 4), (error) => {})
+        try {
+            config.serverIP = results['wlp2s0'][0]
+            fs.writeFile(config.configFile, JSON.stringify(config, null, 4), (error) => {
+                if(!error) resolve()
+            })
+        }
+        catch (error) {
+            config.serverIP = results['enp8s0'][0]
+            fs.writeFile(config.configFile, JSON.stringify(config, null, 4), (error) => {
+                if(!error) resolve()
+            })
+        }
+    })
 }
 
-initImageDataDirectory()
-settleIPConfig()
+const initConfig = () => {
+    return new Promise((resolve,reject) => {
+        copyFile('./config_example.json',config.configFile).then(() => {
+            initImageDataDirectory()
+            settleIPConfig().then(() => resolve())
+        })
+    })
+}
+
+module.exports = initConfig
