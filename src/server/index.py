@@ -1,6 +1,6 @@
 import cv2
 import warp
-import filter
+import mask
 import aruco
 import sys
 
@@ -10,6 +10,6 @@ outputFile = sys.argv[2]
 image = cv2.imread(img)
 inputCorners, image = aruco.getInputCorners(image)
 warped = warp.warp(image,inputCorners)
-ink = filter.inkOnly(warped)
+ink = mask.inkOnly(warped)
 output = ink
 cv2.imwrite(outputFile, output)
