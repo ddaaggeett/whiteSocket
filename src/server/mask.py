@@ -32,7 +32,8 @@ def eraseAreas(image):
 
 def roi(image):
     mask = numpy.zeros(image.shape[:2], dtype="uint8")
-    inputCorners = numpy.zeros((4,2))
+    mask_arucos = numpy.zeros(image.shape[:2], dtype="uint8")
+    roiCorners = numpy.zeros((4,2)) # outer-most corner of each arcuro
     arucoDict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_4X4_50)
     arucoParams = cv2.aruco.DetectorParameters_create()
     corners, ids, rejected = cv2.aruco.detectMarkers(image, arucoDict, parameters=arucoParams)
@@ -45,11 +46,14 @@ def roi(image):
             tr = [int(tr[0]), int(tr[1])]
             br = [int(br[0]), int(br[1])]
             bl = [int(bl[0]), int(bl[1])]
-            # outer-most corner of each arcuro
-            if markerID == 0: inputCorners[0] = tl
-            if markerID == 1: inputCorners[1] = tr
-            if markerID == 2: inputCorners[2] = br
-            if markerID == 3: inputCorners[3] = bl
-    contours = numpy.array([inputCorners[0],inputCorners[1],inputCorners[2],inputCorners[3]])
-    cv2.fillPoly(mask, pts = numpy.int32([contours]), color =(255,255,255))
-    return(mask)
+            contours = numpy.array([tl,tr,br,bl])
+            cv2.fillPoly(mask_arucos, pts = numpy.int32([contours]), color=(255,255,255))
+            if markerID == 0: roiCorners[0] = tl
+            elif markerID == 1: roiCorners[1] = tr
+            elif markerID == 2: roiCorners[2] = br
+            elif markerID == 3: roiCorners[3] = bl
+
+    contours = numpy.array([roiCorners[0],roiCorners[1],roiCorners[2],roiCorners[3]])
+    cv2.fillPoly(mask, pts = numpy.int32([contours]), color=(255,255,255))
+    mask = cv2.bitwise_xor(mask, mask_arucos, mask = None)
+    return(mask, roiCorners)
