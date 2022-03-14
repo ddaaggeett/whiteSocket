@@ -12,3 +12,6 @@ ink = mask.inkOnly(warped)
 output = ink
 cv2.imwrite(outputFile, output)
 roi, roiCorners = mask.roi(image)
+ink = mask.ink(image, roi)
+eraser = mask.eraser(image, roi)
+

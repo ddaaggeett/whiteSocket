@@ -7,28 +7,20 @@ def create_blank(width, height, rgb_color=(255,255,255)):
     image[:] = color
     return image
 
-def inkOnly(image):
-    height, width, color = image.shape
-    blank_image = create_blank(width,height)
-    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-    # Every color except white
-    low = numpy.array([0,0,0])
-    high = numpy.array([359, 255, 255])
-    maskInk = cv2.inRange(hsv, low, high)
-    inkResult = cv2.bitwise_and(image, image, mask=maskInk)
-    background_mask = cv2.bitwise_not(maskInk)
-    background = cv2.bitwise_or(blank_image, blank_image, mask=background_mask)
-    inkOnly = cv2.bitwise_or(inkResult, background)
-    return(inkOnly)
+def ink(image, roi):
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    th, allInk = cv2.threshold(gray, 80, 255, cv2.THRESH_BINARY_INV)
+    ink = cv2.bitwise_and(roi, allInk, mask=None)
+    return(ink)
 
-def eraseAreas(image):
-    # return mask
+def eraser(image, roi):
+    # TODO: edges need to be on the inside edge of the enk, not exterior
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     eraseAreas = cv2.Canny(gray, 30, 200)
     contours, hierarchy = cv2.findContours(eraseAreas, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    cv2.fillPoly(eraseAreas,contours, color=(255,255,255))
-    cv2.imshow('Contours', eraseAreas)
-    return(eraseAreas)
+    cv2.fillPoly(eraseAreas, contours, color=(255,255,255))
+    eraser = cv2.bitwise_and(roi, eraseAreas, mask=None)
+    return(eraser)
 
 def roi(image):
     mask = numpy.zeros(image.shape[:2], dtype="uint8")
