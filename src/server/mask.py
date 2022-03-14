@@ -1,5 +1,6 @@
 import cv2
 import numpy
+import json
 
 def create_blank(width, height, rgb_color=(255,255,255)):
     image = numpy.zeros((height, width, 3), numpy.uint8)
@@ -49,3 +50,13 @@ def roi(image):
     cv2.fillPoly(mask, pts = numpy.int32([contours]), color=(255,255,255))
     mask = cv2.bitwise_xor(mask, mask_arucos, mask = None)
     return(mask, roiCorners)
+
+def warp(mask, roiCorners):
+    config = json.loads(open('config.json').read())
+    outputWidth = config['outputWidth']
+    outputHeight = config['outputHeight']
+    inpoints = numpy.float32(roiCorners)
+    outpoints = numpy.float32([[0,0],[outputWidth,0],[outputWidth,outputHeight],[0,outputHeight]])
+    matrix = cv2.getPerspectiveTransform(inpoints,outpoints)
+    warped = cv2.warpPerspective(mask, matrix, (outputWidth,outputHeight))
+    return(warped)
