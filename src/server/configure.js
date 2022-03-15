@@ -31,11 +31,11 @@ const settleIPConfig = () => {
                 }
             }
         }
-        if (results['wlp2s0'][0] != undefined) {
+        if (results['wlp2s0']) {
             config.serverIP = results['wlp2s0'][0]
             writeConfigFile(config).then(() => resolve())
         }
-        else if (results['enp8s0'][0] != undefined) {
+        else if (results['enp8s0']) {
             config.serverIP = results['enp8s0'][0]
             writeConfigFile(config).then(() => resolve())
         }

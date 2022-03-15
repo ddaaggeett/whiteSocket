@@ -16,10 +16,11 @@ io.on('connection', (socket) => {
     socket.on('inputImage', (data, returnToSender) => {
         var buff = Buffer.from(data.image, 'base64')
         const input_dir = path.join(config.imageData, data.timestamp.toString())
-        const image_uri = path.join(input_dir,'input.jpg')
+        const input_uri = path.join(input_dir,'input.jpg')
+        const output_uri = path.join(input_dir,'output.jpg')
         fs.mkdir(input_dir, {recursive:true}, error => {
-            if(!error) fs.writeFile(image_uri, buff, (error) => {
-                // if (!error) whitesocket(image_uri)
+            if(!error) fs.writeFile(input_uri, buff, (error) => {
+                if (!error) whitesocket(input_uri, output_uri, data.mode)
             })
         })
 

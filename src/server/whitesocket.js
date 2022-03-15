@@ -2,13 +2,8 @@ const { exec } = require('child_process')
 const { imageData } = require('../../config')
 const path = require('path')
 
-const whitesocket = () => {
-
-    const timestamp = Date.now().toString()
-    const inputImage = path.join(imageData,'input.png')
-    const outputImage = path.join(imageData,'output.png')
-
-    exec(`python ./src/server/index.py ${inputImage} ${outputImage}`, (error, stdout, stderr) => {
+const whitesocket = (input,output,mode) => {
+    exec(`python ./src/server/index.py ${input} ${output} ${mode}`, (error, stdout, stderr) => {
         if(error) {
             console.log(error)
             return

@@ -15,7 +15,7 @@ const CameraRN = () => {
         })()
     }, [])
 
-    const __takePicture = async () => {
+    const __takePicture = async (mode) => {
         const image = await camera.takePictureAsync({
             quality: 1.0,
             base64: true,
@@ -24,6 +24,7 @@ const CameraRN = () => {
         socket.emit('inputImage', {
             image:binaryString,
             timestamp: Date.now(),
+            mode,
         })
     }
 
@@ -38,12 +39,19 @@ const CameraRN = () => {
             <Camera
                 style={styles.camera}
                 ref={ref => camera = ref}
+                flashMode={'on'}
+                autoFocus={'on'}
                 >
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity
                         style={styles.button}
-                        onPress={__takePicture}>
-                        <Text style={styles.text}>CAPTURE</Text>
+                        onPress={() => __takePicture('write')}>
+                        <Text style={styles.text}>WRITE</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => __takePicture('erase')}>
+                        <Text style={styles.text}>ERASE</Text>
                     </TouchableOpacity>
                 </View>
             </Camera>
