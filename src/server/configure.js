@@ -12,11 +12,11 @@ const initImageDataDirectory = () => {
 }
 
 const writeConfigFile = (config) => {
-    return new Promise(resolve,reject) => {
+    return new Promise((resolve,reject) => {
         fs.writeFile(config.configFile, JSON.stringify(config, null, 4), (error) => {
             if(!error) resolve()
         })
-    }
+    })
 }
 
 const settleIPConfig = () => {
@@ -31,11 +31,11 @@ const settleIPConfig = () => {
                 }
             }
         }
-        try {
+        if (results['wlp2s0'][0] != undefined) {
             config.serverIP = results['wlp2s0'][0]
-            writeConfig(config).then(() => resolve())
+            writeConfigFile(config).then(() => resolve())
         }
-        catch (error) {
+        else if (results['enp8s0'][0] != undefined) {
             config.serverIP = results['enp8s0'][0]
             writeConfigFile(config).then(() => resolve())
         }
