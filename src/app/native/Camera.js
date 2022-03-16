@@ -5,7 +5,7 @@ import io from 'socket.io-client'
 import { serverIP, socketPort } from '../../../config'
 const socket = io.connect('http://' + serverIP + ':' + socketPort)
 
-const CameraRN = () => {
+export default () => {
     const [hasPermission, setHasPermission] = useState(null)
 
     useEffect(() => {
@@ -82,5 +82,3 @@ const styles = StyleSheet.create({
         color: 'white',
     },
 })
-
-module.exports = CameraRN
