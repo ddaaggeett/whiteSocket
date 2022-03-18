@@ -4,10 +4,12 @@ import Whiteboard from './Whiteboard'
 
 export default () => {
 
+    const image = 'input.jpg'
+
     return (
         <View style={styles.container}>
             <Text>whitesocket web app</Text>
-            <Whiteboard />
+            <Whiteboard image={image} />
         </View>
     )
 }

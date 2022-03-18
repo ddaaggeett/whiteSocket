@@ -1,11 +1,15 @@
-import React, { useRef, useState } from 'react'
-import { Image, StyleSheet } from 'react-native'
+import React, { useRef, useState, useEffect } from 'react'
+import { View, Image, StyleSheet } from 'react-native'
+const config = require('../../../config.json')
 
-export default () => {
+export default (props) => {
 
     const whiteboardRef = useRef()
     const [fullscreen, setFullscreen] = useState(false)
-    const frame = require('../../../whitesocket_data/input.jpg')
+    const [height, setHeight] = useState(window.innerHeight)
+    const [width, setWidth] = useState(window.innerWidth)
+
+    const imageURI = `http://${config.serverIP}:${config.expressPort}/${props.image}`
 
     const handleFullscreen = () => {
         if(!fullscreen) {
@@ -19,10 +23,20 @@ export default () => {
         }
     }
 
+    useEffect(() => {
+        setHeight(window.innerHeight)
+        setWidth(window.innerWidth)
+    }, [window.innerHeight])
+
+    useEffect(() => {
+        setHeight(window.innerHeight)
+        setWidth(window.innerWidth)
+    }, [])
+
     return (
         <Image
-            style={styles.frame}
-            source={frame}
+            source={{ uri: imageURI }}
+            style={{width,height}}
             ref={whiteboardRef}
             onClick={handleFullscreen}
             />
@@ -33,8 +47,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    frame: {
-        height: 300,
-        width: 400,
+    image: {
     },
 })
