@@ -23,7 +23,7 @@ export default () => {
         const binaryString = `${image.base64}data:image/jpg;base64,`
         socket.emit('inputImage', {
             image:binaryString,
-            timestamp: Date.now(),
+            id: Date.now(),
             mode,
         })
     }
