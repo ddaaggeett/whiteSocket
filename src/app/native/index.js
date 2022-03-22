@@ -1,24 +1,26 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Camera from './Camera'
+import * as ScreenOrientation from 'expo-screen-orientation'
 
-const Tab = createBottomTabNavigator()
+const Stack = createNativeStackNavigator()
 
 export default () => {
 
     const screenOptions = {
-        activeBackgroundColor: '#222',
-        inactiveBackgroundColor: 'black',
-        labelPosition: 'beside-icon',
-        labelStyle:{fontSize:20,position:'absolute',color:'white'},
+        headerShown: false,
     }
+
+    React.useEffect(() => {
+        ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT)
+    }, [])
 
     return (
         <View style={styles.container}>
-            <Tab.Navigator screenOptions={screenOptions}>
-                <Tab.Screen name="Home" component={Camera} />
-            </Tab.Navigator>
+            <Stack.Navigator screenOptions={screenOptions}>
+                <Stack.Screen name="Home" component={Camera} />
+            </Stack.Navigator>
         </View>
     )
 }

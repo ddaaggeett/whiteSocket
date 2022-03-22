@@ -50,13 +50,13 @@ export default () => {
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity
                         style={styles.button}
-                        onPress={() => __takePicture('write')}>
-                        <Text style={styles.text}>WRITE</Text>
+                        onPress={() => __takePicture('erase')}>
+                        <Text style={styles.text}>ERASE</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.button}
-                        onPress={() => __takePicture('erase')}>
-                        <Text style={styles.text}>ERASE</Text>
+                        onPress={() => __takePicture('write')}>
+                        <Text style={styles.text}>WRITE</Text>
                     </TouchableOpacity>
                 </View>
             </Camera>
@@ -75,15 +75,19 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'transparent',
         flexDirection: 'row',
-        margin: 20,
+        margin: 50,
     },
     button: {
         flex: 1,
-        alignSelf: 'flex-end',
+        padding: 20,
+        borderWidth: 1,
+        borderColor: 'black',
+        backgroundColor: 'rgba(2,2,2,0.5)',
+        alignSelf: 'center',
         alignItems: 'center',
     },
     text: {
-        fontSize: 18,
+        fontSize: 50,
         color: 'white',
     },
 })
