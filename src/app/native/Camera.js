@@ -7,6 +7,7 @@ const socket = io.connect('http://' + serverIP + ':' + socketPort)
 
 export default () => {
     const [hasPermission, setHasPermission] = useState(null)
+    const [cameraReady, setCameraReady] = useState(false)
 
     useEffect(() => {
         (async () => {
@@ -15,18 +16,21 @@ export default () => {
         })()
     }, [])
 
-    const __takePicture = async (mode) => {
-        const image = await camera.takePictureAsync({
+    const __takePicture = (mode) => {
+        if(cameraReady) camera.takePictureAsync({
             quality: 1.0,
             base64: true,
-        })
-        const binaryString = `${image.base64}data:image/jpg;base64,`
-        socket.emit('inputImage', {
-            image:binaryString,
-            id: Date.now(),
-            mode,
+        }).then(image => {
+            const binaryString = `${image.base64}data:image/jpg;base64,`
+            socket.emit('inputImage', {
+                image:binaryString,
+                id: Date.now(),
+                mode,
+            })
         })
     }
+
+    const handleCameraReady = () => setCameraReady(true)
 
     if (hasPermission === null) {
         return <View />
@@ -41,6 +45,7 @@ export default () => {
                 ref={ref => camera = ref}
                 flashMode={'on'}
                 autoFocus={'on'}
+                onCameraReady={handleCameraReady}
                 >
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity
@@ -73,7 +78,7 @@ const styles = StyleSheet.create({
         margin: 20,
     },
     button: {
-        flex: 0.1,
+        flex: 1,
         alignSelf: 'flex-end',
         alignItems: 'center',
     },
