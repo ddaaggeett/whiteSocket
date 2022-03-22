@@ -15,7 +15,7 @@ export default () => {
 }
 
 const arucoStyle = {
-    position: 'absolute',
+    position: 'fixed',
     width: 100,
     height: 100,
 }

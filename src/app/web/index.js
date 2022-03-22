@@ -16,8 +16,8 @@ export default () => {
 
     return (
         <View style={styles.container}>
-            <Arucos />
-            <Whiteboard image={image} />
+            <View style={styles.arucos}><Arucos /></View>
+            <View style={styles.whiteboard}><Whiteboard image={image} /></View>
         </View>
     )
 }
@@ -25,5 +25,13 @@ export default () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    arucos: {
+        position: 'absolute',
+        zIndex: 1,
+    },
+    whiteboard: {
+        position: 'absolute',
+        zIndex: 0,
     },
 })
