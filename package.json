@@ -36,13 +36,18 @@
     "react-native": "0.64.3",
     "react-native-safe-area-context": "3.3.2",
     "react-native-web": "0.17.1",
+    "react-redux": "^7.2.6",
+    "redux": "^4.1.2",
+    "redux-persist": "^6.0.0",
+    "redux-thunk": "^2.4.1",
     "rethinkdb": "^2.4.2",
     "socket.io": "^4.4.1",
     "socket.io-client": "^4.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "redux-logger": "^3.0.6"
   },
   "private": true
 }
