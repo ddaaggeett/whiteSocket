@@ -1,13 +1,17 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
+import { useSelector } from 'react-redux'
 import Whiteboard from './Whiteboard'
 import Arucos from './Arucos'
+import useDataSocketHook from '../dataSocket'
 import io from 'socket.io-client'
 import { serverIP, socketPort } from '../../../config'
 const socket = io.connect('http://' + serverIP + ':' + socketPort)
 
 export default () => {
 
+    useDataSocketHook()
+    const { frame } = useSelector(state => state.app)
     const [image, setImage] = React.useState('default.jpg')
 
     socket.on('outputImage', data => {
