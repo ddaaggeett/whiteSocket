@@ -3,6 +3,7 @@ const path = require('path')
 const config = require('../../config')
 const fs = require('fs')
 const whitesocket = require('./whitesocket')
+const Diff = require('./diff')
 
 var app = express()
 var http = require('http').Server(app)
@@ -12,25 +13,20 @@ var io = require('socket.io')(http, {
 })
 
 io.on('connection', (socket) => {
-    console.log('connected')
     socket.on('inputImage', (data, returnToSender) => {
-        var buff = Buffer.from(data.image, 'base64')
-        const input_dir = path.join(config.imageData, data.id.toString())
-        const input_uri = path.join(input_dir,'input.jpg')
-        const output_uri = path.join(input_dir,'output.jpg')
-        fs.mkdir(input_dir, {recursive:true}, error => {
-            if(!error) {
-                fs.writeFile(input_uri, buff, (error) => {
-                    if (!error) {
-                        whitesocket(input_uri, output_uri, data.mode).then(() => {
-                            io.emit('outputImage',{
-                                id: data.id,
-                            })
-                        })
-                        .catch(error => {})
-                    }
-                })
-            }
+        const dir = path.join(config.imageData, data.timestamp.toString())
+        const uri = path.join(dir,'diff.jpg')
+        const result_uri = path.join(dir,'output.jpg')
+        const diff = new Diff({
+            dir,
+            uri,
+            result_uri,
+            mode: data.mode,
+            timestamp: data.timestamp,
+            imageBinaryString: data.imageBinaryString,
+        })
+        diff.apply().then(() => {
+            io.emit('outputImage', diff)
         })
     })
 })

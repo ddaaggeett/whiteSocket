@@ -21,10 +21,10 @@ export default () => {
             quality: 1.0,
             base64: true,
         }).then(image => {
-            const binaryString = `${image.base64}data:image/jpg;base64,`
+            const imageBinaryString = `${image.base64}data:image/jpg;base64,`
             socket.emit('inputImage', {
-                image:binaryString,
-                id: Date.now(),
+                timestamp: Date.now(),
+                imageBinaryString,
                 mode,
             })
         })

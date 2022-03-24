@@ -12,10 +12,10 @@ export default () => {
 
     useDataSocketHook()
     const { frame } = useSelector(state => state.app)
-    const [image, setImage] = React.useState('default.jpg')
+    const [image, setImage] = React.useState('blank.jpg')
 
-    socket.on('outputImage', data => {
-        setImage(`${data.id}/output.jpg`)
+    socket.on('outputImage', diff => {
+        setImage(`${diff.timestamp}/output.jpg`)
     })
 
     return (
