@@ -11,20 +11,23 @@ class Diff {
         this.result_uri = diffObject.result_uri
         this.mode = diffObject.mode
         this.timestamp = diffObject.timestamp
-        this.imageBinaryString = diffObject.imageBinaryString
     }
 
     apply = () => {
         return new Promise((resolve, reject) => {
+            whitesocket(this.uri, this.result_uri, this.mode)
+            .then(() => resolve())
+            .catch(error => {})
+        })
+    }
+
+    binaryStringToFile = (imageBinaryString) => {
+        return new Promise((resolve,reject) => {
             fs.mkdir(this.dir, {recursive:true}, error => {
                 if(!error) {
-                    var buff = Buffer.from(this.imageBinaryString, 'base64')
-                    fs.writeFile(this.uri, buff, (error) => {
-                        if (!error) {
-                            whitesocket(this.uri, this.result_uri, this.mode)
-                            .then(() => resolve())
-                            .catch(error => {})
-                        }
+                    const buffer = Buffer.from(imageBinaryString, 'base64')
+                    fs.writeFile(this.uri, buffer, (error) => {
+                        if (!error) resolve()
                     })
                 }
             })
