@@ -6,7 +6,7 @@
     "db": "whitesocket",
     "tables": {
         "users": "users",
-        "frames": "frames"
+        "diffs": "diffs"
     },
     "dbConnxConfig": {
         "db": "whitesocket"

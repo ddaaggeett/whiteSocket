@@ -1,3 +1,4 @@
+const process = require('process')
 const r = require('rethinkdb')
 var { db, tables, dbConnxConfig } = require('../../config')
 const { spawn } = require('child_process')
@@ -30,7 +31,14 @@ const initDB = () => {
     })
 }
 
-spawn(`rethinkdb`).stdout.on('data', (data) => {
-    console.log(`\n${data}`)
+const rethinkdb = spawn('rethinkdb',[])
+rethinkdb.stdout.on('data', data => {
+    console.log(`\nRethinkDB output\n${data}`)
     initDB()
+})
+rethinkdb.stderr.on('data', error => {
+    console.error(`\nERROR starting RethinkDB\n${error}`)
+})
+process.on('exit', (code) => {
+    rethinkdb.kill()
 })
