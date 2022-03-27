@@ -15,7 +15,7 @@ export default () => {
     const [image, setImage] = React.useState('blank.jpg')
 
     socket.on('outputImage', diff => {
-        setImage(`${diff.timestamp}/output.jpg`)
+        setImage(diff.result_uri_static)
     })
 
     return (

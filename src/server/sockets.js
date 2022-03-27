@@ -1,5 +1,4 @@
 const express = require('express')
-const path = require('path')
 const config = require('../../config')
 const diff = require('./diff')
 
@@ -12,21 +11,7 @@ var io = require('socket.io')(http, {
 
 io.on('connection', (socket) => {
     socket.on('inputImage', (data, returnToSender) => {
-        const dir = path.join(config.imageData, data.timestamp.toString())
-        const diffObject = {
-            dir,
-            uri: path.join(dir,'diff.jpg'),
-            result_uri: path.join(dir,'output.jpg'),
-            mode: data.mode,
-            timestamp: data.timestamp,
-        }
-        diff.binaryStringToFile(diffObject, data.imageBinaryString).then(() => {
-            diff.apply(diffObject).then(() => {
-                diff.save(diffObject).then(result => {
-                    io.emit('outputImage', result)
-                })
-            })
-        })
+        diff.handle(data).then(diffObject => io.emit('outputImage', diffObject))
     })
 })
 

@@ -1,6 +1,6 @@
 const path = require('path')
 const fs = require('fs')
-const { dbConnxConfig } = require('../../config')
+const config = require('../../config')
 const whitesocket = require('./whitesocket')
 const r = require('rethinkdb')
 
@@ -14,7 +14,7 @@ const apply = (diff) => {
 
 const save = (diff) => {
     return new Promise((resolve, reject) => {
-        r.connect(dbConnxConfig).then(connection => {
+        r.connect(config.dbConnxConfig).then(connection => {
             r.table('diffs').insert(diff, { returnChanges: true, conflict: 'update' }).run(connection)
             .then(result => {
                 resolve(result.changes[0].new_val)
@@ -44,7 +44,30 @@ const binaryStringToFile = (diff, imageBinaryString) => {
     })
 }
 
+const handle = (data) => {
+    return new Promise((resolve, reject) => {
+        const dir = path.join(config.imageData, data.timestamp.toString())
+        const uri = path.join(dir,'diff.jpg')
+        const result_uri = path.join(dir,'result.jpg')
+        const result_uri_static = path.relative(config.imageData,result_uri)
+        const diffObject = {
+            dir,
+            uri,
+            result_uri,
+            result_uri_static,
+            mode: data.mode,
+            timestamp: data.timestamp,
+        }
+        binaryStringToFile(diffObject, data.imageBinaryString).then(() => {
+            apply(diffObject).then(() => {
+                save(diffObject).then(result => resolve(result))
+            })
+        })
+    })
+}
+
 module.exports = {
+    handle,
     save,
     apply,
     binaryStringToFile,
