@@ -1,38 +1,51 @@
 const path = require('path')
 const fs = require('fs')
-const config = require('../../config')
+const { dbConnxConfig } = require('../../config')
 const whitesocket = require('./whitesocket')
+const r = require('rethinkdb')
 
-class Diff {
-
-    constructor(diffObject, prev_uri='blank.jpg') {
-        this.dir = diffObject.dir
-        this.uri = diffObject.uri
-        this.result_uri = diffObject.result_uri
-        this.mode = diffObject.mode
-        this.timestamp = diffObject.timestamp
-    }
-
-    apply = () => {
-        return new Promise((resolve, reject) => {
-            whitesocket(this.uri, this.result_uri, this.mode)
-            .then(() => resolve())
-            .catch(error => {})
-        })
-    }
-
-    binaryStringToFile = (imageBinaryString) => {
-        return new Promise((resolve,reject) => {
-            fs.mkdir(this.dir, {recursive:true}, error => {
-                if(!error) {
-                    const buffer = Buffer.from(imageBinaryString, 'base64')
-                    fs.writeFile(this.uri, buffer, (error) => {
-                        if (!error) resolve()
-                    })
-                }
-            })
-        })
-    }
+const apply = (diff) => {
+    return new Promise((resolve, reject) => {
+        whitesocket(diff.uri, diff.result_uri, diff.mode)
+        .then(() => resolve())
+        .catch(error => reject())
+    })
 }
 
-module.exports = Diff
+const save = (diff) => {
+    return new Promise((resolve, reject) => {
+        r.connect(dbConnxConfig).then(connection => {
+            r.table('diffs').insert(diff, { returnChanges: true, conflict: 'update' }).run(connection)
+            .then(result => {
+                resolve(result.changes[0].new_val)
+            })
+            .catch(error => {
+                console.log(`\ndiff save error\n${error}`)
+                reject()
+            })
+        })
+        .catch(error => {
+            console.log(`\ndiff save db connection error\n${error}`)
+            reject()
+        })
+    })
+}
+
+const binaryStringToFile = (diff, imageBinaryString) => {
+    return new Promise((resolve,reject) => {
+        fs.mkdir(diff.dir, {recursive:true}, error => {
+            if(!error) {
+                const buffer = Buffer.from(imageBinaryString, 'base64')
+                fs.writeFile(diff.uri, buffer, (error) => {
+                    if (!error) resolve()
+                })
+            }
+        })
+    })
+}
+
+module.exports = {
+    save,
+    apply,
+    binaryStringToFile,
+}
