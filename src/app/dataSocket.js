@@ -10,6 +10,6 @@ export default () => {
     const redux = useDispatch()
 
     useEffect(() => {
-        socket.on('updateFrame', data => redux(actions.updateFrame(data)))
+        socket.on('updateFrame', diff => redux(actions.updateFrame(diff)))
     }, [])
 }

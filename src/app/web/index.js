@@ -12,16 +12,11 @@ export default () => {
 
     useDataSocketHook()
     const { frame } = useSelector(state => state.app)
-    const [image, setImage] = React.useState('blank.jpg')
-
-    socket.on('outputImage', diff => {
-        setImage(diff.result_uri_static)
-    })
 
     return (
         <View style={styles.container}>
             <View style={styles.arucos}><Arucos /></View>
-            <View style={styles.whiteboard}><Whiteboard image={image} /></View>
+            <View style={styles.whiteboard}><Whiteboard image={frame.current} /></View>
         </View>
     )
 }

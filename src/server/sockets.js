@@ -11,7 +11,7 @@ var io = require('socket.io')(http, {
 
 io.on('connection', (socket) => {
     socket.on('inputImage', (data, returnToSender) => {
-        diff.handle(data).then(diffObject => io.emit('outputImage', diffObject))
+        diff.handle(data).then(diffObject => io.emit('updateFrame', diffObject))
     })
 })
 
