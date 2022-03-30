@@ -6,7 +6,7 @@ const r = require('rethinkdb')
 
 const apply = (diff) => {
     return new Promise((resolve, reject) => {
-        whitesocket(diff.uri, diff.result_uri, diff.mode)
+        whitesocket(diff)
         .then(() => resolve())
         .catch(error => reject())
     })
@@ -33,10 +33,12 @@ const save = (diff) => {
 
 const binaryStringToFile = (diff, imageBinaryString) => {
     return new Promise((resolve,reject) => {
-        fs.mkdir(diff.dir, {recursive:true}, error => {
+        const dir = path.join(config.imageData, path.dirname(diff.uri))
+        const uri = path.join(config.imageData, diff.uri)
+        fs.mkdir(dir, {recursive:true}, error => {
             if(!error) {
                 const buffer = Buffer.from(imageBinaryString, 'base64')
-                fs.writeFile(diff.uri, buffer, (error) => {
+                fs.writeFile(uri, buffer, (error) => {
                     if (!error) resolve()
                 })
             }
@@ -46,21 +48,17 @@ const binaryStringToFile = (diff, imageBinaryString) => {
 
 const handle = (data) => {
     return new Promise((resolve, reject) => {
-        const dir = path.join(config.imageData, data.timestamp.toString())
+        const dir = path.join(data.timestamp.toString())
         const uri = path.join(dir,'diff.jpg')
-        const result_uri = path.join(dir,'result.jpg')
-        const result_uri_static = path.relative(config.imageData,result_uri)
-        const diffObject = {
-            dir,
+        const result = path.join(dir,'result.jpg')
+        const diff = {
             uri,
-            result_uri,
-            result_uri_static,
+            result,
             mode: data.mode,
-            timestamp: data.timestamp,
         }
-        binaryStringToFile(diffObject, data.imageBinaryString).then(() => {
-            apply(diffObject).then(() => {
-                save(diffObject).then(result => resolve(result))
+        binaryStringToFile(diff, data.imageBinaryString).then(() => {
+            apply(diff).then(() => {
+                save(diff).then(result => resolve(result))
             })
         })
     })

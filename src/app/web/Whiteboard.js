@@ -5,13 +5,13 @@ const config = require('../../../config.json')
 
 export default (props) => {
 
-    const { frame } = useSelector(state => state.app)
+    const { diff } = useSelector(state => state.app)
     const whiteboardRef = useRef()
     const [fullscreen, setFullscreen] = useState(false)
     const [height, setHeight] = useState(window.innerHeight)
     const [width, setWidth] = useState(window.innerWidth)
 
-    const imageURI = `http://${config.serverIP}:${config.expressPort}/${frame.current}`
+    const imageURI = `http://${config.serverIP}:${config.expressPort}/${diff.result}`
 
     const handleFullscreen = () => {
         if(!fullscreen) {

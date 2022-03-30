@@ -43,7 +43,7 @@ export default () => {
             <Camera
                 style={styles.camera}
                 ref={ref => camera = ref}
-                flashMode={'on'}
+                flashMode={'off'}
                 autoFocus={'on'}
                 onCameraReady={handleCameraReady}
                 >

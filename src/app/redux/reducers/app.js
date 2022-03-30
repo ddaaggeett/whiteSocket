@@ -1,8 +1,8 @@
 import * as actions from '../actions'
 
 const initialState = {
-    frame: {
-        current: 'blank.jpg',
+    diff: {
+        result: 'blank.jpg',
     },
     id: 'defaultUser', // userID
 }
@@ -13,10 +13,10 @@ export default function app(state = initialState, action) {
         case actions.UPDATE_FRAME:
             return {
                 ...state,
-                frame: {
-                    prev: state.frame.current,
-                    current: action.frame.result_uri_static,
-                    ...action.frame,
+                diff: {
+                    prev: state.diff.id,
+                    result: action.diff.result,
+                    ...action.diff,
                 },
             }
 
