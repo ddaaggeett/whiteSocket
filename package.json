@@ -25,6 +25,7 @@
   "dependencies": {
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/native-stack": "^6.5.0",
+    "ansi-regex": "4.1.1",
     "expo": "~44.0.0",
     "expo-camera": "~12.1.2",
     "expo-screen-orientation": "~4.1.2",
