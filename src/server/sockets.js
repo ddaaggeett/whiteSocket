@@ -1,6 +1,7 @@
 const express = require('express')
 const config = require('../../config')
 const diff = require('./diff')
+const user = require('./user')
 
 var app = express()
 var http = require('http').Server(app)
@@ -10,6 +11,7 @@ var io = require('socket.io')(http, {
 })
 
 io.on('connection', (socket) => {
+    socket.on('syncUserState', appState => user.save(appState))
     socket.on('inputImage', (data, returnToSender) => {
         diff.handle(data).then(diffObject => io.emit('updateFrame', diffObject))
     })

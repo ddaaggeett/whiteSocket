@@ -1,15 +1,17 @@
 import React, { useRef, useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { View, Image, StyleSheet } from 'react-native'
 const config = require('../../../config.json')
 
 export default (props) => {
 
+    const { frame } = useSelector(state => state.app)
     const whiteboardRef = useRef()
     const [fullscreen, setFullscreen] = useState(false)
     const [height, setHeight] = useState(window.innerHeight)
     const [width, setWidth] = useState(window.innerWidth)
 
-    const imageURI = `http://${config.serverIP}:${config.expressPort}/${props.image}`
+    const imageURI = `http://${config.serverIP}:${config.expressPort}/${frame.current}`
 
     const handleFullscreen = () => {
         if(!fullscreen) {

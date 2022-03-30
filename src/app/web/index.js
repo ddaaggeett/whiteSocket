@@ -1,22 +1,20 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
-import { useSelector } from 'react-redux'
 import Whiteboard from './Whiteboard'
 import Arucos from './Arucos'
 import useDataSocketHook from '../dataSocket'
 import io from 'socket.io-client'
 import { serverIP, socketPort } from '../../../config'
-const socket = io.connect('http://' + serverIP + ':' + socketPort)
+const socket = io.connect(`http://${serverIP}:${socketPort}`)
 
 export default () => {
 
     useDataSocketHook()
-    const { frame } = useSelector(state => state.app)
 
     return (
         <View style={styles.container}>
             <View style={styles.arucos}><Arucos /></View>
-            <View style={styles.whiteboard}><Whiteboard image={frame.current} /></View>
+            <View style={styles.whiteboard}><Whiteboard /></View>
         </View>
     )
 }

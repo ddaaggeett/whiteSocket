@@ -3,9 +3,8 @@ import * as actions from '../actions'
 const initialState = {
     frame: {
         current: 'blank.jpg',
-        prev: null,
-        id: null,
     },
+    id: 'defaultUser', // userID
 }
 
 export default function app(state = initialState, action) {

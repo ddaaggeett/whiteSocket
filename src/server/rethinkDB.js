@@ -6,9 +6,7 @@ var dbConnx = null
 
 const createTables = (tables) => {
     for(let table in tables) {
-        let key = 'id'
-        if(table == 'users') key = 'userID'
-        r.db(db).tableCreate(table,{ primaryKey: key }).run(dbConnx).then(result => {
+        r.db(db).tableCreate(table).run(dbConnx).then(result => {
             console.log(`\nTABLE RESULT:\n${JSON.stringify(result,null,4)}`)
             console.log("\nRethinkDB table '%s' created", table)
         }).error(error => {
