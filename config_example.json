@@ -1,4 +1,5 @@
 {
+    "user": "defaultUser",
     "imageData": "./whitesocket_data/",
     "configFile": "./config.json",
     "socketPort": 3346,
