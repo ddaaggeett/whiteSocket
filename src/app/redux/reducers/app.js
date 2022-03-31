@@ -14,7 +14,6 @@ export default function app(state = initialState, action) {
             return {
                 ...state,
                 diff: {
-                    prev: state.diff.id,
                     result: action.diff.result,
                     ...action.diff,
                 },

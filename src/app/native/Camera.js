@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { Camera } from 'expo-camera'
 import io from 'socket.io-client'
-import { serverIP, socketPort } from '../../../config'
-const socket = io.connect('http://' + serverIP + ':' + socketPort)
+import config from '../../../config'
+const socket = io.connect(`http://${config.serverIP}:${config.socketPort}`)
 
 export default () => {
     const [hasPermission, setHasPermission] = useState(null)
@@ -26,6 +26,7 @@ export default () => {
                 timestamp: Date.now(),
                 imageBinaryString,
                 mode,
+                user: config.user,
             })
         })
     }

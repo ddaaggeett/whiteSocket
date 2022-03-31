@@ -15,4 +15,8 @@ export default () => {
         socket.emit('syncUserState', appState)
         socket.on('updateFrame', diff => redux(actions.updateFrame(diff)))
     }, [])
+
+    useEffect(() => {
+        socket.emit('syncUserState', appState)
+    }, [appState.diff])
 }

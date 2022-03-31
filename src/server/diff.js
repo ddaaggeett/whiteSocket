@@ -12,6 +12,29 @@ const apply = (diff) => {
     })
 }
 
+const getPrevDiff = user => {
+    return new Promise((resolve, reject) => {
+        r.connect(config.dbConnxConfig).then(connection => {
+            r.table('users').get(user).run(connection)
+            .then(user => {
+                if (user.diff.id == undefined) { // first diff
+                    const id = null
+                    const uri = user.diff.result
+                    resolve({id,uri})
+                }
+                else r.table('diffs').get(user.diff.id).run(connection)
+                .then(diff => {
+                    const id = user.diff.id
+                    const uri = diff.result
+                    resolve({id,uri})
+                })
+                .catch(error => {})
+            })
+            .catch(error => {})
+        })
+    })
+}
+
 const save = (diff) => {
     return new Promise((resolve, reject) => {
         r.connect(config.dbConnxConfig).then(connection => {
@@ -51,15 +74,25 @@ const handle = (data) => {
         const dir = path.join(data.timestamp.toString())
         const uri = path.join(dir,'diff.jpg')
         const result = path.join(dir,'result.jpg')
-        const diff = {
+        let diff = {
             uri,
             result,
             mode: data.mode,
+            user: data.user,
         }
         binaryStringToFile(diff, data.imageBinaryString).then(() => {
-            apply(diff).then(() => {
-                save(diff).then(result => resolve(result))
+            getPrevDiff(diff.user)
+            .then(prev => {
+                diff = {
+                    ...diff,
+                    prev_id: prev.id,
+                    prev_uri: prev.uri,
+                }
+                apply(diff).then(() => {
+                    save(diff).then(result => resolve(result))
+                })
             })
+            .catch(error => {})
         })
     })
 }
