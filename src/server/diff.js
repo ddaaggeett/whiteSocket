@@ -19,13 +19,13 @@ const getPrevDiff = user => {
             .then(user => {
                 if (user.diff.id == undefined) { // first diff
                     const id = null
-                    const uri = user.diff.result
+                    const uri = user.diff.result_uri
                     resolve({id,uri})
                 }
                 else r.table('diffs').get(user.diff.id).run(connection)
                 .then(diff => {
                     const id = user.diff.id
-                    const uri = diff.result
+                    const uri = diff.result_uri
                     resolve({id,uri})
                 })
                 .catch(error => {})
@@ -73,10 +73,10 @@ const handle = (data) => {
     return new Promise((resolve, reject) => {
         const dir = path.join(data.timestamp.toString())
         const uri = path.join(dir,'diff.jpg')
-        const result = path.join(dir,'result.jpg')
+        const result_uri = path.join(dir,'result.jpg')
         let diff = {
             uri,
-            result,
+            result_uri,
             mode: data.mode,
             user: data.user,
         }

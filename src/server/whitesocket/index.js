@@ -4,7 +4,7 @@ const config = require('../../../config')
 
 const whitesocket = diff => {
     const input = path.join(config.imageData, diff.uri)
-    const output = path.join(config.imageData, diff.result)
+    const output = path.join(config.imageData, diff.result_uri)
     const mode = diff.mode
     return new Promise(function(resolve, reject) {
         exec(`python ./src/server/whitesocket/index.py ${input} ${output} ${mode}`, (error, stdout, stderr) => {

@@ -11,7 +11,7 @@ export default (props) => {
     const [height, setHeight] = useState(window.innerHeight)
     const [width, setWidth] = useState(window.innerWidth)
 
-    const imageURI = `http://${config.serverIP}:${config.expressPort}/${diff.result}`
+    const imageURI = `http://${config.serverIP}:${config.expressPort}/${diff.result_uri}`
 
     const handleFullscreen = () => {
         if(!fullscreen) {
