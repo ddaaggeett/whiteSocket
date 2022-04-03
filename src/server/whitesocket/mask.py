@@ -1,8 +1,17 @@
 import cv2
 import numpy
 import json
+config = json.loads(open('config.json').read())
 
-def create_blank(width, height, rgb_color=(255,255,255)):
+def applyDiffMask(diffMask, prevImage):
+    outputWidth = config['outputWidth']
+    outputHeight = config['outputHeight']
+    color = create_blank(outputWidth,outputHeight,(255,255,255))
+    diff = cv2.bitwise_and(color, color, mask=diffMask)
+    output = cv2.bitwise_xor(prevImage, diff, mask=None)
+    return output
+
+def create_blank(width, height, rgb_color):
     image = numpy.zeros((height, width, 3), numpy.uint8)
     color = tuple(reversed(rgb_color))
     image[:] = color
@@ -52,7 +61,6 @@ def roi(image):
     return(mask, roiCorners)
 
 def warp(mask, roiCorners):
-    config = json.loads(open('config.json').read())
     outputWidth = config['outputWidth']
     outputHeight = config['outputHeight']
     inpoints = numpy.float32(roiCorners)

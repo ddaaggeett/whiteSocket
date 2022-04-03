@@ -4,13 +4,16 @@ import sys
 
 # all corners read in following order - TL,TR,BR,BL
 img = sys.argv[1]
-outputFile = sys.argv[2]
-mode = sys.argv[3]
+prev = sys.argv[2]
+outputFile = sys.argv[3]
+mode = sys.argv[4]
 write = True if mode == 'write' else False
 image = cv2.imread(img)
+prevImage = cv2.imread(prev)
 roi, roiCorners = mask.roi(image)
 inputMask = None
 if(write): inputMask = mask.ink(image, roi)
 else: inputMask = mask.eraser(image, roi)
-mask_output = mask.warp(inputMask, roiCorners)
-cv2.imwrite(outputFile, mask_output)
+diffMask = mask.warp(inputMask, roiCorners)
+output = mask.applyDiffMask(diffMask, prevImage)
+cv2.imwrite(outputFile, output)
