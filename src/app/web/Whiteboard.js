@@ -1,17 +1,25 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { View, Image, StyleSheet } from 'react-native'
-const config = require('../../../config.json')
+const config = require('../../../config')
 
 export default (props) => {
 
-    const { diff } = useSelector(state => state.app)
+    const { diff, prepping } = useSelector(state => state.app)
     const whiteboardRef = useRef()
     const [fullscreen, setFullscreen] = useState(false)
     const [height, setHeight] = useState(window.innerHeight)
     const [width, setWidth] = useState(window.innerWidth)
+    const imageBaseURI = `http://${config.serverIP}:${config.expressPort}/`
+    const [imageURI, setImageURI] = useState(`${imageBaseURI}${diff.result_uri}`)
 
-    const imageURI = `http://${config.serverIP}:${config.expressPort}/${diff.result_uri}`
+    useEffect(() => {
+        if(prepping) setImageURI(`${imageBaseURI}${config.defaultImage}`)
+    }, [prepping])
+
+    useEffect(() => {
+        setImageURI(`${imageBaseURI}${diff.result_uri}`)
+    }, [diff])
 
     const handleFullscreen = () => {
         if(!fullscreen) {

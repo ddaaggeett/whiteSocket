@@ -1,5 +1,7 @@
 const UPDATE_FRAME = 'UPDATE_FRAME'
+const PREP_CAPTURE = 'PREP_CAPTURE'
 
 module.exports = {
     UPDATE_FRAME,
+    PREP_CAPTURE,
 }

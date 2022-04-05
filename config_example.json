@@ -1,5 +1,6 @@
 {
     "user": "defaultUser",
+    "defaultImage": "blank.jpg",
     "imageData": "./whitesocket_data/",
     "configFile": "./config.json",
     "socketPort": 3346,

@@ -1,9 +1,11 @@
 import * as actions from '../actions'
+import { defaultImage } from '../../../../config'
 
 const initialState = {
     diff: {
-        result_uri: 'blank.jpg',
+        result_uri: defaultImage,
     },
+    prepping: false,
     id: 'defaultUser', // userID
 }
 
@@ -14,6 +16,12 @@ export default function app(state = initialState, action) {
             return {
                 ...state,
                 diff: action.diff,
+            }
+
+        case actions.PREP_CAPTURE:
+            return {
+                ...state,
+                prepping: action.prepping,
             }
 
         default:

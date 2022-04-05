@@ -8,27 +8,33 @@ const socket = io.connect(`http://${config.serverIP}:${config.socketPort}`)
 export default () => {
     const [hasPermission, setHasPermission] = useState(null)
     const [cameraReady, setCameraReady] = useState(false)
+    const [mode, setMode] = useState(null)
 
     useEffect(() => {
         (async () => {
             const { status } = await Camera.requestCameraPermissionsAsync()
             setHasPermission(status === 'granted')
         })()
+
+        socket.on('capturePrepped', () => {
+            if(cameraReady) camera.takePictureAsync({
+                quality: 1.0,
+                base64: true,
+            }).then(image => {
+                const imageBinaryString = `${image.base64}data:image/jpg;base64,`
+                socket.emit('inputImage', {
+                    timestamp: Date.now(),
+                    imageBinaryString,
+                    mode,
+                    user: config.user,
+                })
+            })
+        })
     }, [])
 
     const __takePicture = (mode) => {
-        if(cameraReady) camera.takePictureAsync({
-            quality: 1.0,
-            base64: true,
-        }).then(image => {
-            const imageBinaryString = `${image.base64}data:image/jpg;base64,`
-            socket.emit('inputImage', {
-                timestamp: Date.now(),
-                imageBinaryString,
-                mode,
-                user: config.user,
-            })
-        })
+        setMode(mode)
+        socket.emit('prepCapture')
     }
 
     const handleCameraReady = () => setCameraReady(true)

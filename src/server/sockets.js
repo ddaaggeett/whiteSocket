@@ -15,6 +15,8 @@ io.on('connection', (socket) => {
     socket.on('inputImage', (data, returnToSender) => {
         diff.handle(data).then(diffObject => io.emit('updateFrame', diffObject))
     })
+    socket.on('prepCapture', () => io.emit('prepCapture'))
+    socket.on('capturePrepped', () => io.emit('capturePrepped'))
 })
 
 http.listen(config.socketPort, function(){

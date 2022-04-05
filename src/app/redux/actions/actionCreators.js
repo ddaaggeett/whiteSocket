@@ -6,3 +6,10 @@ export function updateFrame(diff) {
         diff
     }
 }
+
+export const prepCapture = prepping => {
+    return {
+        type: actions.PREP_CAPTURE,
+        prepping
+    }
+}
