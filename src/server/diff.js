@@ -35,6 +35,16 @@ const getPrevDiff = user => {
     })
 }
 
+const getOutputShape = user => {
+    return new Promise((resolve, reject) => {
+        r.connect(config.dbConnxConfig).then(connection => {
+            r.table('users').get(user).run(connection)
+            .then(user => resolve(user.outputShape))
+            .catch(error => {})
+        })
+    })
+}
+
 const save = (diff) => {
     return new Promise((resolve, reject) => {
         r.connect(config.dbConnxConfig).then(connection => {
@@ -83,14 +93,20 @@ const handle = (data) => {
         binaryStringToFile(diff, data.imageBinaryString).then(() => {
             getPrevDiff(diff.user)
             .then(prev => {
-                diff = {
-                    ...diff,
-                    prev_id: prev.id,
-                    prev_uri: prev.uri,
-                }
-                apply(diff).then(() => {
-                    save(diff).then(result => resolve(result))
+                getOutputShape(diff.user)
+                .then(outputShape => {
+                    diff = {
+                        ...diff,
+                        prev_id: prev.id,
+                        prev_uri: prev.uri,
+                        outputShape,
+                    }
+                    apply(diff).then(() => {
+                        save(diff).then(result => resolve(result))
+                    })
                 })
+
+
             })
             .catch(error => {})
         })

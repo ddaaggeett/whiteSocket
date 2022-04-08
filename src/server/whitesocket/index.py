@@ -7,6 +7,7 @@ img = sys.argv[1]
 prev = sys.argv[2]
 outputFile = sys.argv[3]
 mode = sys.argv[4]
+outputShape = sys.argv[5]
 write = True if mode == 'write' else False
 image = cv2.imread(img)
 prevImage = cv2.imread(prev)
