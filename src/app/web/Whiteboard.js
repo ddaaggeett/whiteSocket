@@ -1,14 +1,14 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { ImageBackground, View, Image, StyleSheet } from 'react-native'
+import * as actions from '../redux/actions/actionCreators'
 const config = require('../../../config')
 
 export default (props) => {
 
-    const { diff, prepping } = useSelector(state => state.app)
+    const redux = useDispatch()
+    const { diff, prepping, outputShape } = useSelector(state => state.app)
     const [fullscreen, setFullscreen] = useState(false)
-    const [backgroundHeight, setBackgroundHeight] = useState(window.innerHeight)
-    const [backgroundWidth, setBackgroundWidth] = useState(window.innerWidth)
     const [height, setHeight] = useState(window.innerHeight)
     const [width, setWidth] = useState(window.innerWidth)
     const imageBaseURI = `http://${config.serverIP}:${config.expressPort}/`
@@ -23,14 +23,20 @@ export default (props) => {
     }, [diff])
 
     useEffect(() => {
-        setBackgroundHeight(window.innerHeight)
-        setBackgroundWidth(window.innerWidth)
-    }, [window.innerHeight, window.innerWidth])
+        const handleResize = () => {
+            redux(actions.updateOutputShape({
+                width: window.innerWidth,
+                height: window.innerHeight,
+            }))
+        }
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize)
+    }, [])
 
     return (
         <ImageBackground
             source={{uri: `${imageBaseURI}${config.defaultImage}`}}
-            style={{height: backgroundHeight, width: backgroundWidth}}
+            style={{width: outputShape.width, height: outputShape.height}}
             >
             <Image
                 source={{ uri: imageURI }}

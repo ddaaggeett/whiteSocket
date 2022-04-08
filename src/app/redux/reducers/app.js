@@ -5,6 +5,10 @@ const initialState = {
     diff: {
         result_uri: defaultImage,
     },
+    outputShape: {
+        width: window.innerWidth,
+        height: window.innerHeight,
+    },
     prepping: false,
     id: 'defaultUser', // userID
 }
@@ -22,6 +26,12 @@ export default function app(state = initialState, action) {
             return {
                 ...state,
                 prepping: action.prepping,
+            }
+
+        case actions.UPDATE_OUTPUT_SHAPE:
+            return {
+                ...state,
+                outputShape: action.shape,
             }
 
         default:

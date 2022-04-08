@@ -20,7 +20,7 @@ export default () => {
 
     useEffect(() => {
         socket.emit('syncUserState', appState)
-    }, [appState.diff])
+    }, [appState.diff, appState.outputShape])
 
     useEffect(() => {
         if(appState.prepping) {
