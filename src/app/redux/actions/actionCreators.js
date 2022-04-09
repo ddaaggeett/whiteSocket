@@ -1,9 +1,9 @@
 import * as actions from '.'
 
-export const updateFrame = diff => {
+export const updateCurrent = current => {
     return {
-        type: actions.UPDATE_FRAME,
-        diff
+        type: actions.UPDATE_CURRENT,
+        current
     }
 }
 

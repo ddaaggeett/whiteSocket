@@ -2,7 +2,7 @@ import * as actions from '../actions'
 import { defaultImage } from '../../../../config'
 
 const initialState = {
-    diff: {
+    current: {
         result_uri: defaultImage,
         shape: {
             width: 1,
@@ -20,10 +20,10 @@ const initialState = {
 export default function app(state = initialState, action) {
     switch(action.type) {
 
-        case actions.UPDATE_FRAME:
+        case actions.UPDATE_CURRENT:
             return {
                 ...state,
-                diff: action.diff,
+                current: action.current,
             }
 
         case actions.PREP_CAPTURE:

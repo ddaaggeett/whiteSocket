@@ -7,29 +7,29 @@ const config = require('../../../config')
 export default (props) => {
 
     const redux = useDispatch()
-    const { diff, prepping, outputShape } = useSelector(state => state.app)
+    const { current, prepping, outputShape } = useSelector(state => state.app)
     const [fullscreen, setFullscreen] = useState(false)
     const [height, setHeight] = useState(window.innerHeight)
     const [width, setWidth] = useState(window.innerWidth)
     const imageBaseURI = `http://${config.serverIP}:${config.expressPort}/`
-    const [imageURI, setImageURI] = useState(`${imageBaseURI}${diff.result_uri}`)
+    const [imageURI, setImageURI] = useState(`${imageBaseURI}${current.result_uri}`)
 
     useEffect(() => {
         if(prepping) setImageURI(`${imageBaseURI}${config.defaultImage}`)
     }, [prepping])
 
     useEffect(() => {
-        setImageURI(`${imageBaseURI}${diff.result_uri}`)
-    }, [diff])
+        setImageURI(`${imageBaseURI}${current.result_uri}`)
+    }, [current])
 
     const scaleImage = () => {
-        if(outputShape.width/outputShape.height <= diff.shape.width/diff.shape.height) {
+        if(outputShape.width/outputShape.height <= current.shape.width/current.shape.height) {
             setWidth(window.innerWidth)
-            setHeight(window.innerWidth/diff.shape.width*diff.shape.height)
+            setHeight(window.innerWidth/current.shape.width*current.shape.height)
         }
         else {
             setHeight(window.innerHeight)
-            setWidth(window.innerHeight/diff.shape.height*diff.shape.width)
+            setWidth(window.innerHeight/current.shape.height*current.shape.width)
         }
     }
 

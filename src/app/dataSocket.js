@@ -14,7 +14,7 @@ export default () => {
 
     useEffect(() => {
         socket.emit('syncUserState', appState)
-        socket.on('updateFrame', diff => redux(actions.updateFrame(diff)))
+        socket.on('updateCurrent', current => redux(actions.updateCurrent(current)))
         socket.on('prepCapture', () => redux(actions.prepCapture(true)))
     }, [])
 
