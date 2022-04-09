@@ -94,12 +94,12 @@ const handle = (data) => {
             getPrevDiff(diff.user)
             .then(prev => {
                 getOutputShape(diff.user)
-                .then(outputShape => {
+                .then(shape => {
                     diff = {
                         ...diff,
                         prev_id: prev.id,
                         prev_uri: prev.uri,
-                        outputShape,
+                        shape,
                     }
                     apply(diff).then(() => {
                         save(diff).then(result => resolve(result))

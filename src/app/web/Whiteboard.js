@@ -22,13 +22,27 @@ export default (props) => {
         setImageURI(`${imageBaseURI}${diff.result_uri}`)
     }, [diff])
 
-    useEffect(() => {
-        const handleResize = () => {
-            redux(actions.updateOutputShape({
-                width: window.innerWidth,
-                height: window.innerHeight,
-            }))
+    const scaleImage = () => {
+        if(outputShape.width/outputShape.height <= diff.shape.width/diff.shape.height) {
+            setWidth(window.innerWidth)
+            setHeight(window.innerWidth/diff.shape.width*diff.shape.height)
         }
+        else {
+            setHeight(window.innerHeight)
+            setWidth(window.innerHeight/diff.shape.height*diff.shape.width)
+        }
+    }
+
+    const handleResize = () => {
+        redux(actions.updateOutputShape({
+            width: window.innerWidth,
+            height: window.innerHeight,
+        }))
+        scaleImage()
+    }
+
+    useEffect(() => {
+        scaleImage()
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize)
     }, [])
