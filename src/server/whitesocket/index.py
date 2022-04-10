@@ -1,13 +1,18 @@
 import cv2
 import mask
 import sys
+import os
+import json
+config = json.loads(open('config.json').read())
+imageDataDir = config['imageData']
 
-# all corners read in following order - TL,TR,BR,BL
-img = sys.argv[1]
-prev = sys.argv[2]
-outputFile = sys.argv[3]
-mode = sys.argv[4]
-outputShape = sys.argv[5]
+diff = json.loads(sys.argv[1])
+img = os.path.join(imageDataDir,diff['uri'])
+prev = os.path.join(imageDataDir,diff['prev_uri'])
+outputFile = os.path.join(imageDataDir,diff['result_uri'])
+mode = diff['mode']
+shape = diff['shape']
+
 write = True if mode == 'write' else False
 image = cv2.imread(img)
 prevImage = cv2.imread(prev)

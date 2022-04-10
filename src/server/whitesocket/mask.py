@@ -33,6 +33,7 @@ def eraser(image, roi):
     return(eraser)
 
 def roi(image):
+    # all corners read in following order - TL,TR,BR,BL
     mask = numpy.zeros(image.shape[:2], dtype="uint8")
     mask_arucos = numpy.zeros(image.shape[:2], dtype="uint8")
     roiCorners = numpy.zeros((4,2)) # outer-most corner of each arcuro
