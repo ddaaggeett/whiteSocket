@@ -17,14 +17,14 @@ const getPrevDiff = user => {
         r.connect(config.dbConnxConfig).then(connection => {
             r.table('users').get(user).run(connection)
             .then(user => {
-                if (user.diff.id == undefined) { // first diff
+                if (user.current.id == undefined) { // first diff
                     const id = null
-                    const uri = user.diff.result_uri
+                    const uri = user.current.result_uri
                     resolve({id,uri})
                 }
-                else r.table('diffs').get(user.diff.id).run(connection)
+                else r.table('diffs').get(user.current.id).run(connection)
                 .then(diff => {
-                    const id = user.diff.id
+                    const id = user.current.id
                     const uri = diff.result_uri
                     resolve({id,uri})
                 })
