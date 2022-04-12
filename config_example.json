@@ -13,8 +13,6 @@
     "dbConnxConfig": {
         "db": "whitesocket"
     },
-    "outputWidth": 1280,
-    "outputHeight": 720,
     "appName": "whitesocket",
     "sourceCodeURL": "https://github.com/ddaaggeett/whitesocket",
     "serverIP": "192.168.0.1"

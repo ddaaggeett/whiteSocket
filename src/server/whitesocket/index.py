@@ -20,6 +20,6 @@ roi, roiCorners = mask.roi(image)
 inputMask = None
 if(write): inputMask = mask.ink(image, roi)
 else: inputMask = mask.eraser(image, roi)
-diffMask = mask.warp(inputMask, roiCorners)
-output = mask.applyDiffMask(diffMask, prevImage)
+diffMask = mask.warp(inputMask, roiCorners, shape)
+output = mask.applyDiffMask(diffMask, prevImage, shape)
 cv2.imwrite(outputFile, output)

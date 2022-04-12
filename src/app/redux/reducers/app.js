@@ -4,10 +4,6 @@ import { defaultImage } from '../../../../config'
 const initialState = {
     current: {
         result_uri: defaultImage,
-        shape: {
-            width: 1,
-            height: 1,
-        },
     },
     outputShape: {
         width: window.innerWidth,

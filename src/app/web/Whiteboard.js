@@ -23,6 +23,7 @@ export default (props) => {
     }, [current])
 
     const scaleImage = () => {
+        if(current.shape != undefined){
         if(outputShape.width/outputShape.height <= current.shape.width/current.shape.height) {
             setWidth(window.innerWidth)
             setHeight(window.innerWidth/current.shape.width*current.shape.height)
@@ -30,6 +31,7 @@ export default (props) => {
         else {
             setHeight(window.innerHeight)
             setWidth(window.innerHeight/current.shape.height*current.shape.width)
+        }
         }
     }
 
