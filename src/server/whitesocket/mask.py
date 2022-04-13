@@ -3,7 +3,7 @@ import numpy
 import json
 
 def applyDiffMask(diffMask, prevImage, shape):
-    color = create_blank(shape.width,shape.height,(255,255,255))
+    color = create_blank(shape['width'],shape['height'],(255,255,255))
     diff = cv2.bitwise_and(color, color, mask=diffMask)
     output = cv2.bitwise_xor(prevImage, diff, mask=None)
     return output
@@ -60,7 +60,7 @@ def roi(image):
 
 def warp(mask, roiCorners, shape):
     inpoints = numpy.float32(roiCorners)
-    outpoints = numpy.float32([[0,0],[shape.width,0],[shape.width,shape.height],[0,shape.height]])
+    outpoints = numpy.float32([[0,0],[shape['width'],0],[shape['width'],shape['height']],[0,shape['height']]])
     matrix = cv2.getPerspectiveTransform(inpoints,outpoints)
-    warped = cv2.warpPerspective(mask, matrix, (shape.width,shape.height))
+    warped = cv2.warpPerspective(mask, matrix, (shape['width'],shape['height']))
     return(warped)
