@@ -21,5 +21,5 @@ inputMask = None
 if(write): inputMask = mask.ink(image, roi)
 else: inputMask = mask.eraser(image, roi)
 diffMask = mask.warp(inputMask, roiCorners, shape)
-output = mask.applyDiffMask(diffMask, prevImage, shape)
+output = mask.applyDiffMask(diffMask, prevImage)
 cv2.imwrite(outputFile, output)

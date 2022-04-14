@@ -115,7 +115,4 @@ const handle = (data) => {
 
 module.exports = {
     handle,
-    save,
-    apply,
-    binaryStringToFile,
 }

@@ -2,11 +2,42 @@ import cv2
 import numpy
 import json
 
-def applyDiffMask(diffMask, prevImage, shape):
-    color = create_blank(shape['width'],shape['height'],(255,255,255))
-    diff = cv2.bitwise_and(color, color, mask=diffMask)
-    output = cv2.bitwise_xor(prevImage, diff, mask=None)
+def applyDiffMask(diffMask, prevImage):
+    # TODO: assume diffMask is already size of standard output
+    ph = prevImage.shape[0]
+    pw = prevImage.shape[1]
+    dh = diffMask.shape[0]
+    dw = diffMask.shape[1]
+    prev = None
+    if(dw/dh <= pw/ph):
+        scaledPrev = scaleImage(prevImage, width = dw)
+        add_H = dh - scaledPrev.shape[0]
+        extra = create_blank(dw,add_H,(255,255,255))
+        prev = cv2.vconcat([scaledPrev,extra])
+    else:
+        scaledPrev = scaleImage(prevImage, height = dh)
+        add_W = dw - scaledPrev.shape[1]
+        extra = create_blank(add_W,dh,(255,255,255))
+        prev = cv2.hconcat([scaledPrev,extra])
+    color = (255,255,255)
+    colorCanvas = create_blank(dw,dh,color)
+    diff = cv2.bitwise_and(colorCanvas, colorCanvas, mask=diffMask)
+    output = cv2.bitwise_xor(prev, diff, mask=None)
     return output
+
+def scaleImage(image, width = None, height = None):
+    dim = None
+    (h, w) = image.shape[:2]
+    if width is None and height is None:
+        return image
+    if width is None:
+        r = height / float(h)
+        dim = (int(w * r), height)
+    else:
+        r = width / float(w)
+        dim = (width, int(h * r))
+    resized = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
+    return resized
 
 def create_blank(width, height, rgb_color):
     image = numpy.zeros((height, width, 3), numpy.uint8)
