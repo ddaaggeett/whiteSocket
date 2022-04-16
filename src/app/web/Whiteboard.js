@@ -8,9 +8,8 @@ export default (props) => {
 
     const redux = useDispatch()
     const { current, prepping, outputShape } = useSelector(state => state.app)
-    const [fullscreen, setFullscreen] = useState(false)
-    const [height, setHeight] = useState(window.innerHeight)
-    const [width, setWidth] = useState(window.innerWidth)
+    const [height, setHeight] = useState(window.innerHeight - (2*config.borderWidth))
+    const [width, setWidth] = useState(window.innerWidth - (2*config.borderWidth))
     const imageBaseURI = `http://${config.serverIP}:${config.expressPort}/`
     const [imageURI, setImageURI] = useState(`${imageBaseURI}${current.result_uri}`)
 
@@ -24,27 +23,27 @@ export default (props) => {
 
     const scaleImage = () => {
         if(current.shape != undefined){
-        if(outputShape.width/outputShape.height <= current.shape.width/current.shape.height) {
-            setWidth(window.innerWidth)
-            setHeight(window.innerWidth/current.shape.width*current.shape.height)
-        }
-        else {
-            setHeight(window.innerHeight)
-            setWidth(window.innerHeight/current.shape.height*current.shape.width)
-        }
+            if(outputShape.width/outputShape.height <= current.shape.width/current.shape.height) {
+                setWidth(window.innerWidth - (2*config.borderWidth))
+                setHeight((window.innerWidth - (2*config.borderWidth))/current.shape.width*current.shape.height)
+            }
+            else {
+                setHeight(window.innerHeight - (2*config.borderWidth))
+                setWidth((window.innerHeight - (2*config.borderWidth))/current.shape.height*current.shape.width)
+            }
         }
     }
 
     const handleResize = () => {
         redux(actions.updateOutputShape({
-            width: window.innerWidth,
-            height: window.innerHeight,
+            width: window.innerWidth - (2*config.borderWidth),
+            height: window.innerHeight - (2*config.borderWidth),
         }))
         scaleImage()
     }
 
     useEffect(() => {
-        scaleImage()
+        handleResize()
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize)
     }, [])
@@ -65,7 +64,5 @@ export default (props) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-    },
-    image: {
     },
 })

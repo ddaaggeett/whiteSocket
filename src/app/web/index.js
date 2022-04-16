@@ -4,7 +4,7 @@ import Whiteboard from './Whiteboard'
 import Arucos from './Arucos'
 import useDataSocketHook from '../dataSocket'
 import io from 'socket.io-client'
-import { serverIP, socketPort } from '../../../config'
+import { serverIP, socketPort, borderWidth } from '../../../config'
 const socket = io.connect(`http://${serverIP}:${socketPort}`)
 
 export default () => {
@@ -22,6 +22,11 @@ export default () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        position: 'absolute',
+        top: borderWidth,
+        bottom: borderWidth,
+        left: borderWidth,
+        right: borderWidth,
     },
     arucos: {
         position: 'absolute',
