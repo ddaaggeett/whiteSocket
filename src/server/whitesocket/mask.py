@@ -1,6 +1,7 @@
 import cv2
 import numpy
 import json
+import colors
 
 def applyDiffMask(diffMask, prevImage):
     # TODO: assume diffMask is already size of standard output
@@ -46,6 +47,11 @@ def create_blank(width, height, rgb_color):
     return image
 
 def ink(image, roi):
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    red = colors.getRed(image,hsv)
+    blue = colors.getBlue(image,hsv)
+    orange = colors.getOrange(image,hsv)
+    green = colors.getGreen(image,hsv)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     th, allInk = cv2.threshold(gray, 80, 255, cv2.THRESH_BINARY_INV)
     ink = cv2.bitwise_and(roi, allInk, mask=None)
