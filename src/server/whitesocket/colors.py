@@ -5,16 +5,14 @@ import colors
 def getBlue(image,hsv):
     low_blue = numpy.array([90, 50,50])
     high_blue = numpy.array([135, 255, 255])
-    blue_mask = cv2.inRange(hsv, low_blue, high_blue)
-    blue = cv2.bitwise_and(image, image, mask=blue_mask)
-    return blue
+    mask = cv2.inRange(hsv, low_blue, high_blue)
+    return mask
 
 def getOrange(image,hsv):
     low_orange = numpy.array([10, 100, 20])
     high_orange = numpy.array([25, 255, 255])
-    orange_mask = cv2.inRange(hsv, low_orange, high_orange)
-    orange = cv2.bitwise_and(image, image, mask=orange_mask)
-    return orange
+    mask = cv2.inRange(hsv, low_orange, high_orange)
+    return mask
 
 def getRed(image,hsv):
     lower1 = numpy.array([0, 100, 20])
@@ -23,13 +21,11 @@ def getRed(image,hsv):
     upper2 = numpy.array([179,255,255])
     lower_mask = cv2.inRange(hsv, lower1, upper1)
     upper_mask = cv2.inRange(hsv, lower2, upper2)
-    full_mask = lower_mask + upper_mask
-    red = cv2.bitwise_and(image, image, mask=full_mask)
-    return red
+    mask = lower_mask + upper_mask
+    return mask
 
 def getGreen(image,hsv):
     low_green = numpy.array([30, 52, 75])
     high_green = numpy.array([88, 255, 255])
-    green_mask = cv2.inRange(hsv, low_green, high_green)
-    green = cv2.bitwise_and(image, image, mask=green_mask)
-    return green
+    mask = cv2.inRange(hsv, low_green, high_green)
+    return mask
