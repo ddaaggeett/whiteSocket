@@ -29,3 +29,9 @@ def getGreen(image,hsv):
     high_green = numpy.array([88, 255, 255])
     mask = cv2.inRange(hsv, low_green, high_green)
     return mask
+
+def getBlack(image,hsv):
+    low_black = numpy.array([0,0,0])
+    high_black = numpy.array([180,255,125])
+    mask = cv2.inRange(hsv, low_black, high_black)
+    return mask

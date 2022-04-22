@@ -54,9 +54,10 @@ def ink(image, roi):
     blue = colors.getBlue(image,hsv)
     orange = colors.getOrange(image,hsv)
     green = colors.getGreen(image,hsv)
+    black = colors.getBlack(image,hsv)
     # gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     # th, allInk = cv2.threshold(gray, 80, 255, cv2.THRESH_BINARY_INV)
-    allInk = red + blue + orange + green
+    allInk = red + blue + orange + green + black
     ink = cv2.bitwise_and(roi, allInk, mask=None)
     return(ink)
 
