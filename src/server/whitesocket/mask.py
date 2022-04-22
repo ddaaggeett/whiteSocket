@@ -2,6 +2,8 @@ import cv2
 import numpy
 import json
 import colors
+config = json.loads(open('config.json').read())
+arucoMargin = config['arucoMargin']
 
 def applyDiffMask(diffMask, prevImage):
     # TODO: assume diffMask is already size of standard output
@@ -84,7 +86,11 @@ def roi(image):
             tr = [int(tr[0]), int(tr[1])]
             br = [int(br[0]), int(br[1])]
             bl = [int(bl[0]), int(bl[1])]
-            contours = numpy.array([tl,tr,br,bl])
+            tl_ = [int(tl[0]-arucoMargin), int(tl[1]-arucoMargin)]
+            tr_ = [int(tr[0]+arucoMargin), int(tr[1]-arucoMargin)]
+            br_ = [int(br[0]+arucoMargin), int(br[1]+arucoMargin)]
+            bl_ = [int(bl[0]-arucoMargin), int(bl[1]+arucoMargin)]
+            contours = numpy.array([tl_,tr_,br_,bl_])
             cv2.fillPoly(mask_arucos, pts = numpy.int32([contours]), color=(255,255,255))
             if markerID == 0: roiCorners[0] = tl
             elif markerID == 1: roiCorners[1] = tr

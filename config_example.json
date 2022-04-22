@@ -2,6 +2,7 @@
     "user": "defaultUser",
     "defaultImage": "blank.jpg",
     "borderWidth": 5,
+    "arucoMargin": 3,
     "imageData": "./whitesocket_data/",
     "configFile": "./config.json",
     "socketPort": 3346,
