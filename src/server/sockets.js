@@ -12,8 +12,12 @@ var io = require('socket.io')(http, {
 
 io.on('connection', (socket) => {
     socket.on('syncUserState', appState => user.save(appState))
-    socket.on('inputImage', (data, returnToSender) => {
-        diff.handle(data).then(object => io.emit('updateCurrent', object))
+    socket.on('capture', (data, returnToSender) => {
+        diff.handle(data)
+        .then(object => io.emit('updateCurrent', object))
+        .catch(error => {
+            if(error === 'recapture') returnToSender(error)
+        })
     })
     socket.on('prepCapture', () => io.emit('prepCapture'))
     socket.on('capturePrepped', () => io.emit('capturePrepped'))

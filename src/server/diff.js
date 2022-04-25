@@ -8,7 +8,7 @@ const apply = (diff) => {
     return new Promise((resolve, reject) => {
         whitesocket(diff)
         .then(() => resolve())
-        .catch(error => reject())
+        .catch(error => reject(error))
     })
 }
 
@@ -101,9 +101,11 @@ const handle = (data) => {
                         prev_uri: prev.uri,
                         shape,
                     }
-                    apply(diff).then(() => {
+                    apply(diff)
+                    .then(() => {
                         save(diff).then(result => resolve(result))
                     })
+                    .catch(error => reject(error))
                 })
 
 

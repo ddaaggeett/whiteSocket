@@ -10,9 +10,7 @@ const whitesocket = diff => {
                 console.log(stdout)
                 resolve()
             }
-            else {
-                console.error(stderr)
-            }
+            else if(error.toString().includes('corner count')) reject('recapture')
         })
     })
 }

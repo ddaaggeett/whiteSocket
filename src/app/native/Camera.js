@@ -22,11 +22,15 @@ export default () => {
                 base64: true,
             }).then(image => {
                 const imageBinaryString = `${image.base64}data:image/jpg;base64,`
-                socket.emit('inputImage', {
+                socket.emit('capture', {
                     timestamp: Date.now(),
                     imageBinaryString,
                     mode,
                     user: config.user,
+                }, error => {
+                    if(error === 'recapture') {
+                        // TODO: alert user to recapture
+                    }
                 })
             })
         })

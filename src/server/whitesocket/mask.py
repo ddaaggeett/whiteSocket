@@ -97,6 +97,7 @@ def roi(image):
             elif markerID == 1: roiCorners[1] = tr
             elif markerID == 2: roiCorners[2] = br
             elif markerID == 3: roiCorners[3] = bl
+    else: raise Exception('corner count')
 
     contours = numpy.array([roiCorners[0],roiCorners[1],roiCorners[2],roiCorners[3]])
     cv2.fillPoly(mask, pts = numpy.int32([contours]), color=(255,255,255))
