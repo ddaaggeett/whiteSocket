@@ -78,7 +78,9 @@ def roi(image):
     arucoDict = cv2.aruco.Dictionary_get(cv2.aruco.DICT_4X4_50)
     arucoParams = cv2.aruco.DetectorParameters_create()
     corners, ids, rejected = cv2.aruco.detectMarkers(image, arucoDict, parameters=arucoParams)
-    if len(ids) == 4:
+    if len(ids) != 4:
+        raise Exception('ERROR: aruco corner count')
+    else:
         ids = ids.flatten()
         for (markerCorner, markerID) in zip(corners, ids):
             corners = markerCorner.reshape((4, 2))
@@ -97,7 +99,6 @@ def roi(image):
             elif markerID == 1: roiCorners[1] = tr
             elif markerID == 2: roiCorners[2] = br
             elif markerID == 3: roiCorners[3] = bl
-    else: raise Exception('corner count')
 
     contours = numpy.array([roiCorners[0],roiCorners[1],roiCorners[2],roiCorners[3]])
     cv2.fillPoly(mask, pts = numpy.int32([contours]), color=(255,255,255))

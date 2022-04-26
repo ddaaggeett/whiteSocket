@@ -2,7 +2,7 @@ const { exec } = require('child_process')
 const path = require('path')
 const config = require('../../../config')
 
-const whitesocket = diff => {
+const whitesocket = (diff = config.defaultDiff) => {
     return new Promise(function(resolve, reject) {
         exec(`python ./src/server/whitesocket/index.py '${JSON.stringify(diff)}'`, (error, stdout, stderr) => {
             if(!error) {
@@ -10,7 +10,10 @@ const whitesocket = diff => {
                 console.log(stdout)
                 resolve()
             }
-            else if(error.toString().includes('corner count')) reject('recapture')
+            else if(error.toString().includes('ERROR: aruco corner count')) {
+                console.log('ERROR: aruco corner count')
+                reject('recapture')
+            }
         })
     })
 }
